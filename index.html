@@ -155,6 +155,7 @@ a{color:var(--accent)}
       <h3>SecureDrop</h3>
       <p>A secure client-server application for authenticated, encrypted file exchange, and my final project for Intro to Cybersecurity. Click through the slides below, or press Play narration for a guided walkthrough.</p>
       <p>Users authenticate with salted password hashes, each connection negotiates a session key, transfers are encrypted over TCP, and the protocol rejects replayed messages.</p>
+      <p><a href="https://github.com/AZALAH/SecureDrop" target="_blank" rel="noopener">View the code on GitHub</a></p>
       <div class="tags"><span class="tag">Python</span><span class="tag">TCP sockets</span><span class="tag">Encryption</span><span class="tag">Salted hashing</span><span class="tag">Session keys</span><span class="tag">Replay protection</span></div>
       <div class="deck" id="deck">
         <div class="deckbar"><span id="dcount" class="dcount">1 / 12</span></div>
@@ -190,13 +191,15 @@ a{color:var(--accent)}
     <p class="lede">Step-by-step guides so you can run my projects on your own machine. Each guide lists what you need first.</p>
     <div class="slot">
       <h3>SecureDrop</h3>
-      <span class="note">Full guide arrives with the cleaned-up repo.</span>
+      <p>Source code: <a href="https://github.com/AZALAH/SecureDrop" target="_blank" rel="noopener">github.com/AZALAH/SecureDrop</a></p>
       <ol class="steps">
-        <li>Install Python 3.12 or newer.</li>
-        <li>Clone the repository from my <a href="https://github.com/AZALAH" target="_blank" rel="noopener">GitHub</a>.</li>
-        <li>Install dependencies with <code>pip install -r requirements.txt</code>.</li>
-        <li>Start the server in one terminal, then the client in a second.</li>
-        <li>Register two users and send a file between them.</li>
+        <li>Install Python 3.10 or newer.</li>
+        <li>Clone the repo: <code>git clone https://github.com/AZALAH/SecureDrop.git</code>, then <code>cd SecureDrop</code>.</li>
+        <li>Install the one dependency: <code>pip install -r requirements.txt</code>.</li>
+        <li>Run <code>python src/secure_drop.py</code> and register with a name, email, and password.</li>
+        <li>Run it again to log in, then type <code>help</code> at the <code>secure_drop&gt;</code> prompt.</li>
+        <li>Add a contact with <code>add</code>, see who's online with <code>list</code>, and send an encrypted file with <code>send friend@email.com ./file.txt</code>.</li>
+        <li>No second computer? Set <code>LOCAL_TEST = True</code> in the code and use <code>src/test_friend.py</code> to simulate another user.</li>
       </ol>
     </div>
   </div>
