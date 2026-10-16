@@ -170,6 +170,14 @@ a{color:var(--accent)}
 
     </div>
     <div class="slot">
+      <span class="status s-done">Complete</span>
+      <h3>Assembly Tokenizer &amp; Symbol Table Generator</h3>
+      <p>The first pass of an assembler, written entirely in MIPS assembly. A finite state machine reads each line character by character, splits it into typed tokens, then a symbol table records every label definition and reference along with its address.</p>
+      <p>Built in three stages: character classification, then the state machine tokenizer, then the symbol table. After submission I tracked down a register-saving bug that made symbols appear multiple times and fixed it.</p>
+      <p><a href="https://github.com/AZALAH/Assembly-Tokenizer" target="_blank" rel="noopener">View the code on GitHub</a></p>
+      <div class="tags"><span class="tag">MIPS assembly</span><span class="tag">Finite state machine</span><span class="tag">Stack frames</span><span class="tag">Function pointers</span></div>
+    </div>
+    <div class="slot">
       <span class="status s-wip">In progress</span>
       <h3>Handheld Streaming (R36S)</h3>
       <p>Turning a $40 Linux handheld into a game-streaming client: flashed and managed ArkOS, installed PortMaster offline, and staging Moonlight. Next step is adding Wi-Fi support.</p>
@@ -178,8 +186,8 @@ a{color:var(--accent)}
     <div class="slot">
       <span class="status s-wip">You're looking at it</span>
       <h3>This Portfolio</h3>
-      <p>A hand-built HTML, CSS and JavaScript site with a procedurally generated block world drawn on a canvas. No framework.</p>
-      <div class="tags"><span class="tag">HTML / CSS / JS</span><span class="tag">Canvas</span><span class="tag">GitHub Pages</span></div>
+      <p>A hand-built HTML, CSS, and JavaScript site styled like a game title screen, with a looping video background, music controls, an interactive resume, and a narrated project walkthrough. No framework, hosted on GitHub Pages.</p>
+      <div class="tags"><span class="tag">HTML / CSS / JS</span><span class="tag">GitHub Pages</span><span class="tag">Git</span></div>
     </div>
   </div>
 </div></section>
@@ -200,6 +208,18 @@ a{color:var(--accent)}
         <li>Run it again to log in, then type <code>help</code> at the <code>secure_drop&gt;</code> prompt.</li>
         <li>Add a contact with <code>add</code>, see who's online with <code>list</code>, and send an encrypted file with <code>send friend@email.com ./file.txt</code>.</li>
         <li>No second computer? Set <code>LOCAL_TEST = True</code> in the code and use <code>src/test_friend.py</code> to simulate another user.</li>
+      </ol>
+    </div>
+    <div class="slot">
+      <h3>Assembly Tokenizer</h3>
+      <p>Source code: <a href="https://github.com/AZALAH/Assembly-Tokenizer" target="_blank" rel="noopener">github.com/AZALAH/Assembly-Tokenizer</a></p>
+      <ol class="steps">
+        <li>Install Java, then download the MARS 4.5 MIPS simulator (<code>Mars4_5.jar</code>).</li>
+        <li>Download <code>src/symbol_table.asm</code> from the repo.</li>
+        <li>Open it in MARS, press <code>F3</code> to assemble, then <code>F5</code> to run.</li>
+        <li>In the Run I/O panel, type a line of assembly ending in <code>#</code>, like <code>FIRST: li $t0, VALUE #</code>.</li>
+        <li>You'll see every token with its type, then the symbol table with each label and reference and its address.</li>
+        <li>Keep entering lines and watch the addresses climb by 4. Compare with <code>examples/expected_output.txt</code>.</li>
       </ol>
     </div>
   </div>
