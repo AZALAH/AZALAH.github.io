@@ -153,7 +153,7 @@ a{color:var(--accent)}
     <div class="slot">
       <span class="status s-wip">Updating docs</span>
       <h3>SecureDrop</h3>
-      <p>A secure client-server application for authenticated, encrypted file exchange, built with teammates Orion Golden and Adam Kazi as the final project for Intro to Cybersecurity. Click through the slides below, or press Play narration for a guided walkthrough.</p>
+      <p>A secure client-server application for authenticated, encrypted file exchange, and my final project for Intro to Cybersecurity. Click through the slides below, or press Play narration for a guided walkthrough.</p>
       <p>Users authenticate with salted password hashes, each connection negotiates a session key, transfers are encrypted over TCP, and the protocol rejects replayed messages.</p>
       <div class="tags"><span class="tag">Python</span><span class="tag">TCP sockets</span><span class="tag">Encryption</span><span class="tag">Salted hashing</span><span class="tag">Session keys</span><span class="tag">Replay protection</span></div>
       <div class="deck" id="deck">
@@ -280,7 +280,7 @@ a{color:var(--accent)}
       <label for="rvtext">Your thoughts</label>
       <textarea id="rvtext" required rows="3" maxlength="400"></textarea>
       <button class="btn" type="submit" style="grid-column:auto">Post review</button>
-      <span class="note">Preview only: reviews save in your browser until the live version gets a backend.</span>
+      <span class="note" id="rvthanks" hidden>Thanks for your review!</span>
     </form>
     <div id="rvlist" class="grid2"></div>
   </div>
@@ -318,13 +318,13 @@ a{color:var(--accent)}
   document.querySelectorAll('.panel').forEach(p=>p.addEventListener('click',e=>{if(e.target===p)closeAll();}));
   document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAll();});
 
-  const KEY='ahmed-portfolio-reviews';
-  const seed=[{n:"Example reviewer",s:5,t:"Sample review so you can see how posted feedback appears."}];
+  const KEY='ahmed-portfolio-reviews-v2';
+  const seed=[];
   function load(){try{return JSON.parse(localStorage.getItem(KEY))||seed;}catch(e){return seed;}}
   function save(v){try{localStorage.setItem(KEY,JSON.stringify(v));}catch(e){}}
   const list=document.getElementById('rvlist');
   function render(){list.textContent='';load().slice().reverse().forEach(r=>{const d=document.createElement('div');d.className='review slot';const s=document.createElement('span');s.className='stars';s.textContent='★'.repeat(r.s)+'☆'.repeat(5-r.s);const b=document.createElement('b');b.textContent=r.n;const p=document.createElement('p');p.textContent=r.t;d.append(s,b,p);list.append(d);});}
-  document.getElementById('rvform').addEventListener('submit',e=>{e.preventDefault();const v=load();v.push({n:rvname.value.trim(),s:+rvstars.value,t:rvtext.value.trim()});save(v);e.target.reset();render();});
+  document.getElementById('rvform').addEventListener('submit',e=>{e.preventDefault();const v=load();v.push({n:rvname.value.trim(),s:+rvstars.value,t:rvtext.value.trim()});save(v);e.target.reset();render();const th=document.getElementById('rvthanks');if(th)th.hidden=false;});
   render();
 
   const t=document.createElement('canvas');t.width=t.height=16;const g=t.getContext('2d');
