@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Ahmed Salah: Computer Science student at UMass Lowell (Cybersecurity). Projects, resume, and more.">
+<title>Ahmed Salah Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;font-size:14px}
+[hidden]{display:none!important}
+img{max-width:100%}
+@font-face{font-family:'MCPixel';src:url(assets/minecraft.ttf) format('truetype');font-display:block}
+/* Layout: full-screen procedural block world, centered pixel title + stacked stone menu; each menu item opens a framed panel over the world */
+:root{
+  --sky-top:#1b2340; --sky-bot:#e0875a;
+  --stone:#7d7f86; --stone-hi:#b4b6bd; --stone-lo:#3d3f45; --stone-hover:#6d7fbf;
+  --ink:#f2f0e8; --ink-dim:#c9c6ba; --shadow:#1a1a1f;
+  --panel:#16181f; --panel-edge:#4a4d57; --accent:#7ad3a0; --warn:#f2c94c;
+  --f-display:'MCPixel','Courier New',monospace;
+  --f-ui:'MCPixel','Courier New',monospace;
+  --f-body:'IBM Plex Mono',ui-monospace,Consolas,monospace;
+  color-scheme:dark;
+}
+html,body{height:100%}
+body{background:var(--sky-top);color:var(--ink);font-family:var(--f-body);overflow:hidden}
+video#world{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;will-change:transform;transform:translateZ(0)}
+.vignette{position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse at center,rgba(0,0,0,0) 55%,rgba(0,0,0,.3) 100%)}
+.screen{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;padding-block:24px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+.logo{position:relative;text-align:center;display:flex;flex-direction:column;align-items:center;gap:4px;animation:drop .9s cubic-bezier(.2,1.4,.4,1) both}
+.logo h1,.logo .sub{margin:0;font-family:var(--f-display);font-weight:400;line-height:.95;letter-spacing:.04em;color:#cfc8c0;
+  background:repeating-linear-gradient(0deg,#d8d2ca 0 6px,#bfb8af 6px 9px,#e4dfd8 9px 14px);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 1px 0 #6d6760) drop-shadow(0 2px 0 #5c5650) drop-shadow(0 3px 0 #4b4640) drop-shadow(0 4px 0 #3a3632) drop-shadow(3px 6px 0 rgba(0,0,0,.6))}
+.logo h1{font-size:clamp(40px,10vw,110px);animation:bob 3.2s ease-in-out infinite}
+.logo .sub{animation:bob 3.2s ease-in-out .25s infinite}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(0)}25%{transform:translateY(-6px) rotate(-.6deg)}75%{transform:translateY(4px) rotate(.6deg)}}
+.logo .sub{font-size:clamp(24px,5.5vw,62px)}
+.splash{position:absolute;right:-6%;bottom:-4px;font-family:var(--f-display);font-size:clamp(12px,2vw,20px);color:#ffff3c;text-shadow:2px 2px 0 #3f3f00;white-space:nowrap;transform:rotate(-18deg);animation:pulse .5s ease-in-out infinite alternate;transform-origin:center}
+@keyframes pulse{from{transform:rotate(-18deg) scale(1)}to{transform:rotate(-18deg) scale(1.1)}}
+@keyframes drop{from{opacity:0;transform:translateY(-40px) scale(.92)}to{opacity:1;transform:none}}
+nav.menu{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:min(460px,100%)}
+.btn{grid-column:span 2;font-family:var(--f-ui);font-size:17px;color:var(--ink);background:var(--stone) var(--stonetex);image-rendering:pixelated;background-size:64px 64px;border:0;padding:11px 12px;cursor:pointer;text-shadow:2px 2px 0 var(--shadow);
+  box-shadow:inset 3px 3px 0 var(--stone-hi),inset -3px -3px 0 var(--stone-lo),0 0 0 2px #000}
+.btn.half{grid-column:span 1;font-size:15px}
+.btn:hover,.btn:focus-visible{background:var(--stone-hover) var(--stonetex);background-size:64px 64px;background-blend-mode:multiply;outline:none;box-shadow:inset 3px 3px 0 #9fb0ec,inset -3px -3px 0 #39467a,0 0 0 2px #fff}
+.btn:active{transform:translateY(1px)}
+.audiobar{display:flex;align-items:center;gap:10px;background:rgba(20,20,26,.78);box-shadow:0 0 0 2px #000,inset 0 0 0 2px #4a4d57;padding:6px 10px;flex-wrap:wrap;pointer-events:auto}
+.abtn{display:flex;align-items:center;gap:6px;font-family:var(--f-ui);font-size:12px;color:var(--ink);background:var(--stone) var(--stonetex);background-size:64px 64px;border:0;padding:6px 10px;cursor:pointer;box-shadow:inset 2px 2px 0 var(--stone-hi),inset -2px -2px 0 var(--stone-lo),0 0 0 2px #000;text-shadow:1px 1px 0 var(--shadow)}
+.abtn:hover,.abtn:focus-visible{outline:none;box-shadow:inset 2px 2px 0 #9fb0ec,inset -2px -2px 0 #39467a,0 0 0 2px #fff}
+#vol{width:90px;accent-color:#8bc34a}
+.audiobar{position:relative}
+.credit{position:absolute;left:0;bottom:calc(100% + 8px);white-space:nowrap;font-family:var(--f-ui);font-size:12px;color:var(--ink);background:rgba(20,20,26,.92);box-shadow:0 0 0 2px #000,inset 0 0 0 2px #4a4d57;padding:6px 10px;opacity:0;transform:translateY(4px);transition:opacity .2s,transform .2s;pointer-events:none}
+.audiobar:hover .credit,.audiobar:focus-within .credit{opacity:1;transform:none}
+#volpct,.ver{font-family:var(--f-ui);font-size:12px;font-variant-numeric:tabular-nums;color:var(--ink-dim)}
+.foot{align-items:flex-end;position:fixed;bottom:0;left:0;right:0;z-index:1;display:flex;justify-content:space-between;gap:12px;font-family:var(--f-ui);font-size:12px;color:var(--ink-dim);text-shadow:1px 1px 0 var(--shadow);
+  padding:8px max(16px,env(safe-area-inset-right,0px)) calc(8px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+/* panels */
+.panel{position:fixed;inset:0;z-index:5;display:flex;align-items:center;justify-content:center;background:rgba(10,11,16,.72);padding-block:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.frame{background:var(--panel);width:min(860px,100%);max-height:100%;display:flex;flex-direction:column;box-shadow:inset 0 0 0 3px var(--panel-edge),0 0 0 3px #000,8px 8px 0 rgba(0,0,0,.5)}
+.frame header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-bottom:3px solid var(--panel-edge)}
+.frame h2{margin:0;font-family:var(--f-display);font-size:clamp(16px,3vw,22px);letter-spacing:.04em}
+.frame .body{overflow:auto;padding:18px;display:flex;flex-direction:column;gap:16px;line-height:1.6;font-size:14px;min-width:0}
+.frame .btn{grid-column:auto;font-size:14px;padding:7px 14px}
+h3{margin:0;font-family:var(--f-ui);font-weight:600;font-size:18px;color:var(--accent)}
+.lede{color:var(--ink-dim);max-width:65ch;margin:0}
+.slot{background:#1e2129;box-shadow:inset 0 0 0 2px var(--panel-edge);padding:14px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.slot p{margin:0;max-width:68ch}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-family:var(--f-ui);font-size:12px;padding:2px 8px;background:#2a2e38;color:var(--ink-dim);box-shadow:inset 0 0 0 1px #4a4d57}
+.status{font-family:var(--f-ui);font-size:12px;padding:2px 8px;align-self:flex-start}
+.s-done{background:#1f4a33;color:#9ff0c0}.s-wip{background:#4d4116;color:var(--warn)}.s-plan{background:#2a2e38;color:var(--ink-dim)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+ol.steps{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:6px;max-width:68ch}
+code{font-family:var(--f-body);background:#0d0e13;padding:1px 5px;color:var(--accent)}
+.note{font-size:12px;color:var(--warn);font-family:var(--f-ui)}
+/* resume */
+.deck{display:flex;flex-direction:column;gap:8px;margin-top:6px;width:min(560px,100%);align-self:center}
+.deckbar{display:flex;justify-content:flex-end;gap:8px;font-family:var(--f-ui);font-size:12px;color:var(--ink-dim)}
+.dcount{font-variant-numeric:tabular-nums}
+.slidebox{background:#000;box-shadow:0 0 0 2px #000,inset 0 0 0 2px #4a4d57;aspect-ratio:16/9;max-width:100%;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.slidebox img{width:100%;height:100%;object-fit:contain;display:block;image-rendering:auto}
+.dnarr{margin:0;min-height:4.8em;color:var(--ink-dim);font-size:13px;max-width:none}
+.dctrl{display:flex;gap:8px;flex-wrap:wrap}
+.dctrl .btn{flex:1 1 120px}
+.dctrl .btn[aria-pressed="true"]{background:#3f8a62}
+.frame.wide{width:min(1100px,100%)}
+.resume{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:16px;align-items:start}
+.paper{background:#f4f1ea;color:#1c1d22;padding:22px 24px;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:12.5px;line-height:1.45;box-shadow:0 0 0 3px #000;min-width:0}
+.paper a{color:#2b5a8a}
+.rname{margin:0;text-align:center;font-family:var(--f-display);font-weight:400;font-size:26px;letter-spacing:.08em}
+.rcontact{margin:4px 0 0;text-align:center;font-size:11.5px;overflow-wrap:anywhere}
+.rh{font-family:var(--f-ui);font-weight:400;font-size:15px;letter-spacing:.1em;text-transform:uppercase;margin:14px 0 6px;padding-bottom:3px;border-bottom:2px solid #1c1d22}
+.rjob{padding:6px 8px;margin:0 -8px;cursor:pointer;outline:none;transition:background .15s}
+.rjob:hover,.rjob:focus-visible,.rjob.on{background:#dfe9e2;box-shadow:inset 3px 0 0 #3f8a62}
+.rrow{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.rsub{font-size:12px}
+.paper ul{margin:3px 0 0;padding-left:18px}
+.skills{padding-left:0!important;list-style:none}
+.rentry{background:#1e2129;box-shadow:inset 0 0 0 2px var(--panel-edge);padding:10px 12px;cursor:pointer;text-align:left;color:var(--ink);font-family:var(--f-body);font-size:13px;border:0;width:100%;display:flex;flex-direction:column;gap:2px}
+.rentry b{font-family:var(--f-ui);font-size:15px;font-weight:600}
+.rentry span{color:var(--ink-dim)}
+.rentry:hover,.rentry:focus-visible,.rentry.on{outline:none;box-shadow:inset 0 0 0 2px var(--accent)}
+.rcol{display:flex;flex-direction:column;gap:8px;min-width:0}
+.take{position:sticky;top:0;background:#101218;box-shadow:inset 0 0 0 2px #3a5a48;padding:14px;display:flex;flex-direction:column;gap:8px;align-self:start}
+.take .who{font-family:var(--f-ui);color:var(--accent)}
+.take p{margin:0}
+.rsec{font-family:var(--f-ui);font-size:12px;letter-spacing:.12em;color:var(--ink-dim);text-transform:uppercase;margin-top:4px}
+/* reviews */
+form.rv{display:flex;flex-direction:column;gap:8px}
+form.rv input,form.rv textarea,form.rv select{font-family:var(--f-body);font-size:14px;background:#0d0e13;color:var(--ink);border:0;box-shadow:inset 0 0 0 2px var(--panel-edge);padding:8px}
+form.rv label{font-family:var(--f-ui);font-size:13px;color:var(--ink-dim)}
+.review{border-left:3px solid var(--accent);padding-left:10px}
+.review .stars{color:var(--warn);font-family:var(--f-ui)}
+a{color:var(--accent)}
+@media (max-width:640px){.resume{grid-template-columns:1fr}.paper{padding:16px}.take{position:static}.foot{font-size:10px;flex-direction:column}.splash{right:0}}
+@media (prefers-reduced-motion:reduce){.logo h1,.logo .sub{animation-duration:6s}}
+</style>
+</head>
+<body>
+
+
+<video id="world" src="assets/background.mp4" autoplay muted loop playsinline aria-hidden="true"></video><div class="vignette"></div>
+
+<main class="screen" id="title">
+  <div class="logo">
+    <h1>AHMED SALAH</h1>
+    <div class="sub">PORTFOLIO</div>
+    <span class="splash" id="splash">Block by block!</span>
+  </div>
+  <nav class="menu" aria-label="Main menu">
+    <button class="btn" data-open="projects">Projects</button>
+    <button class="btn" data-open="tutorials">How to Use &amp; Test My Projects</button>
+    <button class="btn" data-open="about">About Me</button>
+    <button class="btn" data-open="resume">Resume</button>
+    <button class="btn half" data-open="status">Current Work &amp; Reviews</button>
+    <button class="btn half" data-open="contact">Contact</button>
+  </nav>
+</main>
+<div class="foot"><div class="audiobar">
+  <button class="abtn" id="musicBtn" aria-pressed="false"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M2 6h3l4-3v10l-4-3H2z"/><path id="mwave" fill="none" stroke="currentColor" stroke-width="1.5" d="M11 5.5c1 1 1 4 0 5M13 4c2 2 2 6 0 8" style="display:none"/><path id="mx" fill="none" stroke="currentColor" stroke-width="1.5" d="M11 6l4 4M15 6l-4 4"/></svg><span id="mlabel">MUSIC OFF</span></button>
+  <input type="range" id="vol" min="0" max="100" value="40" aria-label="Music volume"><span id="volpct">40%</span>
+  <span class="ver">PORTFOLIO V1.0</span><span class="credit" role="tooltip" id="mcredit">♪ "Lofi Chill Vlog Beats" by alex-morgan (Pixabay)</span>
+</div><span>© 2026 Ahmed Salah. Not an official Minecraft product. Not affiliated with Mojang or Microsoft.</span></div>
+
+<!-- PROJECTS -->
+<section class="panel" id="projects" hidden><div class="frame">
+  <header><h2>Projects</h2><button class="btn" data-close>Done</button></header>
+  <div class="body">
+    <p class="lede">Everything I've built, with what it does, how it works, and what I learned. Click into a project's tutorial to run it yourself.</p>
+    <div class="slot">
+      <span class="status s-wip">Updating docs</span>
+      <h3>SecureDrop</h3>
+      <p>A secure client-server application for authenticated, encrypted file exchange, built with teammates Orion Golden and Adam Kazi as the final project for Intro to Cybersecurity. Click through the slides below, or press Play narration for a guided walkthrough.</p>
+      <p>Users authenticate with salted password hashes, each connection negotiates a session key, transfers are encrypted over TCP, and the protocol rejects replayed messages.</p>
+      <div class="tags"><span class="tag">Python</span><span class="tag">TCP sockets</span><span class="tag">Encryption</span><span class="tag">Salted hashing</span><span class="tag">Session keys</span><span class="tag">Replay protection</span></div>
+      <div class="deck" id="deck">
+        <div class="deckbar"><span id="dcount" class="dcount">1 / 12</span></div>
+        <div class="slidebox"><img id="dimg" alt="SecureDrop presentation slide 1"></div>
+        <p id="dnarr" class="dnarr"></p>
+        <div class="dctrl">
+          <button class="btn" id="dprev" type="button">◀ Prev</button>
+          <button class="btn" id="dread" type="button" aria-pressed="false">▶ Play narration</button>
+          <button class="btn" id="dnext" type="button">Next ▶</button>
+        </div>
+      </div>
+
+    </div>
+    <div class="slot">
+      <span class="status s-wip">In progress</span>
+      <h3>Handheld Streaming (R36S)</h3>
+      <p>Turning a $40 Linux handheld into a game-streaming client: flashed and managed ArkOS, installed PortMaster offline, and staging Moonlight. Next step is adding Wi-Fi support.</p>
+      <div class="tags"><span class="tag">ArkOS / Linux</span><span class="tag">ARM</span><span class="tag">PortMaster</span></div>
+    </div>
+    <div class="slot">
+      <span class="status s-wip">You're looking at it</span>
+      <h3>This Portfolio</h3>
+      <p>A hand-built HTML, CSS and JavaScript site with a procedurally generated block world drawn on a canvas. No framework.</p>
+      <div class="tags"><span class="tag">HTML / CSS / JS</span><span class="tag">Canvas</span><span class="tag">GitHub Pages</span></div>
+    </div>
+  </div>
+</div></section>
+
+<!-- TUTORIALS -->
+<section class="panel" id="tutorials" hidden><div class="frame">
+  <header><h2>How to Use &amp; Test</h2><button class="btn" data-close>Done</button></header>
+  <div class="body">
+    <p class="lede">Step-by-step guides so you can run my projects on your own machine. Each guide lists what you need first.</p>
+    <div class="slot">
+      <h3>SecureDrop</h3>
+      <span class="note">Full guide arrives with the cleaned-up repo.</span>
+      <ol class="steps">
+        <li>Install Python 3.12 or newer.</li>
+        <li>Clone the repository from my <a href="https://github.com/AZALAH" target="_blank" rel="noopener">GitHub</a>.</li>
+        <li>Install dependencies with <code>pip install -r requirements.txt</code>.</li>
+        <li>Start the server in one terminal, then the client in a second.</li>
+        <li>Register two users and send a file between them.</li>
+      </ol>
+    </div>
+  </div>
+</div></section>
+
+<!-- ABOUT -->
+<section class="panel" id="about" hidden><div class="frame">
+  <header><h2>About Me</h2><button class="btn" data-close>Done</button></header>
+  <div class="body">
+    <div class="slot">
+      <h3>Hey, I'm Ahmed</h3>
+      <p>I'm a Computer Science student at UMass Lowell in the Cybersecurity option, based in the Boston area. I like understanding how systems work at the lowest level, and then figuring out how to protect them.</p>
+      <p>Minecraft was one of my favorite games growing up. Building things block by block and breaking stuff to see how it worked is a big part of why I ended up in computer science, so this site is built to feel like that world.</p>
+    </div>
+    <div class="slot"><h3>The pivot</h3>
+      <p>I came into college planning to be a software engineer. Then I took my first cybersecurity course, and it clicked: I liked thinking about how things break as much as how they're built.</p>
+      <p>That course's final project became SecureDrop, an encrypted file-transfer app my team built with salted password hashing, session keys, and replay-attack protection. Designing defenses against real attacks is what made me switch my focus to security.</p>
+    </div>
+    <div class="slot"><h3>Where I'm headed</h3>
+      <p>My goal is to work in a Security Operations Center: watching for threats, investigating alerts, and responding to incidents. I'm also interested in IT roles in healthcare, where keeping systems and patient data secure really matters.</p>
+      <p>To get there I'm building hands-on skills outside class, from Python scripting to networking, and I'm applying for Summer 2027 internships.</p>
+    </div>
+    <div class="slot"><h3>Outside class</h3>
+      <p><b>Esports:</b> I compete on the UML Valorant Varsity team, coach the Academy team, and I'm part of the UML Valorant Club. Competitive play has taught me communication, quick decisions under pressure, and how to review my own mistakes.</p>
+      <p><b>Security:</b> I'm a member of the UML Cyber Security Club, where I keep learning outside the classroom.</p>
+      <p><b>Tinkering:</b> I'm turning a Linux handheld into a game-streaming client, which has taught me a lot about Linux, ARM hardware, and working without internet access.</p>
+      <p><b>Work:</b> I'm a Shift Supervisor at CVS, where I run the store during my shifts, guide my team, and stay calm and helpful with customers under pressure.</p>
+      <p><b>Favorite languages:</b> C++, x86 assembly, and MIPS. I like being close to the hardware.</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- RESUME -->
+<section class="panel" id="resume" hidden><div class="frame wide">
+  <header><h2>Resume</h2><button class="btn" data-close>Done</button></header>
+  <div class="body">
+    <p class="lede">Hover or tap any experience or project to read my own take on it.</p>
+    <div class="resume">
+      <article class="paper">
+        <h1 class="rname">AHMED SALAH</h1>
+        <p class="rcontact">AhmedSalah32406@gmail.com · Boston, MA · <a href="https://www.linkedin.com/in/ahmed-salah-cs2006" target="_blank" rel="noopener">linkedin.com/in/ahmed-salah-cs2006</a> · <a href="https://github.com/AZALAH" target="_blank" rel="noopener">github.com/AZALAH</a></p>
+        <h2 class="rh">Education</h2>
+        <div class="rjob" tabindex="0" data-k="uml"><div class="rrow"><b>University of Massachusetts Lowell</b><span>Expected May 2028</span></div><div class="rrow rsub"><i>B.S. Computer Science, Cybersecurity Concentration</i><span>GPA: 3.3</span></div>
+        <ul><li>Activities: UML Cyber Security Club, UML Valorant Club</li><li>Varsity Esports: UML Valorant Varsity Team (Player) and Academy Team (Coach)</li></ul></div>
+        <h2 class="rh">Technical Skills</h2>
+        <ul class="skills"><li><b>Languages:</b> Python, C, C++, Java, Ruby, HTML, Assembly (x86, MIPS, MIC-1)</li><li><b>Networking &amp; Security:</b> TCP/UDP Socket Programming, Authentication Systems, Password Hashing &amp; Salting, Encrypted File Transfer, Replay Attack Prevention, Wireshark, Nmap</li><li><b>Tools:</b> Linux/WSL, VS Code, JSON, CLI, Multithreading</li><li><b>Languages Spoken:</b> English, Somali</li></ul>
+        <h2 class="rh">Professional Experience</h2>
+        <div class="rjob" tabindex="0" data-k="cvssup"><div class="rrow"><b>Shift Supervisor</b><span>July 2026 – Present</span></div><div class="rrow rsub"><i>CVS Health</i><span>Roslindale, MA</span></div><ul><li>Supervise a team of 7 store associates and assist higher management with daily operations</li><li>Onboard and train new hires on register operations, customer service standards, and store procedures</li><li>Communicate priorities and align expectations between store management and crew</li><li>Execute pricing, stocking, truck deliveries, and POG resets</li></ul></div>
+        <div class="rjob" tabindex="0" data-k="cvsassoc"><div class="rrow"><b>Store Associate</b><span>June 2026 – July 2026</span></div><div class="rrow rsub"><i>CVS Health</i><span>Roslindale, MA</span></div><ul><li>Delivered attentive customer service and resolved service issues</li><li>Processed cash, check, and credit card transactions accurately</li><li>Restocked shelves and updated pricing and inventory</li></ul></div>
+        <div class="rjob" tabindex="0" data-k="bu"><div class="rrow"><b>Computer Science Research Intern</b><span>June 2024 – Sept 2024</span></div><div class="rrow rsub"><i>Boston University School of Medicine</i><span>Boston, MA</span></div><ul><li>Applied Python programming in a medical research laboratory environment</li><li>Collaborated with Ph.D. faculty and medical students on ultrasound related application development</li><li>Wrote, tested, and debugged Python scripts to improve functionality for the application</li><li>Contributed to interdisciplinary research between CS and medical teams</li></ul></div>
+        <div class="rjob" tabindex="0" data-k="harvard"><div class="rrow"><b>Office Assistant Intern</b><span>June 2022 – Aug 2022</span></div><div class="rrow rsub"><i>Harvard Radcliffe Institute</i><span>Cambridge, MA</span></div><ul><li>Supported administrative and operational functions in academic office</li><li>Restructured inventory systems and maintained Excel based asset tracking</li><li>Assisted facilities manager with logistics and documentation</li><li>Improved workspace efficiency through organization and file management</li></ul></div>
+        <h2 class="rh">Projects</h2>
+        <div class="rjob" tabindex="0" data-k="tok"><div class="rrow"><b>Assembly Tokenizer &amp; Symbol Table Generator</b><span>Spring 2026</span></div><div class="rrow rsub"><i>MIPS Assembly</i><span></span></div><ul><li>Designed a finite state machine in MIPS assembly to scan input strings and classify characters into typed tokens</li><li>Implemented FSA action routines to read, buffer, and finalize tokens character by character</li><li>Built a symbol table generator to detect label definitions versus references and track their addresses</li><li>Managed stack allocated parse variable structs and pointer based function calls to preserve state</li><li>Verified token and symbol table output against test inputs, correctly identifying label definitions and references</li></ul></div>
+        <div class="rjob" tabindex="0" data-k="sd"><div class="rrow"><b>SecureDrop – Secure Network File Transfer System</b><span>Fall 2025</span></div><div class="rrow rsub"><i>Python</i><span></span></div><ul><li>Built secure client server application for authenticated encrypted file exchange</li><li>Implemented salted password hashing to prevent plaintext credential storage</li><li>Designed per-user contact management using JSON</li><li>Engineered encrypted TCP transfer with session keys and sequence number replay protection</li><li>Presented live technical demonstration successfully defending the security architecture</li></ul></div>
+      </article>
+      <aside class="take" aria-live="polite">
+        <span class="who" id="twho"></span>
+        <p id="ttext"></p>
+        <span class="note">Draft text. Ahmed will rewrite in his own words.</span>
+      </aside>
+    </div>
+  </div>
+</div></section>
+
+<!-- STATUS & REVIEWS -->
+<section class="panel" id="status" hidden><div class="frame">
+  <header><h2>Current Work &amp; Reviews</h2><button class="btn" data-close>Done</button></header>
+  <div class="body">
+    <h3>What I'm working on</h3>
+    <div class="grid2">
+      <div class="slot"><span class="status s-wip">Updating</span><b>SecureDrop</b><p>Cleaning up the repo and writing full docs.</p></div>
+      <div class="slot"><span class="status s-wip">In progress</span><b>R36S streaming</b><p>Waiting on a Wi-Fi adapter.</p></div>
+      <div class="slot"><span class="status s-plan">Planned</span><b>Home lab</b><p>Proxmox on an old laptop with isolated attack VMs.</p></div>
+    </div>
+    <h3>Leave a review</h3>
+    <form class="rv" id="rvform">
+      <label for="rvname">Name and role</label>
+      <input id="rvname" required maxlength="60" placeholder="e.g. Recruiter at Acme Security">
+      <label for="rvstars">Rating</label>
+      <select id="rvstars"><option>5</option><option>4</option><option>3</option><option>2</option><option>1</option></select>
+      <label for="rvtext">Your thoughts</label>
+      <textarea id="rvtext" required rows="3" maxlength="400"></textarea>
+      <button class="btn" type="submit" style="grid-column:auto">Post review</button>
+      <span class="note">Preview only: reviews save in your browser until the live version gets a backend.</span>
+    </form>
+    <div id="rvlist" class="grid2"></div>
+  </div>
+</div></section>
+
+<!-- CONTACT -->
+<section class="panel" id="contact" hidden><div class="frame">
+  <header><h2>Contact</h2><button class="btn" data-close>Done</button></header>
+  <div class="body">
+    <div class="slot"><h3>LinkedIn</h3><p><a href="https://www.linkedin.com/in/ahmed-salah-cs2006" target="_blank" rel="noopener">linkedin.com/in/ahmed-salah-cs2006</a></p></div>
+    <div class="slot"><h3>GitHub</h3><p><a href="https://github.com/AZALAH" target="_blank" rel="noopener">github.com/AZALAH</a></p></div>
+  </div>
+</div></section>
+
+<script>
+(function(){
+  const takes={
+    uml:["UMass Lowell","I started in computer science aiming for software engineering. My first cybersecurity course changed my direction, and now I'm in the Cybersecurity concentration. Outside class I play on the Valorant Varsity team and coach the Academy team, which has taught me a lot about leading and teaching."],
+    cvssup:["Shift Supervisor, CVS Health","Within a month as an associate I was promoted to run shifts. Leading a team of 7 taught me to set clear priorities, train people patiently, and keep a store running when things get busy. Those are the same skills a SOC team needs during an incident."],
+    cvsassoc:["Store Associate, CVS Health","This is where I learned the basics: accuracy with every transaction, and staying calm and helpful when a customer has a problem. Doing it well is what earned me the supervisor role."],
+    bu:["Research Intern, BU School of Medicine","My first time writing code that real researchers depended on. I worked in Python on an ultrasound application alongside Ph.D. faculty and medical students, and learned how to test and debug carefully when the work supports medical research. It's a big reason I'm interested in healthcare IT."],
+    harvard:["Office Assistant Intern, Harvard Radcliffe Institute","I saw how an academic office runs day to day. Rebuilding their inventory tracking in Excel was my first taste of organizing data so other people could actually use it."],
+    tok:["Assembly Tokenizer, MIPS","I love working close to the hardware. Building a full finite state machine in MIPS, managing the stack and pointers by hand, made me understand what compilers and assemblers really do under the hood."],
+    sd:["SecureDrop","My favorite project. Building authentication, salted hashing, session keys, and replay protection from scratch taught me how attacks actually work, and defending our design in a live demo is what made me sure about cybersecurity."]
+  };
+  const who=document.getElementById('twho'),txt=document.getElementById('ttext');
+  function show(k){who.textContent=takes[k][0];txt.textContent=takes[k][1];document.querySelectorAll('.rjob').forEach(e=>e.classList.toggle('on',e.dataset.k===k));}
+  document.querySelectorAll('.rjob').forEach(e=>{['mouseenter','focus','click'].forEach(ev=>e.addEventListener(ev,()=>show(e.dataset.k)));});
+  show('cvssup');
+
+  let last=null;
+  document.querySelectorAll('[data-open]').forEach(b=>b.addEventListener('click',()=>{last=b;const p=document.getElementById(b.dataset.open);p.hidden=false;p.querySelector('[data-close]').focus();}));
+  function closeAll(){document.querySelectorAll('.panel').forEach(p=>p.hidden=true);if(last)last.focus();}
+  document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',closeAll));
+  document.querySelectorAll('.panel').forEach(p=>p.addEventListener('click',e=>{if(e.target===p)closeAll();}));
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAll();});
+
+  const KEY='ahmed-portfolio-reviews';
+  const seed=[{n:"Example reviewer",s:5,t:"Sample review so you can see how posted feedback appears."}];
+  function load(){try{return JSON.parse(localStorage.getItem(KEY))||seed;}catch(e){return seed;}}
+  function save(v){try{localStorage.setItem(KEY,JSON.stringify(v));}catch(e){}}
+  const list=document.getElementById('rvlist');
+  function render(){list.textContent='';load().slice().reverse().forEach(r=>{const d=document.createElement('div');d.className='review slot';const s=document.createElement('span');s.className='stars';s.textContent='★'.repeat(r.s)+'☆'.repeat(5-r.s);const b=document.createElement('b');b.textContent=r.n;const p=document.createElement('p');p.textContent=r.t;d.append(s,b,p);list.append(d);});}
+  document.getElementById('rvform').addEventListener('submit',e=>{e.preventDefault();const v=load();v.push({n:rvname.value.trim(),s:+rvstars.value,t:rvtext.value.trim()});save(v);e.target.reset();render();});
+  render();
+
+  const t=document.createElement('canvas');t.width=t.height=16;const g=t.getContext('2d');
+  for(let i=0;i<16;i++)for(let j=0;j<16;j++){const v=110+Math.floor(Math.random()*40)-(Math.random()>.9?30:0);g.fillStyle='rgb('+v+','+v+','+(v+4)+')';g.fillRect(i,j,1,1);}
+  document.documentElement.style.setProperty('--stonetex','url('+t.toDataURL()+')');
+  const splashes=["Block by block!","Now with encryption!","SOC analyst in training!","Salted, never plain!","Also try SecureDrop!","Made in a dorm!","Zero ports open!"];
+  document.getElementById('splash').textContent=splashes[Math.floor(Math.random()*splashes.length)];
+
+  const mBtn=document.getElementById('musicBtn'),vol=document.getElementById('vol'),vp=document.getElementById('volpct');
+  const au=new Audio('assets/music.mp3');au.loop=true;au.preload='auto';let on=false;
+  function applyVol(){vp.textContent=vol.value+'%';au.volume=vol.value/100;}
+  function toggle(){on=!on;applyVol();if(on){const pr=au.play();if(pr&&pr.catch)pr.catch(()=>{on=false;ui();});}else au.pause();ui();try{localStorage.setItem('ahmed-music',on?'1':'0')}catch(e){}}
+  function ui(){mBtn.setAttribute('aria-pressed',on);document.getElementById('mlabel').textContent=on?'MUSIC ON':'MUSIC OFF';document.getElementById('mwave').style.display=on?'':'none';document.getElementById('mx').style.display=on?'none':'';}
+  mBtn.addEventListener('click',toggle);vol.addEventListener('input',()=>{applyVol();try{localStorage.setItem('ahmed-vol',vol.value)}catch(e){}});
+  try{const v=localStorage.getItem('ahmed-vol');if(v!==null){vol.value=v;}}catch(e){}applyVol();
+
+  const slides=["assets/slides/slide-01.jpg", "assets/slides/slide-02.jpg", "assets/slides/slide-03.jpg", "assets/slides/slide-04.jpg", "assets/slides/slide-05.jpg", "assets/slides/slide-06.jpg", "assets/slides/slide-07.jpg", "assets/slides/slide-08.jpg", "assets/slides/slide-09.jpg", "assets/slides/slide-10.jpg", "assets/slides/slide-11.jpg", "assets/slides/slide-12.jpg"],narr=["This is SecureDrop, a peer-to-peer file-sharing tool designed around one question: what could an attacker do, and how do we stop it?", "It starts with registration. Passwords are never stored in plain text. Each one is salted and hashed, so even if the user database leaks, attackers can't simply read the passwords or use precomputed tables to crack them.", "Login reuses the exact same hashing code instead of a second implementation. One audited code path means fewer places for a security bug to hide, and credentials only live in memory while the program runs.", "Each user gets an isolated contact list stored separately by account, so one user can never read or modify another user's data.", "To find each other, users broadcast their presence over UDP and listen for others in background threads, so the app stays responsive. Only people already in your contacts appear, which limits who you interact with.", "Typing list shows which of your trusted contacts are online right now, tying contacts and presence together.", "File transfer is where security matters most. Every file is encrypted with a brand-new key before it leaves your machine, then sent over TCP, so anyone intercepting the traffic sees only scrambled data.", "Encryption alone isn't enough, because an attacker could capture an encrypted file and resend it later. So every transfer carries a sequence number, and the receiver rejects anything out of order. That blocks replay attacks.", "To test two users without two computers, a local test mode routes all traffic through 127.0.0.1 and simulates a second user, so every feature could be verified on one machine.", "Real bugs came up: mismatched ports caused refused connections, background threads froze the prompt, and online status needed a separate script. Each was traced to its root cause and fixed, which taught me as much as building the features did.", "The result is a complete secure communication tool: hashed credentials, isolated user data, encrypted transfers with a unique key per file, and replay protection, all working together.", "Thanks for watching. The full code is on my GitHub."],segs=[null, [1.9, 14.5], [15.1, 29.4], [30.0, 39.55], [40.15, 54.5], [55.2, 63.2], [63.85, 78.85], [79.5, 94.65], [95.3, 108.9], [109.6, 125.05], [125.75, 139.2], [139.95, 144.5]];let di=0,reading=false;
+  const dimg=document.getElementById('dimg'),dn=document.getElementById('dnarr'),dc=document.getElementById('dcount'),dr=document.getElementById('dread');
+  const na=new Audio('assets/narration.mp3');na.preload='auto';let segEnd=null,waitT=null;
+  na.addEventListener('timeupdate',()=>{if(segEnd!==null&&na.currentTime>=segEnd){na.pause();segEnd=null;next();}});
+  function next(){if(!reading)return;if(di<slides.length-1)go(di+1);else{reading=false;rui();hush();}}
+  function speak(){if(typeof au!=='undefined'&&!au.paused)au.volume=Math.min(au.volume,.12);clearTimeout(waitT);na.pause();const sg=segs[di];if(!sg){waitT=setTimeout(next,3000);return;}segEnd=sg[1];na.currentTime=sg[0];const pr=na.play();if(pr&&pr.catch)pr.catch(()=>{reading=false;rui();});}
+  function hush(){clearTimeout(waitT);segEnd=null;na.pause();if(typeof applyVol==='function')applyVol();}
+  function go(i){di=Math.max(0,Math.min(slides.length-1,i));dimg.src=slides[di];dimg.alt='SecureDrop presentation slide '+(di+1);dn.textContent=narr[di];dc.textContent=(di+1)+' / '+slides.length;if(reading)speak();}
+  function rui(){dr.setAttribute('aria-pressed',reading);dr.textContent=reading?'■ Stop':'▶ Play narration';}
+  document.getElementById('dprev').addEventListener('click',()=>go(di-1));
+  document.getElementById('dnext').addEventListener('click',()=>go(di+1));
+  dr.addEventListener('click',()=>{reading=!reading;rui();if(reading)speak();else hush();});
+  document.addEventListener('keydown',e=>{if(document.getElementById('projects').hidden)return;if(e.key==='ArrowRight')go(di+1);if(e.key==='ArrowLeft')go(di-1);});
+  document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>{reading=false;rui();hush();}));
+  go(0);
+  const vid=document.getElementById('world');vid.muted=true;const kick=()=>{const pr=vid.play();if(pr&&pr.catch)pr.catch(()=>{});};kick();vid.addEventListener('canplay',kick);['pointerdown','keydown','touchstart'].forEach(ev=>addEventListener(ev,kick,{once:true}));document.addEventListener('visibilitychange',()=>{if(!document.hidden)kick();});
+})();
+</script>
+
+</body>
+</html>
