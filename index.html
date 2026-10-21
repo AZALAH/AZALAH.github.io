@@ -133,6 +133,7 @@ a{color:var(--accent)}
   </div>
   <nav class="menu" aria-label="Main menu">
     <button class="btn" data-open="projects">Projects</button>
+    <a class="btn" href="gallery.html" style="display:block;text-align:center;text-decoration:none">Enter the Gallery</a>
     <button class="btn" data-open="tutorials">How to Use &amp; Test My Projects</button>
     <button class="btn" data-open="about">About Me</button>
     <button class="btn" data-open="resume">Resume</button>
@@ -342,6 +343,7 @@ a{color:var(--accent)}
   document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',closeAll));
   document.querySelectorAll('.panel').forEach(p=>p.addEventListener('click',e=>{if(e.target===p)closeAll();}));
   document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAll();});
+  {const h=location.hash.slice(1),p=h&&document.getElementById(h);if(p&&p.classList.contains('panel')){p.hidden=false;const c=p.querySelector('[data-close]');if(c)c.focus();}}
 
   const KEY='ahmed-portfolio-reviews-v2';
   const seed=[];
