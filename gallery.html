@@ -70,6 +70,7 @@ a.pix{display:inline-block}
 .dpad button,.abtn{background:rgba(31,33,52,.82);border:0;box-shadow:inset 2px 2px 0 #34375a,inset -2px -2px 0 #0c0d18,0 0 0 2px #000;font-family:var(--f-ui);font-size:14px;color:var(--ink);touch-action:none}
 .abtn{width:68px;height:68px;border-radius:50%;pointer-events:auto;font-size:18px}
 .abtn.ready{background:rgba(170,125,50,.92)}
+#fade{position:fixed;inset:0;background:#000;opacity:0;pointer-events:none;transition:opacity .35s;z-index:20}#fade.on{opacity:1}
 #toast{position:fixed;top:calc(64px + env(safe-area-inset-top,0px));right:max(12px,env(safe-area-inset-right,0px));z-index:8;background:var(--panel);box-shadow:0 0 0 2px #000,inset 0 0 0 3px var(--gold-dim);padding:10px 14px;display:flex;flex-direction:column;gap:2px;max-width:280px}
 #toast b{font-family:var(--f-ui);font-weight:400;font-size:12px;color:var(--gold)}
 #toast span{font-size:19px}
@@ -90,11 +91,12 @@ a.pix{display:inline-block}
 </div>
 <div id="prompt" hidden></div>
 <div id="hint">A / D or ← → to walk · E to look closer · click any painting</div>
+<div id="fade" aria-hidden="true"></div>
 <div id="toast" hidden><b id="toastT"></b><span id="toastS"></span></div>
 
 <div id="dialog" hidden role="dialog" aria-label="Talking with Mason">
   <canvas id="portrait" width="32" height="32"></canvas>
-  <div class="dlg"><b>MASON · BARISTA</b><div id="dtext" aria-live="polite"></div><div id="choices"></div></div>
+  <div class="dlg"><b id="dname">MASON · BARISTA</b><div id="dtext" aria-live="polite"></div><div id="choices"></div></div>
 </div>
 
 <div class="overlay" id="cardWrap" hidden>
@@ -300,7 +302,7 @@ function drawPerson(c,x,y,dir,frame,moving,P){
   }
 }
 
-const WINS=[{x:176,y:40,w:114,h:86},{x:556,y:40,w:110,h:86},{x:30,y:62,w:40,h:30},{x:2706,y:36,w:42,h:100}];
+const WINS=[{x:176,y:40,w:114,h:86},{x:556,y:40,w:110,h:86},{x:30,y:62,w:40,h:30}];
 const city=document.createElement('canvas');city.width=900;city.height=130;
 const cityLights=[];
 function buildCity(){
@@ -406,7 +408,7 @@ function buildProps(){
     R(c,598,156,44,6,'#4a1a20');R(c,598,156,44,1,'#6a2a32');R(c,600,162,3,10,'#2a0e12');R(c,637,162,3,10,'#2a0e12');
   });
   BACK.push(c=>{R(c,120,132,3,40,'#5a3a22');R(c,108,104,30,28,'#1a1208');R(c,110,106,26,24,'#1e2a24');R(c,112,140,22,3,'#5a3a22');R(c,110,143,2,29,'#5a3a22');R(c,134,143,2,29,'#5a3a22')});
-  [[690,1],[1226,1],[1716,1],[2700,1],[166,.8]].forEach(([x,s])=>BACK.push(c=>plant(c,x,172,s)));
+  [[690,1],[1226,1],[1716,1],[166,.8]].forEach(([x,s])=>BACK.push(c=>plant(c,x,172,s)));
   [[920],[1036]].forEach(([x])=>BACK.push(c=>{R(c,x-2,142,4,28,'#b8923e');R(c,x-4,138,8,5,'#e0b469');R(c,x-5,169,10,3,'#6a5020')}));
   BACK.push(c=>{c.fillStyle='#7e1824';for(let i=0;i<=40;i++){const t=i/40;c.fillRect(Math.round(920+t*116),Math.round(144+Math.sin(t*Math.PI)*8),2,2)}});
   [[1396,1],[1560,-1]].forEach(([x,f])=>BACK.push(c=>{
@@ -416,6 +418,7 @@ function buildProps(){
   [1372,1586].forEach(x=>BACK.push(c=>{R(c,x-1,104,2,66,'#a8843a');R(c,x-6,169,12,3,'#1a120a')}));
   [1910,2390].forEach(x=>BACK.push(c=>{R(c,x-36,150,72,6,'#3a2a1e');R(c,x-36,150,72,1,'#5a4a3a');R(c,x-32,156,4,16,'#1e1610');R(c,x+28,156,4,16,'#1e1610')}));
   BACK.push(c=>{R(c,2616,140,28,32,'#2a2636');R(c,2616,140,28,2,'#4a4660');c.fillStyle='#d8d2c4';c.beginPath();c.moveTo(2618,140);c.quadraticCurveTo(2630,112,2642,140);c.fill();R(c,2618,138,24,4,'#c9c2b2')});
+  BACK.push(c=>{for(let y=76;y<172;y+=8)for(let x=2676;x<2724;x+=8){if(x>2676&&x<2716&&y>76)continue;R(c,x,y,8,8,'#140a22');R(c,x+1,y+1,6,6,'#1e1032');R(c,x+2,y+2,2,2,'#3a2160')}R(c,2670,170,60,4,'#140a22')});
   FRONT.push(c=>plant(c,560,226,1.4));FRONT.push(c=>plant(c,1300,228,1.4));FRONT.push(c=>plant(c,2080,228,1.4));FRONT.push(c=>plant(c,2740,226,1.4));
 }
 
@@ -448,17 +451,17 @@ function drawArt(c,e){
 
 const LIGHTS=[
  {x:340,y:100,r:95,i:1,c:0},{x:415,y:100,r:95,i:1,c:0},{x:490,y:100,r:95,i:1,c:0},{x:232,y:108,r:62,i:.9,c:0},{x:600,y:118,r:44,i:.75,c:0},
- {x:233,y:83,r:90,i:.5,c:1},{x:611,y:83,r:90,i:.5,c:1},{x:50,y:78,r:40,i:.4,c:1},{x:2727,y:86,r:70,i:.5,c:1},
+ {x:233,y:83,r:90,i:.5,c:1},{x:611,y:83,r:90,i:.5,c:1},{x:50,y:78,r:40,i:.4,c:1},{x:2700,y:122,r:90,i:.85,c:3},
  {x:415,y:34,r:70,i:.55,c:2},{x:122,y:112,r:46,i:.7,c:0},
  {x:899,y:20,r:90,i:.5,c:0},{x:1057,y:20,r:90,i:.5,c:0},
  {x:1372,y:98,r:92,i:.9,c:0},{x:1850,y:20,r:110,i:.55,c:0},{x:2090,y:20,r:110,i:.55,c:0},{x:2330,y:20,r:110,i:.55,c:0},{x:2570,y:20,r:110,i:.55,c:0},{x:2210,y:180,r:500,i:.25,c:0},{x:1586,y:98,r:92,i:.9,c:0},{x:1476,y:136,r:40,i:.7,c:0}
 ];
-const GLOW=['255,165,80','120,150,255','255,110,110'];
+const GLOW=['255,165,80','120,150,255','255,110,110','170,100,255'];
 function artLights(){return ART.map(e=>{const r=artRect(e);return{x:e.cx,y:e.cy,r:Math.max(r.w,r.h)*.72+14,i:.97,c:0}})}
 
 function interactables(){
   const L=EX.map(e=>{const half=e.sign?e.ir:Math.max(26,artRect(e).w/2);return{e,x:e.cx,half}});
-  L.push({mason:true,x:MASON_X,half:44});
+  L.push({mason:true,x:MASON_X,half:44},{door:true,x:50,half:26},{piano:true,x:620,half:28},{portal:true,x:2700,half:30});
   return L;
 }
 function nearest(){let best=null,bd=1e9;for(const it of interactables()){const d=Math.abs(player.x-it.x);if(d<it.half&&d<bd){bd=d;best=it}}return best}
@@ -468,11 +471,14 @@ function update(dt){
   time+=dt;
   if(paused){player.moving=false;return}
   let dx=0;if(keys.left)dx-=1;if(keys.right)dx+=1;
+  if(player.sitting){if(dx)standUp();dx=0;player.frame=Math.floor(time*7)}
   player.moving=!!dx;
   if(dx){player.dir=dx<0?'left':'right';player.x=Math.max(24,Math.min(WW-24,player.x+dx*(performance.now()<buffUntil?150:110)*dt));
     player.ft+=dt;if(player.ft>.13){player.ft=0;player.frame++}hideHint()}
   if(!greeted&&player.x>170&&player.x<700){greeted=true;masonSay('Welcome in! Come say hi.',3.2);voice('greet')}
   if(masonBubble&&time>masonBubble.until)masonBubble=null;
+  for(const q of notes){q.y-=dt*16;q.x+=Math.sin(time*3+q.s)*dt*6;q.life-=dt*.45}
+  while(notes.length&&notes[0].life<=0)notes.shift();
   document.getElementById('buff').hidden=performance.now()>=buffUntil;
 }
 
@@ -506,9 +512,13 @@ function draw(){
   const mdir=Math.abs(player.x-MASON_X)<60?'down':player.x<MASON_X?'left':'right';
   drawSprite(ctx,MASON_X,146,mdir,0,false,PAL.mason);
   BACK[0](ctx);
+  if(2700>cam.x-60&&2700<cam.x+VW+60){ctx.save();ctx.beginPath();ctx.rect(2684,84,32,86);ctx.clip();ctx.fillStyle='rgba(120,50,230,.85)';ctx.fillRect(2684,84,32,86);
+    ctx.globalCompositeOperation='lighter';for(let i=0;i<14;i++){const yy=84+((i*13+time*(reduce?0:22))%90),xx=2686+((i*7)%28)+Math.sin(time*2+i)*3;ctx.fillStyle='rgba(210,160,255,.35)';ctx.fillRect(xx,yy,3,8)}ctx.restore();
+    ctx.save();ctx.font='8px VT323';ctx.textAlign='center';ctx.fillStyle='#e6d2ff';ctx.shadowColor='#a070ff';ctx.shadowBlur=6*S/3;ctx.fillText('BACK TO THE CAFÉ',2700,68);ctx.restore()}
   const near=nearest();
   const pdir=!player.moving&&near?'up':player.dir;
-  drawSprite(ctx,player.x,FEET,pdir,player.frame,player.moving,PAL.player);
+  if(player.sitting){ctx.save();ctx.beginPath();ctx.rect(560,0,120,157);ctx.clip();drawSprite(ctx,620,173,'up',player.frame,true,PAL.player);ctx.restore();R(ctx,598,156,44,6,'#4a1a20');R(ctx,598,156,44,1,'#6a2a32');R(ctx,600,162,3,10,'#2a0e12');R(ctx,637,162,3,10,'#2a0e12')}
+  else drawSprite(ctx,player.x,FEET,pdir,player.frame,player.moving,PAL.player);
   FRONT.forEach(d=>d(ctx));
 
   const k=.5*S,ox=cam.x,oy=cam.y;
@@ -541,7 +551,7 @@ function draw(){
   R(ctx,596,116,10,3,'#2e6a4a');R(ctx,599,119,4,1,'#fff2c4');R(ctx,503,107,3,2,'#ff5a3a');R(ctx,236,132,3,2,'#ffd27a');
   const neon=reduce||Math.sin(time*1.7)>-0.97||Math.sin(time*31)>0;
   ctx.save();ctx.textAlign='center';ctx.textBaseline='middle';
-  ctx.font='14px MCPixel';ctx.shadowColor='#ff6a5a';ctx.shadowBlur=neon?14*S/3:3;ctx.fillStyle=neon?'#ffb39a':'#7a3a34';ctx.fillText('CAFÉ',415,36);
+  ctx.font='14px MCPixel';ctx.shadowColor='#ff6a5a';ctx.shadowBlur=neon?14*S/3:3;ctx.fillStyle=neon?'#ffb39a':'#7a3a34';ctx.fillText('CAFE',415,36);{const w=ctx.measureText('CAFE').width,ew=ctx.measureText('E').width,ax=415+w/2-ew/2;ctx.fillRect(ax-.5,27.2,2.2,1.6);ctx.fillRect(ax+1.2,25.8,2.2,1.6)}
   ctx.font='9px VT323';ctx.shadowColor='#ffd27a';ctx.shadowBlur=6*S/3;ctx.fillStyle='#ffe2a8';
   ctx.fillText('HALL OF FAME',978,32);ctx.fillText("THE ANALYST'S LOUNGE",1478,32);ctx.fillText('COMPUTING IV WING',2210,32);
   ctx.shadowBlur=0;ctx.font='7px VT323';ctx.fillStyle='#e9e4d0';ctx.fillText('WHY A',123,113);ctx.fillText('GALLERY?',123,120);ctx.fillStyle='#e0b469';ctx.fillText('press E',123,127);
@@ -550,6 +560,7 @@ function draw(){
   [[340,85],[415,85],[490,85],[232,105],[1372,98],[1586,98],[1850,15],[2090,15],[2330,15],[2570,15],[600,119],[899,15],[1057,15],[237,132]].forEach(([x,y])=>{const g=ctx.createRadialGradient(x,y,0,x,y,16);g.addColorStop(0,'rgba(255,200,120,.5)');g.addColorStop(1,'rgba(255,200,120,0)');ctx.fillStyle=g;ctx.fillRect(x-16,y-16,32,32)});
   ctx.globalCompositeOperation='source-over';
 
+  if(notes.length){ctx.save();ctx.font='10px VT323';ctx.textAlign='center';notes.forEach(q=>{ctx.globalAlpha=Math.max(0,Math.min(1,q.life));ctx.fillStyle='#ffe2a8';ctx.fillText(q.ch,q.x,q.y)});ctx.restore()}
   if(guide){const t=byId[guide];if(t){const tr=t.sign?{y:t.cy-24}:artRect(t);const bob=reduce?0:Math.sin(time*5)*2;
     ctx.fillStyle='#ffd27a';ctx.beginPath();ctx.moveTo(t.cx-6,tr.y-16+bob);ctx.lineTo(t.cx+6,tr.y-16+bob);ctx.lineTo(t.cx,tr.y-9+bob);ctx.fill();
     const d=t.cx-player.x;if(Math.abs(d)>30){const s=Math.sign(d),ax=player.x+s*16,ay=FEET-58+bob;ctx.beginPath();ctx.moveTo(ax+s*8,ay);ctx.lineTo(ax-s*3,ay-6);ctx.lineTo(ax-s*1,ay);ctx.lineTo(ax-s*3,ay+6);ctx.fill()}}}
@@ -561,14 +572,32 @@ function draw(){
   const vg=ctx.createRadialGradient(W/2,H/2,Math.min(W,H)*.35,W/2,H/2,Math.max(W,H)*.75);vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(20,8,2,.22)');ctx.fillStyle=vg;ctx.fillRect(0,0,W,H);
 
   const n=paused?null:near,pr=document.getElementById('prompt'),ab=document.getElementById('aBtn');
-  if(n){pr.hidden=false;pr.innerHTML='<kbd>'+(touchMode?'A':'E')+'</kbd>'+(n.mason?'Talk to Mason':esc(n.e.title));
+  if(player.sitting&&!paused){pr.hidden=false;pr.innerHTML=touchMode?'<kbd>A</kbd>Stand up':'<kbd>1–8</kbd>Play notes · <kbd>E</kbd>Stand up';pr.style.left=((player.x-cam.x)*S/dpr)+'px';pr.style.top=((FEET+22-cam.y)*S/dpr)+'px';ab.classList.add('ready')}
+  else if(n){pr.hidden=false;pr.innerHTML='<kbd>'+(touchMode?'A':'E')+'</kbd>'+(n.mason?'Talk to Mason':n.door?'Leave the gallery':n.piano?'Sit and play the piano':n.portal?'Teleport to the café':esc(n.e.title));
     pr.style.left=((player.x-cam.x)*S/dpr)+'px';pr.style.top=((FEET+22-cam.y)*S/dpr)+'px';ab.classList.add('ready')}
   else{pr.hidden=true;ab.classList.remove('ready')}
 }
 function esc(s){return s.replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]))}
 function masonSay(text,secs){masonBubble={text,until:time+secs}}
 function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;update(dt);draw();requestAnimationFrame(loop)}
-function interact(){const n=nearest();if(!n||paused)return;if(n.mason)openMason();else openCard(n.e.id)}
+function interact(){if(paused)return;if(player.sitting)return standUp();const n=nearest();if(!n)return;
+  if(n.mason)openMason();else if(n.door)leavePrompt();else if(n.piano)sitDown();else if(n.portal)teleport();else openCard(n.e.id)}
+const notes=[];let AC=null,pianoTimer=null,bar=0;
+function ac(){if(!AC)AC=new(window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();return AC}
+const mtof=m=>440*Math.pow(2,(m-69)/12);
+function tone(m,when,dur,vol){const a=ac(),t=a.currentTime+when,g=a.createGain(),o=a.createOscillator(),o2=a.createOscillator(),g2=a.createGain();
+  o.type='triangle';o2.type='sine';o.frequency.value=mtof(m);o2.frequency.value=mtof(m)*2;g2.gain.value=.2;o2.connect(g2);g2.connect(g);o.connect(g);g.connect(a.destination);
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+.012);g.gain.exponentialRampToValueAtTime(.0008,t+dur);o.start(t);o2.start(t);o.stop(t+dur+.05);o2.stop(t+dur+.05)}
+function spawnNote(delay){setTimeout(()=>{if(player.sitting||delay===0)notes.push({x:606+Math.random()*28,y:116,s:Math.random()*6,life:1.6,ch:Math.random()<.5?'♪':'♫'})},delay*1000)}
+const PROG=[[38,[62,65,69,72]],[43,[59,64,65,69]],[36,[59,64,67,71]],[45,[61,64,67,70]]];
+const ARP=[0,1,2,3,2,1,2,3];
+function playBar(){const[b,ch]=PROG[bar%4];bar++;tone(b,0,2.3,.2);tone(b+12,0,1.8,.07);ch.forEach(m=>tone(m,0,1.7,.045));
+  ARP.forEach((k,i)=>{const w=i*.3+(i%2?.04:0);tone(ch[k]+12,w,1,.065);if(i%2===0)spawnNote(w)})}
+function sitDown(){player.sitting=true;player.x=620;hideHint();if(music)music.volume=.08;bar=0;playBar();pianoTimer=setInterval(playBar,2400)}
+function standUp(){player.sitting=false;clearInterval(pianoTimer);pianoTimer=null;player.x=620;if(music)music.volume=.35}
+function fadeThen(fn){const f=document.getElementById('fade');f.classList.add('on');setTimeout(()=>{fn();setTimeout(()=>f.classList.remove('on'),120)},380)}
+function teleport(){paused=true;fadeThen(()=>{player.x=470;player.dir='left';paused=false;masonSay('Welcome back!',2.8)})}
+function leavePrompt(){sys('THE EXIT','Leave the gallery and head back to the main menu?',[['Leave',()=>{endTalk();paused=true;fadeThen(()=>{location.href='index.html'})}],['Stay a little longer',endTalk]])}
 
 function toWorld(ev){return{x:cam.x+ev.clientX*dpr/S,y:cam.y+ev.clientY*dpr/S}}
 function artAt(p){return ART.find(e=>{const r=artRect(e);return p.x>=r.x&&p.x<=r.x+r.w&&p.y>=r.y&&p.y<=r.y+r.h})}
@@ -631,8 +660,10 @@ listWrap.addEventListener('click',ev=>{if(ev.target===listWrap)closeList()});
 const dlg=document.getElementById('dialog'),dtext=document.getElementById('dtext'),choicesEl=document.getElementById('choices');
 let typing=null,sel=0,curVoice=null;
 (function portrait(){const p=document.getElementById('portrait').getContext('2d');p.fillStyle='#2a1a14';p.fillRect(0,0,32,32);drawPerson(p,16,46,'down',0,false,PAL.mason)})();
+function sys(title,text,choices){if(curVoice)curVoice.pause();curVoice=null;document.getElementById('dname').textContent=title;document.getElementById('portrait').hidden=true;type(text,choices)}
 function say(id,text,choices){
-  if(curVoice)curVoice.pause();curVoice=voice(id);
+  if(curVoice)curVoice.pause();curVoice=voice(id);document.getElementById('dname').textContent='MASON · BARISTA';document.getElementById('portrait').hidden=false;type(text,choices)}
+function type(text,choices){
   dlg.hidden=false;paused=true;choicesEl.textContent='';dtext.textContent='';
   let i=0;clearInterval(typing);
   const finish=()=>{clearInterval(typing);typing=null;dtext.textContent=text;showChoices(choices)};
@@ -643,10 +674,28 @@ function showChoices(ch){choicesEl.textContent='';sel=0;ch.forEach(([label,fn],i
 function setSel(i){const bs=[...choicesEl.children];if(!bs.length)return;sel=(i+bs.length)%bs.length;bs.forEach((b,j)=>b.classList.toggle('sel',j===sel));bs[sel].focus({preventScroll:true})}
 function endTalk(){dlg.hidden=true;paused=false;clearInterval(typing);if(curVoice)curVoice.pause()}
 function openMason(){if(COUNTED.every(e=>visited.has(e.id))&&!store.get('gallery-all-said')){store.set('gallery-all-said','1');return say('all',LINES.all,[['Ha, thanks Mason',menu]])}menu()}
+const JOKES=[
+ 'Why do Java developers wear glasses? Because they can\'t C sharp.',
+ 'I\'d tell you a UDP joke, but I\'m not sure you\'d get it.',
+ 'There are 10 kinds of people in this world. Those who understand binary, and those who don\'t.',
+ 'A SQL query walks into a bar, walks up to two tables, and asks: mind if I join you?',
+ 'My password is \'incorrect.\' That way, when I forget it, the computer just tells me.',
+ 'Why was the computer cold? It left its Windows open.',
+ 'How many programmers does it take to change a light bulb? None. That\'s a hardware problem.',
+ 'I tried telling a TCP joke. I kept repeating it until somebody acknowledged it.',
+ 'Some guy tried to brute force the tip jar earlier. Got locked out after three attempts. Strong policy.',
+ 'Why do SOC analysts drink so much coffee? Because the logs never sleep. And neither do they.',
+ 'Got an email saying I won a free espresso machine. The only thing brewing was malware.',
+ 'Why did the developer go broke? He used up all his cache.',
+ 'I\'d make a joke about recursion, but first I\'d have to make a joke about recursion.',
+ 'Debugging is like being the detective in a crime movie where you\'re also the murderer.'
+];
+function joke(){const i=(parseInt(store.get('gallery-joke')||'0',10)||0)%JOKES.length;store.set('gallery-joke',String(i+1));say('joke'+(i+1),JOKES[i],[['Another one',joke],['Ha. Okay.',menu]])}
 function menu(){
   say('menu',LINES.menu,[
     ['Give me the tour',()=>{touring=true;guide=TOUR.find(t=>!visited.has(t))||'securedrop';say('tour',LINES.tour,[['Let\'s go',endTalk]])}],
     ['What should I see first?',()=>{guide='securedrop';say('recommend',LINES.recommend,[['Show me SecureDrop',endTalk],['Something else',menu]])}],
+    ['Tell me a joke',joke],
     ['Who built this place?',()=>say('story',LINES.story,[['That\'s a good story',menu]])],
     ['Can I get a coffee?',()=>{if(performance.now()<buffUntil)say('coffee_again',LINES.coffee_again,[['Fair enough',menu]]);else{buffUntil=performance.now()+45000;say('coffee',LINES.coffee,[['Thanks!',endTalk]])}}],
     ['Just looking, thanks',()=>say('bye',LINES.bye,[['See you',endTalk]])]
@@ -668,6 +717,8 @@ addEventListener('keydown',ev=>{
     return;
   }
   if(!cardWrap.hidden||!listWrap.hidden){if(ev.key==='Escape'){closeCard();closeList()}return}
+  if(player.sitting&&/^Digit[1-8]$/.test(ev.code)){const m=[72,74,76,77,79,81,83,84][+ev.code.slice(5)-1];tone(m,0,1.4,.12);spawnNote(0);return}
+  if(player.sitting&&ev.code==='Escape'){standUp();return}
   if(KM[ev.code]){keys[KM[ev.code]]=true;ev.preventDefault()}
   if(ev.code==='KeyE'||ev.code==='Enter'||ev.code==='Space'||ev.code==='ArrowUp'||ev.code==='KeyW'){interact();ev.preventDefault()}
 });
