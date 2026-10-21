@@ -320,7 +320,7 @@ function drawWindowGlass(c,w,i){
   c.imageSmoothingEnabled=false;c.drawImage(city,w.x-off,w.y+w.h-130);c.drawImage(city,w.x-off+900,w.y+w.h-130);
   cityLights.forEach(([x,y,b])=>{let sx=w.x-off+x;if(sx<w.x-2)sx+=900;if(sx>w.x+w.w)return;const sy=w.y+w.h-130+y;if(sy<w.y)return;c.fillStyle=b?'#9fd0ff':'#f2c86b';c.fillRect(sx,sy,2,2)});
   if(i===1){disc(c,w.x+w.w-24,w.y+18,6,6,'#ece6c8');R(c,w.x+w.w-27,w.y+15,3,3,'#d6cfae')}
-  c.fillStyle='rgba(30,40,80,.25)';c.fillRect(w.x,w.y,w.w,w.h);
+  
   if(!reduce){c.fillStyle='rgba(175,195,255,.4)';const n=Math.round(w.w*w.h/300);
     for(let k=0;k<n;k++){const x=w.x+hash(k,i+20)*w.w,y=w.y+((hash(i+40,k)*w.h+time*(100+hash(k,7)*50))%(w.h+10))-10;c.fillRect(x-(y-w.y)*.06,y,.5,6)}}
   c.restore();
@@ -412,7 +412,7 @@ function buildProps(){
   [[1396,1],[1560,-1]].forEach(([x,f])=>BACK.push(c=>{
     R(c,x-18,146,36,18,'#5a2a1e');R(c,x-16,148,32,8,'#6e3626');R(c,f>0?x-20:x+12,128,8,38,'#4a2219');R(c,f>0?x-20:x+12,128,8,2,'#6e3626');
     R(c,x-18,164,3,8,'#1a0c08');R(c,x+15,164,3,8,'#1a0c08')}));
-  BACK.push(c=>{R(c,1462,156,32,4,'#4a2c1b');R(c,1464,160,3,12,'#2e1c12');R(c,1489,160,3,12,'#2e1c12');R(c,1466,150,9,6,'#7a2e2e');R(c,1467,148,8,2,'#2e4a6a');R(c,1482,150,5,6,'#e9e1cf');R(c,1476,138,1,12,'#a8843a');R(c,1472,134,9,4,'#2e6a4a')});
+  BACK.push(c=>{R(c,1462,156,32,4,'#4a2c1b');R(c,1464,160,3,12,'#2e1c12');R(c,1489,160,3,12,'#2e1c12');R(c,1466,150,9,6,'#7a2e2e');R(c,1467,148,8,2,'#2e4a6a');R(c,1482,150,5,6,'#e9e1cf');R(c,1468,146,6,4,'#5a3a5a')});
   [1372,1586].forEach(x=>BACK.push(c=>{R(c,x-1,104,2,66,'#a8843a');R(c,x-6,169,12,3,'#1a120a')}));
   [1910,2390].forEach(x=>BACK.push(c=>{R(c,x-36,150,72,6,'#3a2a1e');R(c,x-36,150,72,1,'#5a4a3a');R(c,x-32,156,4,16,'#1e1610');R(c,x+28,156,4,16,'#1e1610')}));
   BACK.push(c=>{R(c,2616,140,28,32,'#2a2636');R(c,2616,140,28,2,'#4a4660');c.fillStyle='#d8d2c4';c.beginPath();c.moveTo(2618,140);c.quadraticCurveTo(2630,112,2642,140);c.fill();R(c,2618,138,24,4,'#c9c2b2')});
@@ -453,7 +453,7 @@ const LIGHTS=[
  {x:899,y:20,r:90,i:.5,c:0},{x:1057,y:20,r:90,i:.5,c:0},
  {x:1372,y:98,r:92,i:.9,c:0},{x:1850,y:20,r:110,i:.55,c:0},{x:2090,y:20,r:110,i:.55,c:0},{x:2330,y:20,r:110,i:.55,c:0},{x:2570,y:20,r:110,i:.55,c:0},{x:2210,y:180,r:500,i:.25,c:0},{x:1586,y:98,r:92,i:.9,c:0},{x:1476,y:136,r:40,i:.7,c:0}
 ];
-const GLOW=['255,170,90','90,130,255','255,90,120'];
+const GLOW=['255,165,80','120,150,255','255,110,110'];
 function artLights(){return ART.map(e=>{const r=artRect(e);return{x:e.cx,y:e.cy,r:Math.max(r.w,r.h)*.72+14,i:.97,c:0}})}
 
 function interactables(){
@@ -504,7 +504,7 @@ function draw(){
   ctx.imageSmoothingEnabled=false;
   BACK.forEach((d,i)=>{if(i)d(ctx)});
   const mdir=Math.abs(player.x-MASON_X)<60?'down':player.x<MASON_X?'left':'right';
-  drawSprite(ctx,MASON_X,150,mdir,0,false,PAL.mason);
+  drawSprite(ctx,MASON_X,146,mdir,0,false,PAL.mason);
   BACK[0](ctx);
   const near=nearest();
   const pdir=!player.moving&&near?'up':player.dir;
@@ -512,7 +512,7 @@ function draw(){
   FRONT.forEach(d=>d(ctx));
 
   const k=.5*S,ox=cam.x,oy=cam.y;
-  lx.globalCompositeOperation='source-over';lx.fillStyle='rgba(10,12,32,.46)';lx.fillRect(0,0,lm.width,lm.height);
+  lx.globalCompositeOperation='source-over';lx.fillStyle='rgba(26,12,6,.30)';lx.fillRect(0,0,lm.width,lm.height);
   lx.globalCompositeOperation='destination-out';
   const all=LIGHTS.concat(artLights(),[{x:player.x,y:FEET-22,r:60,i:.6},{x:MASON_X,y:120,r:60,i:.8}]);
   all.forEach((l,n)=>{const f=reduce?1:1+Math.sin(time*2.3+n)*.025;const sx=(l.x-ox)*k,sy=(l.y-oy)*k,sr=l.r*k*f;
@@ -520,9 +520,10 @@ function draw(){
     const g=lx.createRadialGradient(sx,sy,0,sx,sy,sr);g.addColorStop(0,`rgba(0,0,0,${l.i})`);g.addColorStop(.5,`rgba(0,0,0,${l.i*.7})`);g.addColorStop(1,'rgba(0,0,0,0)');lx.fillStyle=g;lx.fillRect(sx-sr,sy-sr,sr*2,sr*2);
     if(l.y<140){const fy=(178-oy)*k,fr=l.r*k*.8;lx.save();lx.translate(sx,fy);lx.scale(1,.18);const g2=lx.createRadialGradient(0,0,0,0,0,fr);g2.addColorStop(0,`rgba(0,0,0,${l.i*.55})`);g2.addColorStop(1,'rgba(0,0,0,0)');lx.fillStyle=g2;lx.fillRect(-fr,-fr,fr*2,fr*2);lx.restore()}});
   ctx.setTransform(1,0,0,1,0,0);ctx.imageSmoothingEnabled=true;ctx.drawImage(lm,0,0,W,H);
+  ctx.globalCompositeOperation='multiply';ctx.fillStyle='#ffdcae';ctx.fillRect(0,0,W,H);ctx.globalCompositeOperation='screen';ctx.fillStyle='rgba(255,150,60,.07)';ctx.fillRect(0,0,W,H);ctx.globalCompositeOperation='source-over';
   ctx.globalCompositeOperation='lighter';
   LIGHTS.forEach(l=>{const sx=(l.x-ox)*S,sy=(l.y-oy)*S,sr=l.r*S*.8;if(sx<-sr||sx>W+sr)return;
-    const g=ctx.createRadialGradient(sx,sy,0,sx,sy,sr);g.addColorStop(0,`rgba(${GLOW[l.c]},${.18*l.i})`);g.addColorStop(1,`rgba(${GLOW[l.c]},0)`);ctx.fillStyle=g;ctx.fillRect(sx-sr,sy-sr,sr*2,sr*2)});
+    const g=ctx.createRadialGradient(sx,sy,0,sx,sy,sr);g.addColorStop(0,`rgba(${GLOW[l.c]},${.30*l.i})`);g.addColorStop(1,`rgba(${GLOW[l.c]},0)`);ctx.fillStyle=g;ctx.fillRect(sx-sr,sy-sr,sr*2,sr*2)});
   ctx.setTransform(S,0,0,S,-cam.x*S,-cam.y*S);
   ART.forEach(e=>{const r=artRect(e);if(r.x+r.w<cam.x-40||r.x>cam.x+VW+40)return;const top=r.y-7;
     const g=ctx.createLinearGradient(0,top,0,r.y+r.h+10);g.addColorStop(0,'rgba(255,225,160,.20)');g.addColorStop(1,'rgba(255,225,160,0)');
@@ -557,7 +558,7 @@ function draw(){
     ctx.fillStyle='#141624';ctx.textBaseline='middle';ctx.textAlign='center';ctx.fillText(masonBubble.text,bx,by-7.3);ctx.textAlign='left'}
 
   ctx.setTransform(1,0,0,1,0,0);
-  const vg=ctx.createRadialGradient(W/2,H/2,Math.min(W,H)*.35,W/2,H/2,Math.max(W,H)*.75);vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(2,2,10,.28)');ctx.fillStyle=vg;ctx.fillRect(0,0,W,H);
+  const vg=ctx.createRadialGradient(W/2,H/2,Math.min(W,H)*.35,W/2,H/2,Math.max(W,H)*.75);vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(20,8,2,.22)');ctx.fillStyle=vg;ctx.fillRect(0,0,W,H);
 
   const n=paused?null:near,pr=document.getElementById('prompt'),ab=document.getElementById('aBtn');
   if(n){pr.hidden=false;pr.innerHTML='<kbd>'+(touchMode?'A':'E')+'</kbd>'+(n.mason?'Talk to Mason':esc(n.e.title));
