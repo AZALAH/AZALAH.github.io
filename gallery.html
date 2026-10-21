@@ -447,7 +447,7 @@ function drawArt(c,e){
 }
 
 const LIGHTS=[
- {x:340,y:88,r:72,i:.95,c:0},{x:415,y:88,r:72,i:.95,c:0},{x:490,y:88,r:72,i:.95,c:0},{x:232,y:108,r:62,i:.9,c:0},{x:600,y:118,r:44,i:.75,c:0},
+ {x:340,y:100,r:95,i:1,c:0},{x:415,y:100,r:95,i:1,c:0},{x:490,y:100,r:95,i:1,c:0},{x:232,y:108,r:62,i:.9,c:0},{x:600,y:118,r:44,i:.75,c:0},
  {x:233,y:83,r:90,i:.5,c:1},{x:611,y:83,r:90,i:.5,c:1},{x:50,y:78,r:40,i:.4,c:1},{x:2727,y:86,r:70,i:.5,c:1},
  {x:415,y:34,r:70,i:.55,c:2},{x:122,y:112,r:46,i:.7,c:0},
  {x:899,y:20,r:90,i:.5,c:0},{x:1057,y:20,r:90,i:.5,c:0},
@@ -504,7 +504,7 @@ function draw(){
   ctx.imageSmoothingEnabled=false;
   BACK.forEach((d,i)=>{if(i)d(ctx)});
   const mdir=Math.abs(player.x-MASON_X)<60?'down':player.x<MASON_X?'left':'right';
-  drawSprite(ctx,MASON_X,166,mdir,0,false,PAL.mason);
+  drawSprite(ctx,MASON_X,150,mdir,0,false,PAL.mason);
   BACK[0](ctx);
   const near=nearest();
   const pdir=!player.moving&&near?'up':player.dir;
@@ -512,9 +512,9 @@ function draw(){
   FRONT.forEach(d=>d(ctx));
 
   const k=.5*S,ox=cam.x,oy=cam.y;
-  lx.globalCompositeOperation='source-over';lx.fillStyle='rgba(6,8,24,.74)';lx.fillRect(0,0,lm.width,lm.height);
+  lx.globalCompositeOperation='source-over';lx.fillStyle='rgba(10,12,32,.46)';lx.fillRect(0,0,lm.width,lm.height);
   lx.globalCompositeOperation='destination-out';
-  const all=LIGHTS.concat(artLights(),[{x:player.x,y:FEET-22,r:52,i:.42}]);
+  const all=LIGHTS.concat(artLights(),[{x:player.x,y:FEET-22,r:60,i:.6},{x:MASON_X,y:120,r:60,i:.8}]);
   all.forEach((l,n)=>{const f=reduce?1:1+Math.sin(time*2.3+n)*.025;const sx=(l.x-ox)*k,sy=(l.y-oy)*k,sr=l.r*k*f;
     if(sx<-sr||sx>lm.width+sr)return;
     const g=lx.createRadialGradient(sx,sy,0,sx,sy,sr);g.addColorStop(0,`rgba(0,0,0,${l.i})`);g.addColorStop(.5,`rgba(0,0,0,${l.i*.7})`);g.addColorStop(1,'rgba(0,0,0,0)');lx.fillStyle=g;lx.fillRect(sx-sr,sy-sr,sr*2,sr*2);
@@ -522,7 +522,7 @@ function draw(){
   ctx.setTransform(1,0,0,1,0,0);ctx.imageSmoothingEnabled=true;ctx.drawImage(lm,0,0,W,H);
   ctx.globalCompositeOperation='lighter';
   LIGHTS.forEach(l=>{const sx=(l.x-ox)*S,sy=(l.y-oy)*S,sr=l.r*S*.8;if(sx<-sr||sx>W+sr)return;
-    const g=ctx.createRadialGradient(sx,sy,0,sx,sy,sr);g.addColorStop(0,`rgba(${GLOW[l.c]},${.13*l.i})`);g.addColorStop(1,`rgba(${GLOW[l.c]},0)`);ctx.fillStyle=g;ctx.fillRect(sx-sr,sy-sr,sr*2,sr*2)});
+    const g=ctx.createRadialGradient(sx,sy,0,sx,sy,sr);g.addColorStop(0,`rgba(${GLOW[l.c]},${.18*l.i})`);g.addColorStop(1,`rgba(${GLOW[l.c]},0)`);ctx.fillStyle=g;ctx.fillRect(sx-sr,sy-sr,sr*2,sr*2)});
   ctx.setTransform(S,0,0,S,-cam.x*S,-cam.y*S);
   ART.forEach(e=>{const r=artRect(e);if(r.x+r.w<cam.x-40||r.x>cam.x+VW+40)return;const top=r.y-7;
     const g=ctx.createLinearGradient(0,top,0,r.y+r.h+10);g.addColorStop(0,'rgba(255,225,160,.20)');g.addColorStop(1,'rgba(255,225,160,0)');
@@ -552,12 +552,12 @@ function draw(){
   if(guide){const t=byId[guide];if(t){const tr=t.sign?{y:t.cy-24}:artRect(t);const bob=reduce?0:Math.sin(time*5)*2;
     ctx.fillStyle='#ffd27a';ctx.beginPath();ctx.moveTo(t.cx-6,tr.y-16+bob);ctx.lineTo(t.cx+6,tr.y-16+bob);ctx.lineTo(t.cx,tr.y-9+bob);ctx.fill();
     const d=t.cx-player.x;if(Math.abs(d)>30){const s=Math.sign(d),ax=player.x+s*16,ay=FEET-58+bob;ctx.beginPath();ctx.moveTo(ax+s*8,ay);ctx.lineTo(ax-s*3,ay-6);ctx.lineTo(ax-s*1,ay);ctx.lineTo(ax-s*3,ay+6);ctx.fill()}}}
-  if(masonBubble){const bx=MASON_X,by=112;ctx.font='9px VT323';const w=ctx.measureText(masonBubble.text).width+12;
+  if(masonBubble){const bx=MASON_X,by=92;ctx.font='9px VT323';const w=ctx.measureText(masonBubble.text).width+12;
     ctx.fillStyle='#000';ctx.fillRect(bx-w/2-.8,by-14.8,w+1.6,14.6);ctx.fillStyle='#f2ecdf';ctx.fillRect(bx-w/2,by-14,w,13);ctx.fillRect(bx-2,by-1,4,3);
     ctx.fillStyle='#141624';ctx.textBaseline='middle';ctx.textAlign='center';ctx.fillText(masonBubble.text,bx,by-7.3);ctx.textAlign='left'}
 
   ctx.setTransform(1,0,0,1,0,0);
-  const vg=ctx.createRadialGradient(W/2,H/2,Math.min(W,H)*.35,W/2,H/2,Math.max(W,H)*.75);vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(2,2,10,.5)');ctx.fillStyle=vg;ctx.fillRect(0,0,W,H);
+  const vg=ctx.createRadialGradient(W/2,H/2,Math.min(W,H)*.35,W/2,H/2,Math.max(W,H)*.75);vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(2,2,10,.28)');ctx.fillStyle=vg;ctx.fillRect(0,0,W,H);
 
   const n=paused?null:near,pr=document.getElementById('prompt'),ab=document.getElementById('aBtn');
   if(n){pr.hidden=false;pr.innerHTML='<kbd>'+(touchMode?'A':'E')+'</kbd>'+(n.mason?'Talk to Mason':esc(n.e.title));
