@@ -1074,7 +1074,7 @@ function interact(){
     case 'leaveStudy':player.armchair=false;fadeThen(()=>{scene=3;setScale();player.x=1925;player.dir='left';updateHUD()});break;
     case 'books':bookshelf();break;
     case 'fire':sys('THE FIREPLACE',"You hold your hands up to the fire. It crackles and pops. Somewhere behind you, Byte decides this is the best spot in the building and inches closer.",[['Stay a bit',()=>{endTalk();const b=npcs.study[0];if(b){b.state='walk';b.tx=clamp(player.x+18,200,540)}}],['Back away',endTalk]]);break;
-    case 'armchair':player.armchair=true;player.x=410;hideHint();setTimeout(()=>{const b=npcs.study[0];if(b&&player.armchair){b.state='walk';b.tx=388;b.timer=0;setTimeout(()=>{if(player.armchair){b.state='sleep';b.timer=30;say2(b,'*purrs*',3)}},2600)}},800);break;
+    case 'armchair':player.armchair=true;player.readT=time;player.x=410;player.dir='down';hideHint();break;
     case 'laptop':sys('THE LAPTOP',"A laptop sits open on the desk. A sticky note on the screen says: 'Byte, please stop walking on the keyboard.' The terminal shows: sudo feed --cat byte --amount extra ... Permission denied. Smart laptop.",[['Ha. Close it.',endTalk]]);break;
     case 'cattree':sys('THE CAT TREE',"Three levels of carpeted luxury, with a scratching post that has clearly seen battle. A tiny brass plaque reads: 'Server Room. Authorized cats only.'",[['Respect.',endTalk]]);break;
     case 'door':fadeThen(()=>{scene='street';setScale();player.x=STREET.door;player.dir='right';updateHUD()});break;
@@ -1107,10 +1107,39 @@ function drawSketchArm(c,n){const E=EZ,p=clamp((time*.06)%1.15,0,1),k=KS();
   const tx=E.x+3+((time*7)%1)*14*(0.6+0.4*Math.sin(time*3)),ty=E.y+4+p*11+Math.sin(time*11)*1.5;
   const sx=n.x+2*k,sy=n.y-19*k;c.strokeStyle=n.pal.sleeve;c.lineWidth=2.4;c.beginPath();c.moveTo(sx,sy);c.lineTo(tx-2,ty+1);c.stroke();
   R(c,tx-3,ty,3,2.6,n.pal.skin);c.strokeStyle='#d9b25a';c.lineWidth=.9;c.beginPath();c.moveTo(tx-1,ty+1);c.lineTo(tx+2.5,ty-2.5);c.stroke();}
-function updateStudy(dt){for(const n of npcs.study){if(n===talkingNPC){n.moving=false;continue}updateCat(n,dt)}player.study=true}
+function drawArmchair(c){
+  const x=410;
+  R(c,x-18,116,36,36,'#5a2a1e');R(c,x-16,118,32,30,'#6e3626');R(c,x-16,118,32,2,'#86402e');for(let i=0;i<3;i++)R(c,x-12+i*10,126,2,2,'#4a2016');
+  R(c,x-14,148,28,10,'#7a3c2a');R(c,x-14,148,28,2,'#8e4a34');R(c,x-15,158,30,10,'#5a2a1e');R(c,x-15,168,3,4,'#2a140c');R(c,x+12,168,3,4,'#2a140c');
+  if(player.armchair)drawReader(c,x);
+  R(c,x-23,136,9,30,'#6a3022');R(c,x-24,134,11,5,'#8e4a34');R(c,x+14,136,9,30,'#6a3022');R(c,x+13,134,11,5,'#8e4a34');
+  if(player.armchair)drawBook(c,x);
+}
+function drawReader(c,x){
+  const k=KS(),P=PAL.player,b=npcs.study[0];
+  c.save();c.beginPath();c.rect(x-20,60,40,90);c.clip();c.translate(x,150+10*k);c.scale(k,k);drawPerson(c,0,0,'down',0,false,Object.assign({},P,{noShadow:1}));c.restore();
+  R(c,x-8,150,7,6,P.pants);R(c,x+1,150,7,6,P.pants);R(c,x-8,156,6,11,P.pants);R(c,x+2,156,6,11,P.pants);R(c,x-9,166,7,3,P.shoe);R(c,x+2,166,7,3,P.shoe);
+  if(b&&b.state==='lap'){c.save();c.translate(x,157);c.scale(1.15,1.15);drawCat(c,0,0,'right','sleep',0);c.restore()}
+}
+function drawBook(c,x){
+  const y=132,ph=time%6,flip=ph>5.4?(ph-5.4)/.6:-1;
+  R(c,x-11,y,22,12,'#7a2e2e');R(c,x-10,y+1,9,10,'#f4eedf');R(c,x+1,y+1,9,10,'#ece4d0');R(c,x-1,y,2,12,'#5a1e1e');
+  for(let i=0;i<4;i++){R(c,x-8,y+3+i*2,6,1,'#9a948a');R(c,x+2,y+3+i*2,6,1,'#9a948a')}
+  if(flip>=0){const w=Math.max(1,9*Math.abs(Math.cos(flip*Math.PI)));R(c,flip<.5?x+1:x+1-w,y+1,w,10,'#fffaf0')}
+  R(c,x-13,y+6,3,4,PAL.player.skin);R(c,x+10,y+6,3,4,PAL.player.skin);
+}
+function updateStudy(dt){player.study=true;for(const n of npcs.study){if(n===talkingNPC){n.moving=false;continue}
+  const lapS=['toLap','jump','lap'];
+  if(n.key==='byte'){
+    if(player.armchair){if(time-player.readT>3.5&&!lapS.includes(n.state))n.state='toLap';
+      if(n.state==='toLap'){if(walkTo(n,382,dt)){n.state='jump';n.jt=0;n.dir='right'}continue}
+      if(n.state==='jump'){n.moving=false;n.jt+=dt;if(n.jt>.55){n.state='lap';n.lapT=time;say2(n,'*purrs*',3)}continue}
+      if(n.state==='lap'){n.moving=false;if(time-n.lapT>9&&Math.random()<dt*.15)say2(n,pick(['*purrs*','*kneads your knee*','*slow blink*','Mrrp.']),2.6);continue}}
+    else if(lapS.includes(n.state)){if(n.state==='lap'){n.x=388;say2(n,'Mrrow!',2)}n.state='sit';n.timer=5}}
+  updateCat(n,dt)}}
 function studyProps(c){
-  R(c,396,128,30,44,'#5a2a1e');R(c,398,130,26,20,'#6e3626');R(c,394,146,34,14,'#7a3c2a');R(c,394,146,34,2,'#8e4a34');R(c,396,160,3,12,'#2a140c');R(c,423,160,3,12,'#2a140c');R(c,392,138,6,22,'#5a2a1e');R(c,424,138,6,22,'#5a2a1e');if(player.armchair){drawSeated(c,410,150,'left',PAL.player);R(c,424,138,6,22,'#5a2a1e')}
-  R(c,376,150,14,3,'#4a2c1b');R(c,382,153,3,19,'#2a1810');R(c,378,146,5,4,'#e9e1cf');R(c,379,145,3,1,'#6b3a22');R(c,384,147,6,3,'#7a2e2e');
+  drawArmchair(c);
+  R(c,362,150,14,3,'#4a2c1b');R(c,368,153,3,19,'#2a1810');R(c,364,146,5,4,'#e9e1cf');R(c,365,145,3,1,'#6b3a22');R(c,370,147,6,3,'#7a2e2e');
   R(c,439,92,2,80,'#2a2a30');R(c,433,170,14,3,'#1a1a1e');R(c,432,86,16,8,'#c9a24e');R(c,434,84,12,3,'#e0b469');
   R(c,452,110,24,8,'#2a2a30');R(c,454,104,20,7,'#3a3e48');R(c,455,105,18,5,'#1a2a3a');R(c,456,106,8,1,'#7fd0a8');R(c,456,108,12,1,'#7fd0a8');R(c,486,112,8,6,'#e9e1cf');R(c,494,113,2,3,'#e9e1cf');R(c,500,108,2,10,'#2a2a30');R(c,496,104,10,4,'#3e6a4a');
   R(c,506,113,10,5,'#7a2e2e');R(c,507,110,9,3,'#2e4a6a');
@@ -1127,6 +1156,8 @@ function studyEmissive(c){
 function bubbleAt(c,x,y,t,dark){c.font='8px VT323';const w=c.measureText(t).width+10;c.fillStyle='#000';c.fillRect(x-w/2-.7,y-12.7,w+1.4,12.4);c.fillStyle=dark?'#1b1d2e':'#f2ecdf';c.fillRect(x-w/2,y-12,w,11);c.fillRect(x-2,y-1,4,3);c.fillStyle=dark?'#f2ecdf':'#141624';c.textBaseline='middle';c.textAlign='center';c.fillText(t,x,y-6.3);c.textAlign='left'}
 function headY(n){return n.cat?(n.y-26):n.state==='sit'?(n.y-58):n.y-50}
 function drawNPC(c,n){
+  if(n.cat&&n.state==='lap')return;
+  if(n.cat&&n.state==='jump'){const t=clamp(n.jt/.55,0,1);c.save();c.translate(lerp(382,410,t),FEET-t*28-Math.sin(Math.PI*t)*20);c.scale(KS()*1.2,KS()*1.2);drawCat(c,0,0,'right','walk',2);c.restore();return}
   if(n.cat){c.save();c.globalAlpha=n.alpha;drawCat(c,n.x,n.y,n.dir,n.state==='walk'?'walk':n.state,n.frame,1);c.restore();return}
   if(n.state==='sit'&&n.seat){c.save();c.globalAlpha=n.alpha;drawSeated(c,n.x,150,n.dir,n.pal);c.restore();return}
   if(n.sketch&&n.alpha>.3)drawEasel(c,n);
