@@ -407,6 +407,100 @@ const JOKES=[
 ];
 const MASON_EXTRA={elevator:"Going up! Hold on to the rail.",arrive:"Here we are. After you.",welcome_back:"Welcome back!",over_here:"Over here!",tour_cancel:"No problem. I'll be at the bar if you need me.",elev_hint:"Elevator's in the back, past the tables."};
 
+/* ---------- conversations: [ask, [[npc line, your reply], ...]] ---------- */
+const CONVOS={
+ mason:{hi:"Pull up a stool. Nobody's in line, so I'm all yours.",again:"Back for more of my wisdom? Bold choice.",more:["What else is on your mind?","Go on, I've got time between orders."],bye:"Alright, go see the floors. I'll know if you skip one. I always know.",
+  topics:[
+   ["How long have you run this place?",[["Six years now. Started with one espresso machine and a dream. The machine broke on day two.","Oh no."],["I made pour-overs by hand for a whole month. People thought it was a fancy artisanal thing. I let them think that.","Smart move."],["Then the gallery opened upstairs, and now I get to give tours too. Best job in the city. Don't tell Theo, he'll ask for a raise.","Ha! My lips are sealed."]]],
+   ["What's your favorite exhibit?",[["Tough one. I'm biased toward SecureDrop. I've given that speech a hundred times and it still gets me.","Why that one?"],["Because it's the project where he figured out what he wanted to do with his life. You can feel it on that card.","That's a nice way to put it."],["But between us? The cat photos. I've named every one of those cats. The Watcher is Gerald. Don't ask.","Gerald?!"]]],
+   ["What's the hardest part of the job?",[["Remembering everyone's order. The hot water guy, the triple oat, Priya's secret cardamom thing.","Sounds like a lot."],["I keep it all in my head. Theo says I should use a database. I told him I am the database.","Ha!"],["Ahmed pointed out my system has no backups and no access control. He's not wrong. If I forget, the whole café goes down.","A single point of failure."]]],
+   ["Any life advice?",[["Make things people enjoy, and be nice while you do it. That's the whole secret. Coffee, code, doesn't matter.","Simple, but true."],["And don't be afraid to start small. This place was one machine. That building upstairs was one HTML file once.","I love that."],["Now that I've gotten sentimental, I need to go aggressively steam some milk to recover.","Fair enough."]]]
+  ]},
+ priya:{hi:"Oh hey! Welcome in. I'm Priya. I make the drinks, Mason makes the noise.",again:"Back again! You're officially becoming a regular. I like that.",more:["Okay, what else? I've got a minute before the next rush.","Ask away. The espresso machine needs a breather anyway."],bye:"Go explore! Then come back and tell me which floor you liked best. I'm keeping score.",
+  topics:[
+   ["How'd you end up working here?",[["Honestly? I started as a customer. I sat at that corner table every day studying for my nursing exams.","No way."],["Mason noticed I kept remaking my own latte when the art came out ugly. One day he handed me an apron and said, 'You clearly care more than I do.'","Ha! Did you take it?"],["Obviously. Best decision I ever made. Still studying, still here, still fixing latte art.","That's awesome."]]],
+   ["What's the secret to a good latte?",[["Okay, you asked, so you're getting the full lecture.","I'm ready."],["Milk temperature is everything. Too hot and it tastes flat. You want it just warm enough that you can barely hold the pitcher.","Huh, I never knew that."],["Then you pour slow, close to the cup, and wiggle at the end. That's the heart. Took me three hundred tries. I counted.","Three hundred?!"],["Three hundred and twelve. Mason drank most of the failures. He says that's why he's so energetic.","That explains a lot."]]],
+   ["Have you been upstairs?",[["On my breaks, yeah. The projects floor is my favorite, even if half of it goes over my head.","Which one gets you?"],["SecureDrop. Someone explained hashing to me with coffee. The hash is like a drink you can't turn back into the recipe.","That's a great way to put it."],["And the salt means everyone gets a secret ingredient, so two people with the same password still get different drinks. I think about that way too much.","Honestly, same."]]],
+   ["What's your go-to drink?",[["Cardamom latte. It's not on the menu. It's a secret menu thing.","There's a secret menu?"],["There is now. You just found out about it. Congratulations, you're officially one of us.","I'm honored."],["Ask Mason for 'the Priya special' and watch him pretend to be annoyed. He secretly loves it.","I'm definitely doing that."]]]
+  ]},
+ theo:{hi:"Hey hey! Theo. I run the register, the playlist, and occasionally the vibes.",again:"My favorite customer is back! Don't tell the others.",more:["What else you got?","I'm all ears. The line's short for once."],bye:"Catch you later! Next one's on me. Kidding. Mostly.",
+  topics:[
+   ["How's the job?",[["Honestly? The best. You meet everybody. Students, nurses, and a guy who only orders hot water. Every single day.","Hot water?"],["Every day. And he tips a dollar. I've stopped asking questions. He seems happy.","Respect to him."],["That's the thing about this place. Everyone's welcome. Even the hot water guy. Especially the hot water guy.","I love that."]]],
+   ["What's on the playlist?",[["Lofi, mostly. Mason wanted jazz, Priya wanted indie, so I compromised and picked what I wanted.","That's not a compromise."],["It's a compromise between me and me. And I won. Big day for me.","Ha!"],["Real talk though, if anyone plays that piano, I turn the speakers off. Live music wins every time. Go try it.","Maybe I will."]]],
+   ["Ever been upstairs?",[["Third floor's my spot. The cat photos. There's one where the cat stares right into the camera like it owes him money.","The Watcher!"],["Yes! That one! It's my phone background. Don't tell Ahmed. Actually, do. He should know he's famous.","I'll pass it on."],["And the About Me floor surprised me. He's a shift supervisor too? Anyone who survives retail is family. We're in the same club.","Retail veterans unite."]]],
+   ["Any tips for a first-timer?",[["Three things. One: get the cold brew. Two: take the elevator, it's a whole experience. Three: talk to people. Everybody here has a story.","That's solid."],["Oh, and four: if Mason offers a tour, say yes. He practices his lines in the mirror. I've seen it.","Ha, really?"],["Every morning. 'This whole place started with a kid watching DanTDM...' He gets emotional. It's beautiful.","Now I have to take the tour."]]]
+  ]},
+ ruth:{hi:"Oh, hello, dear. I'm Ruth. I taught high school for thirty-one years, so forgive me if I start grading things.",again:"Back to visit an old lady? You're sweet.",more:["What else is on your mind, dear?","Go on, ask me anything. I've got nowhere to be."],bye:"Off you go, dear. And stand up straight. You're wearing a suit, make it count.",
+  topics:[
+   ["What do you think of this floor?",[["I love it. Most portfolios are all business. This one tells you who the person actually is.","How so?"],["Look around. Varsity esports, coaching, running shifts at a pharmacy. That's a young man who shows up for people.","He does a lot."],["He does. And in my experience, the students who teach others end up understanding things best. He coaches. That tells me plenty.","That's a great point."]]],
+   ["What did you teach?",[["Chemistry. Thirty-one years of convincing teenagers the periodic table is beautiful.","Did it work?"],["Sometimes! Every few years one of them would light up, and that made all the others worth it. Like a reaction finally catching.","That's lovely."],["A few went into computing, actually. I always told them: curiosity first, the job comes later. Seems like that's how this young man did it too.","Seems like it."]]],
+   ["Which photo is your favorite?",[["The airport in Garowe. That gold grass against the blue sky. My late husband would have loved it. He was a painter.","I'm sorry."],["Oh, don't be. He'd be thrilled I'm out looking at art instead of sitting at home. He always said, 'Ruth, colors don't look at themselves.'","He sounds wonderful."],["He was. And whoever took that photo understands color. You don't learn that. You either notice it or you don't.","Ahmed took all of them."]]],
+   ["Any advice for someone starting out?",[["You're asking a teacher for advice? Pull up a chair, dear, this may take a while.","I've got time."],["Write down what went wrong, not just what went right. He does that on every project card. 'The hard part.' That's how you actually grow.","I noticed that too."],["And be kind to people while you're climbing. The world is small. Your coworkers today are your references tomorrow.","I'll remember that."]]]
+  ]},
+ kai:{hi:"Yo! Kai. I came for the esports exhibit and I've been standing here for twenty minutes.",again:"Ayy, you're back! Queue up, let's talk.",more:["What else, what else?","Hit me. I'm locked in."],bye:"GG, my friend. Go check out the rest. And tell him Kai says what's up.",
+  topics:[
+   ["What's so good about the esports exhibit?",[["Bro, he's on varsity AND coaches the academy team. That's like two jobs on top of school.","I didn't think of it that way."],["And coaching is so underrated. You watch VODs, point out mistakes without making people feel bad, and keep everyone calm when they're tilted.","Sounds like management."],["That's literally what it is! And SOC work is staying calm while alerts are going off. It's the same skill. The exact same skill.","That's a cool connection."]]],
+   ["What do you play?",[["Mostly Valorant, a little Minecraft when I need to chill. I stream on weekends. Like nine viewers. Ten if my mom's watching.","That counts!"],["She's my biggest fan. She types 'good job sweetie' in chat every time I get a kill. My viewers like her more than me.","Ha!"],["Honestly, that's the dream though. Build something people enjoy. This whole building feels like that. Like someone built a world just to share it.","That's exactly the idea."]]],
+   ["Did you see the Building Worlds panel?",[["The DanTDM one? Bro. I grew up on DanTDM too. The lab, the diamond minecart, all of it.","Same for a lot of people."],["Exactly! And now he's building actual worlds in code. That's the dream ending. Kid watches builds, kid becomes a builder.","Full circle."],["Full circle. I'm inspired. I'm going home to learn to code. Or play one more game first. Probably one more game first.","Classic."]]],
+   ["Could you beat him in a 1v1?",[["Okay, honestly? I tell everybody yes. Out loud. Very confidently.","And in reality?"],["In reality, he coaches people and I play with my mom in chat. So statistically... I'd get cooked.","Respect for admitting it."],["But if he ever wants to run it, tell him Kai's ready. I'll warm up for three hours first. It'll be a whole event.","I'll let him know."]]]
+  ]},
+ dana:{hi:"Hi. Dana. I run a security operations team, so I'm here half for fun and half scouting. Mostly scouting.",again:"You again. Good. I like people who come back for a second look.",more:["What else would you like to know?","Go ahead. I've got a few minutes before my next meeting."],bye:"Good talk. If he ever wants a mock interview, I'm around. Tough, but fair.",
+  topics:[
+   ["What do you think of SecureDrop?",[["Honestly, I'm impressed. Not because it's perfect, but because of what he chose to care about.","What do you mean?"],["Salted scrypt hashing, a fresh key for every file, replay protection with sequence numbers. Most students forget replay attacks exist. He didn't.","That's a good sign?"],["A great sign. And he wrote his own roadmap: keys shouldn't travel with the file, use constant-time comparisons. Knowing your weak spots is half the job.","So you'd hire him?"],["I'd interview him, and I'd ask about the hard parts, because that's where you learn how someone thinks. Then, probably, yes.","High praise."]]],
+   ["What does a SOC analyst actually do?",[["Picture a hundred smoke alarms, and ninety-eight of them are burnt toast. Your job is finding the two real fires, fast.","That sounds stressful."],["It can be. You dig through logs, rebuild timelines, figure out what happened and when. That's why the log parser in the lounge caught my eye.","The Kronos one?"],["Yes. Pairing boot starts with completions and flagging the ones that never finished? That's incident triage in miniature.","He'd love hearing that."]]],
+   ["What should he work on next?",[["More blue team work. Set up a SIEM in a homelab, feed it logs, write some detection rules. Show me you can catch something.","He already has a homelab."],["Then he's halfway there. Certifications help, Security+ is a good start. But hands-on labs matter more to me than paper.","Good to know."],["And keep writing things up like these cards. Clear writing is underrated in security. Executives read incident reports, not just engineers.","That makes sense."]]],
+   ["How did you get into security?",[["Help desk. Resetting fifty passwords a day. Then I noticed a pattern: the same accounts locking out at the same time every night.","Uh oh."],["Uh oh is right. Someone was brute-forcing them. I flagged it, got pulled into the investigation, and never left security.","Great origin story."],["Everyone in this field has one. The moment you realize you care about the bad guys not winning. Sounds like SecureDrop was his.","It was."]]]
+  ]},
+ marcus:{hi:"Hey. Marcus. Software engineer, eight years. I came for coffee and stayed to code review the walls.",again:"Back for round two? Cool, I've got more opinions.",more:["What's next?","Shoot. I have opinions on basically everything."],bye:"Alright, back to judging variable names. Good chatting with you.",
+  topics:[
+   ["What do you think of the tokenizer?",[["A finite state machine in MIPS assembly. By hand. With function pointers. I'd have reached for Python in five minutes.","Is that impressive?"],["Very. In assembly you can't hide. Every register, every stack frame, you manage yourself. You learn what the machine is actually doing.","And the bug fix?"],["Best part. He found a clobbered register after he turned it in, and fixed it anyway. Nobody was grading that. That's character.","Agreed."]]],
+   ["What's your take on this site?",[["No framework. Just HTML, CSS, JavaScript, and a hand-written canvas engine. Part of me wants to say 'just use React.'","And the other part?"],["The other part respects it. Building without a framework means you actually understand the browser. Rendering, input, timing.","Makes sense."],["Also, the elevator has a real queue. It waits for other passengers. I spent ten minutes testing it. Don't tell my manager.","Your secret's safe."]]],
+   ["Any tips for writing better code?",[["Name things like the next reader is tired and grumpy. Because it'll be you, at 2 AM.","Ha, fair."],["Small functions. Write tests before you think you need them. Delete code without fear. Version control remembers it for you.","Good rules."],["And read other people's code. Every card here has 'the hard part.' That's him code reviewing himself. More people should do that.","I like that."]]],
+   ["Software engineering or security?",[["Classic debate. Honestly, I tried to recruit him to the software side in my head while reading the AniPlayer card.","Did it work?"],["No. Even on the graphics projects, he writes about how things break. That's a security brain. You can't turn it off.","So security wins?"],["Security wins. But the best security people can also build, and he clearly can. That combo is rare. I'm a little jealous.","High praise."]]]
+  ]},
+ lena:{hi:"Oh, hi! Sorry, I'm Lena. I'm a sophomore and I'm kind of freaking out about these projects. In a good way.",again:"Hey! You're back! I've been taking notes, look.",more:["Okay, okay, what else?","Ask me something! I love talking about this stuff."],bye:"I'm going to go stare at the Sokoban card again. Thanks for talking with me!",
+  topics:[
+   ["Why are you freaking out?",[["I'm taking Computing IV next year, and these are the assignments. The DNA one, the Markov one... I'm scared and excited.","You'll be fine."],["Look at the cards though. Every one has 'the hard part,' and he got stuck too! A newline broke his Sokoban. That's so relatable it's comforting.","Everyone gets stuck."],["Exactly! It makes it feel possible. He's not a genius who never had bugs. He just kept going. I can do that.","You definitely can."]]],
+   ["Which project is your favorite?",[["DNA alignment. Just reading the card made dynamic programming click for me.","How?"],["He measured memory use against the 4N² formula and it matched within one percent. He checked the math against reality! I didn't know you could do that.","That's real engineering."],["Right?! And the biggest test files were too big for his laptop, exactly like the math predicted. The math was right AND the laptop suffered. Beautiful.","Poor laptop."]]],
+   ["What are you studying?",[["Computer science, but I keep switching between AI and security. Every week I change my mind.","Which way are you leaning?"],["After this floor? Security. Replay attacks! I didn't know that was a thing until yesterday.","It's a rabbit hole."],["The best kind. I'm joining my school's cyber club next week. Okay, I'm really doing it. You're my witness.","I'll hold you to it."]]],
+   ["Any tips you've picked up here?",[["Build stuff outside of class. The homelab, the handheld, this whole building. None of that was homework.","Good point."],["Document everything. Screenshots, what broke, what you learned. Future you needs it for interviews.","Smart."],["And make it fun. He turned his portfolio into a building with a café and a cat. Nobody's going to forget that.","Definitely not."]]]
+  ]},
+ sofia:{hi:"Hello. Sofia. I shoot weddings for money and skies for love. Mostly skies, honestly.",again:"You came back. Good taste brings people back.",more:["What else? I could talk about light all day.","Ask me anything. I'm in a photography mood."],bye:"Go look at the skies once more before you leave. They change every time you look.",
+  topics:[
+   ["What do you think of the collection?",[["He has an eye for skies. Every series up here has one. Mackerel clouds, golden hour, a sunset silhouette. He looks up a lot.","Is that rare?"],["More than you'd think. Most people photograph what's in front of them. Looking up is a habit. It means you notice what everyone else walks past.","I like that."],["My only note? I'd crop the plaza shot tighter. But maybe all that empty sky is the point. Maybe he's right and I'm wrong. Don't repeat that.","Your secret's safe."]]],
+   ["How do you get a good silhouette?",[["Shoot straight into the brightest part of the sky and let your subject go dark. Don't light it. Let the shape do the talking.","Like the mosque photo."],["Exactly like that one. And timing matters. You get maybe ten minutes where the sky goes purple and pink. Miss it and it's just gray.","Ten minutes?"],["Ten minutes. That's why every photographer has been late to dinner at least once. 'Sorry, the sky was doing something.'","Ha! Relatable."]]],
+   ["What about the cat photos?",[["The cats are my favorite thing on this floor. Getting a street cat to hold eye contact takes patience and luck in equal parts.","The Watcher, right?"],["The Watcher. That look says, 'I know what you did.' Then in the next frame it's grooming like nothing happened. Three acts, three frames.","I didn't see it that way."],["That's what a series is for. One photo is a moment. Three is a story. I'd bet he sequenced those on purpose.","He did."]]],
+   ["Any tips for a beginner?",[["Use what you have. These were shot on a phone, and look at them. The camera matters far less than your eye.","Really?"],["Really. Learn to wait. Learn where the light is coming from. Take the shot even if you feel silly standing there.","Got it."],["And travel with your eyes open. Airports, roads, rooftops. Some of the best photos in this building are from places in between.","Good advice."]]]
+  ]},
+ omar:{hi:"Peace! Omar. I'm the guy who stops in the middle of the sidewalk to look at clouds. You've probably walked around me.",again:"Back again! Look up, my friend, look up.",more:["What else is on your mind?","Ask away. The clouds aren't going anywhere. Well, they are, but slowly."],bye:"Go well, my friend. And look up on your way out.",
+  topics:[
+   ["What's a mackerel sky?",[["See the rippled clouds in the minaret photo? Like fish scales? That's a mackerel sky. Altocumulus, if you want to sound fancy.","Cool name."],["Sailors used to say, 'Mackerel sky, not long dry.' It usually means the weather is about to change.","Is that true?"],["Often, yeah! And he caught a perfect one, with the minaret tucked in the corner. That framing is clean.","It's a great shot."]]],
+   ["Why do you love skies so much?",[["Because they're never the same twice. You can walk the same street every day, but the sky above it is brand new.","That's beautiful."],["My grandfather taught me that. Every evening he sat outside with tea, just watching. I thought he was bored. Now I get it.","He sounds wise."],["He was. These photos remind me of those evenings. Golden light, a minaret, rooftops. It feels like home, in a way.","I'm glad they do."]]],
+   ["Have you seen the other floors?",[["The travel photos on the first floor! Bosaso, Garowe, Dubai. That Garowe shot with the gold grass and deep blue sky? A perfect day.","They're great."],["The projects floor mostly went over my head. But the security guard told me SecureDrop guards itself, and I laughed for a solid minute.","Reyes is funny."],["She is. This whole building is like that. Every floor has its own personality, but it all fits. Like a good sky. Many layers.","Well said."]]],
+   ["Any sky-watching tips?",[["Golden hour: right after sunrise and right before sunset. Everything glows. Even parking lots look like paintings.","I'll look for it."],["And right after a storm. The clouds break up into dramatic shapes with light pouring through. Best skies of the week.","Noted."],["And here's a secret: the windows in this building follow the real time and weather. Come back at night. The city lights are something else.","I'll come back."]]]
+  ]},
+ reyes:{hi:"Evening. Officer Reyes, building security. Relax, you're not in trouble. Unless you touch the paintings.",again:"You again. Don't worry, you're on the nice list.",more:["Anything else?","Go ahead. It's a quiet shift."],bye:"Back to my rounds. Enjoy the exhibits, and stay behind the rope.",
+  topics:[
+   ["What's it like guarding a museum?",[["Mostly quiet. Lots of walking, lots of telling people not to lean on the velvet rope.","Do people lean on it?"],["Every day. One guy tried to take a selfie inside the rope with SecureDrop. I let it slide. He looked so happy.","That's kind of you."],["Don't spread that around. I have a reputation. Firm, but fair. Mostly fair.","My lips are sealed."]]],
+   ["Do you understand SecureDrop?",[["I asked for an explanation in security guard terms, and honestly, it made total sense.","How does it work?"],["Your password is like an ID badge, but the building never keeps a copy of the badge. Just a fingerprint it can check. Steal the records, and you still can't make badges.","That's clever."],["And replay protection is me noticing the same badge swiped twice in a row. Second swipe? Denied. I do it with eyes. He does it with math.","Same job, different tools."]]],
+   ["Ever had a real incident here?",[["Once. Someone tried to sneak into the café after closing. Turned out to be Mason. He forgot his keys and wanted to finish a croissant.","Ha! Mason!"],["He told me it was a 'security test.' I wrote it up anyway. It's on his permanent record. He brings it up every week.","Of course he does."],["That's what I like about this place. The biggest threat is a barista and a pastry. I'll take it.","Sounds peaceful."]]],
+   ["Is Ahmed a good fit for security?",[["Good fit. People think security is all hackers and screens, but half of it is paying attention and staying calm.","Like your job."],["Exactly like my job. I watch hallways, he'll watch networks. Same instinct: notice what doesn't belong.","I like that comparison."],["And someone who coaches a team and runs shifts knows how to keep people calm during an incident. That matters more than people think.","It really does."]]]
+  ]},
+ jun:{hi:"Oh! Hi. Sorry, I'm Jun. I'm sketching the rooftops photo. Want to see? It's not done yet.",again:"You're back! Look, I added the hills since last time.",more:["What else? I can talk and draw at the same time. Mostly.","Ask me anything. Just don't bump my elbow."],bye:"Okay, back to these rooftops. Come back later and see if I finished!",
+  topics:[
+   ["What are you drawing?",[["The rooftops and ridges photo. All those colors packed together. It's driving me a little crazy, in a good way.","Why that one?"],["Because it's a nightmare to shade. Every roof catches the light differently. If I can draw this, I can draw anything. That's my theory.","Makes sense."],["Also, my professor says I draw buildings too perfectly. This photo is messy and real. It's teaching me to loosen up.","That's a great lesson."]]],
+   ["Why do you sketch here?",[["Free reference, good lighting, and a cat. That's my whole list.","Good list."],["Byte sits next to me sometimes. I tried drawing him, but he moves every time I get his ears right. Every single time.","Cats are like that."],["I think he does it on purpose. Artistic sabotage. Honestly, I respect it.","Ha!"]]],
+   ["What do you study?",[["Illustration, second year. People always ask if I'm worried AI will take my job.","Are you?"],["A little. But then I come here and see a CS student who built this whole building by hand when he could have used a template. It reminds me why people make things.","That's a nice way to see it."],["Making things yourself means something. Even when it's slower. Maybe especially when it's slower.","I agree."]]],
+   ["Any composition tips from these photos?",[["So many. Look at the minaret. It's in the corner, not the middle. That gives the sky room to breathe.","Huh, I see it."],["And the escalator shot uses diagonal lines to pull your eye up. Painters have used that trick for hundreds of years.","He's got an eye."],["He does. I'm stealing all of it. That's how art works. You borrow from people you admire, then make it yours.","Ha, fair."]]]
+  ]},
+ byte:{hi:"*Byte looks up at you and slowly blinks.* Mrrp.",again:"*Byte recognizes you and trots over.* Mrrow!",more:["*Byte waits, tail swishing.*","*Byte sits and stares, expectantly.*"],bye:"*Byte gives you one slow blink, which is cat for 'I trust you,' and goes back to his nap.*",
+  topics:[
+   ["Pet Byte",[["*You pet Byte. He leans into your hand and purrs like a tiny engine.*","Aww."],["*He headbutts your hand. That's cat for 'you may continue.'*","Keep petting."],["*After exactly four more pets, he decides that's enough and flops over dramatically.* Mrrp.","Fair enough."]]],
+   ["Ask Byte about the cat photos",[["*Byte looks at the photo of the Watcher, then back at you, unimpressed.*","Is that a relative?"],["*He sneezes. Possibly a yes. Possibly allergies.*","Ha."],["*He sits below the photo and copies the pose exactly. He knows what he's doing.*","Iconic."]]],
+   ["Offer Byte a treat",[["*You don't actually have a treat. Byte knows. Byte always knows.*","Sorry, buddy."],["*He stares at your empty hand, then at you, then toward the café downstairs. Message received.*","I'll ask Priya."],["*He follows you two steps, gets distracted by absolutely nothing, and wanders off.* Mrow.","Cats."]]]
+  ]}
+};
+
 const cv=document.getElementById('game'),ctx=cv.getContext('2d');
 const lm=document.createElement('canvas'),lx=lm.getContext('2d');
 let dpr=1,S=3,SI=3,SO=2,W=0,H=0,VW=0,VH=0,touchMode=false;
@@ -742,7 +836,7 @@ function buildStreet(c,sc){
 SC.street.facadeWins=[];[-50,0,50].forEach((y,fl)=>{for(let i=0;i<8;i++)SC.street.facadeWins.push({x:285+i*70,y:y+10,w:40,h:30,f:3-fl})});
 
 /* ---------- state ---------- */
-let scene='street',mode='world',time=0,paused=false,last=performance.now(),ride=null,guide=null,buffUntil=0;
+let talkingNPC=null,scene='street',mode='world',time=0,paused=false,last=performance.now(),ride=null,guide=null,buffUntil=0;
 const cam={x:0,y:0};
 const player={x:90,dir:'right',frame:0,ft:0,moving:false,auto:null,sitting:false,chair:null,inElev:false,bowT:-1};
 const elevOpen={0:0,1:0,2:0,3:0},elevTarget={0:0,1:0,2:0,3:0};
@@ -757,7 +851,7 @@ const npcs={street:[],0:[],1:[],2:[],3:[]};
 const staff={theo:mk({key:'theo',named:1,x:316,y:BEHIND,dir:'down',pal:PAL.theo}),priya:mk({key:'priya',named:1,x:488,y:BEHIND,dir:'down',pal:PAL.priya,state:'idle',speed:40})};
 const mason=mk({key:'mason',x:430,y:BEHIND,dir:'down',floor:0,mode:'counter',stop:0,spoke:false,waitT:0,barkT:14,callT:0,pal:PAL.mason,speed:80});
 Object.entries({ruth:[1,1500],kai:[1,520],dana:[2,470],marcus:[2,650],lena:[2,1880],sofia:[3,560],omar:[3,330]}).forEach(([k,[f,x]])=>npcs[f].push(mk({key:k,named:1,x,pal:PAL[k],state:'look',timer:rnd(2,8),dir:'up'})));
-npcs[2].push(mk({key:'reyes',named:1,stay:1,x:1236,pal:PAL.reyes,state:'stay',dir:'down'}));npcs[3].push(mk({key:'jun',named:1,stay:1,sketch:1,x:925,pal:PAL.jun,state:'stay',dir:'up'}));
+npcs[2].push(mk({key:'reyes',named:1,stay:1,x:1236,pal:PAL.reyes,state:'stay',dir:'down'}));npcs[3].push(mk({key:'jun',named:1,stay:1,sketch:1,x:880,pal:PAL.jun,state:'stay',dir:'right'}));
 npcs[3].push(mk({key:'byte',named:1,cat:1,x:1600,state:'sit',timer:6,speed:22}));
 function genericVisitor(f,x){return mk({pal:palette({}),generic:1,x:x??ELEV[f]+30,state:'look',timer:rnd(1,5),dir:'up',speed:rnd(30,42)})}
 [1,2,3].forEach(f=>{for(let i=0;i<6;i++){const ex=ART.filter(e=>e.floor===f);npcs[f].push(genericVisitor(f,pick(ex).cx+rnd(-14,14)))}});
@@ -777,12 +871,13 @@ function updateVisitors(f,dt){
   const list=npcs[f],ex=ART.filter(e=>e.floor===f);
   for(const n of list){
     if(n.fade){n.alpha=clamp(n.alpha+n.fade*dt*1.6,0,1);if(n.fade>0&&n.alpha>=1)n.fade=0}
+    if(n===talkingNPC){n.moving=false;if(!n.sketch&&!n.cat)n.dir=player.x<n.x?'left':'right';continue}
     if(n.cat){updateCat(n,dt);continue}
-    if(n.stay){n.moving=false;if(n.sketch)n.frame=Math.floor(time*3);if(bubbleCD<=0&&Math.abs(player.x-n.x)<70&&Math.random()<dt*.15){const N=NAMED[n.key];say2(n,pick(N.lines),4);bubbleCD=4}continue}
+    if(n.stay){n.moving=false;if(n.sketch)n.frame=Math.floor(time*3);if(bubbleCD<=0&&Math.abs(player.x-n.x)<90&&Math.random()<dt*.35){const N=NAMED[n.key];say2(n,pick(N.lines),4.4);bubbleCD=2.5}continue}
     if(npcLiftStep(n,dt))continue;
     if(n.state==='walk'){if(walkTo(n,n.tx,dt)){if(n.leaving){n.fade=-1;n.state='gone'}else{n.state='look';n.timer=rnd(4,10);n.dir='up';
       const e=ex.find(e=>Math.abs(e.cx-n.x)<30);
-      if(e&&bubbleCD<=0&&inView(n.x)&&Math.random()<.55){const N=NAMED[n.key];say2(n,(N&&N.ex&&N.ex[e.id])||(N&&N.gen?pick(N.gen):pick(GENERIC[f])),4.2);bubbleCD=3}}}}
+      if(e&&bubbleCD<=0&&inView(n.x)&&Math.random()<.85){const N=NAMED[n.key];say2(n,(N&&N.ex&&N.ex[e.id]&&Math.random()<.7)?N.ex[e.id]:(N&&N.gen?pick(N.gen):pick(GENERIC[f])),4.6);bubbleCD=1.6}}}}
     else if(n.state==='look'){n.moving=false;n.timer-=dt;if(n.timer<=0){if(n.generic&&Math.random()<.18&&liftDepart(n,f)){}else n.tx=clamp(pick(ex).cx+rnd(-16,16),30,SC[f].w-30);n.state='walk'}}
   }
   for(let i=list.length-1;i>=0;i--)if(list[i].state==='gone'&&list[i].alpha<=0)list.splice(i,1);
@@ -813,7 +908,7 @@ function updateCafe(dt){
   }
   for(let i=list.length-1;i>=0;i--)if(list[i].state==='gone'&&list[i].alpha<=0)list.splice(i,1);
   const p=staff.priya;
-  if(p.state==='idle'){if(cafe.orders.length){p.job=cafe.orders.shift();p.state='toMachine'}else{walkTo(p,488,dt);if(!p.moving)p.dir='down'}}
+  if(talkingNPC===p){p.moving=false;p.dir='down'}else if(p.state==='idle'){if(cafe.orders.length){p.job=cafe.orders.shift();p.state='toMachine'}else{walkTo(p,488,dt);if(!p.moving)p.dir='down'}}
   else if(p.state==='toMachine'){if(walkTo(p,498,dt)){p.state='making';p.timer=3.2;p.dir='right'}}
   else if(p.state==='making'){p.timer-=dt;p.moving=false;if(Math.random()<dt*14)particles.push({x:525+rnd(-3,3),y:104,vy:-rnd(6,12),life:1.4,kind:'steam'});
     if(p.timer<=0){const j=p.job;say2(p,j.item+' for '+j.name+'!',2.6);p.dir='down';if(j.state==='wait'||j.state==='pickup'){j.hasCup=1;const fs=seatFree(),pm=playerMateSeat();if(pm&&!pm.taken){pm.taken=j;j.seat=pm;j.state='toSeat';j.joining=1}else if(fs.length&&Math.random()<.7){const s=pick(fs);s.taken=j;j.seat=s;j.state='toSeat'}else j.state='leave'}p.state='idle';p.job=null}}
@@ -955,13 +1050,27 @@ function drawBow(c,x,y,b){
   c.save();c.translate(Math.round(x*S)/S,Math.round(y*S)/S);c.scale(k,k);c.save();c.beginPath();c.rect(-20,-11,40,14);c.clip();drawPerson(c,0,0,'down',0,false,PAL.player);c.restore();
   c.beginPath();c.rect(-20,-60,40,49);c.clip();c.translate(0,b*7);c.scale(1,1-b*.1);drawPerson(c,0,0,'down',0,false,Object.assign({},PAL.player,{noShadow:1}));if(b>.35){c.fillStyle=PAL.player.hair;c.fillRect(-5,-34,10,Math.round(b*7));c.fillStyle=PAL.player.skin;c.fillRect(-8,-15,2,3);c.fillRect(6,-15,2,3)}c.restore();
 }
+const EZ={x:889,y:128,w:22,h:18};
+function drawEasel(c,n){const E=EZ;
+  R(c,E.x+3,E.y+E.h-2,2,FEET-(E.y+E.h)+2,'#5a3a22');R(c,E.x+E.w-5,E.y+E.h-2,2,FEET-(E.y+E.h)+2,'#5a3a22');R(c,E.x+E.w/2-1,E.y-4,2,FEET-E.y+2,'#4a2c1b');
+  R(c,E.x-1,E.y+E.h,E.w+2,2,'#6b4027');R(c,E.x-1,E.y-1,E.w+2,E.h+2,'#3a2418');R(c,E.x,E.y,E.w,E.h,'#f6f2e8');
+  const p=(time*.06)%1.15,strokes=[[2,15,22,15],[3,15,3,11],[3,11,7,8],[7,8,10,11],[10,11,10,15],[10,12,14,12],[14,12,14,15],[14,10,17,7],[17,7,20,10],[20,10,20,15],[1,6,6,4],[6,4,12,5],[12,5,18,3],[18,3,23,5],[5,12,6,12],[16,12,17,12]];
+  const nDone=Math.floor(clamp(p,0,1)*strokes.length);c.fillStyle='#3a3a42';
+  strokes.slice(0,nDone+1).forEach(([x1,y1,x2,y2],i)=>{const f=i<nDone?1:(clamp(p,0,1)*strokes.length-nDone),steps=Math.max(Math.abs(x2-x1),Math.abs(y2-y1))*2||1;for(let s=0;s<=steps*f;s++)c.fillRect(E.x+x1+(x2-x1)*s/steps,E.y+y1+(y2-y1)*s/steps,.7,.7)});
+  if(p>.55){c.globalAlpha=clamp((p-.55)*3,0,.5);R(c,E.x+3,E.y+11,7,4,'#c84a3a');R(c,E.x+14,E.y+12,6,3,'#3e6a4a');c.globalAlpha=1}
+  R(c,E.x+E.w+2,E.y+E.h-3,6,4,'#c9a24e');}
+function drawSketchArm(c,n){const E=EZ,p=clamp((time*.06)%1.15,0,1),k=KS();
+  const tx=E.x+3+((time*7)%1)*14*(0.6+0.4*Math.sin(time*3)),ty=E.y+4+p*11+Math.sin(time*11)*1.5;
+  const sx=n.x+2*k,sy=n.y-19*k;c.strokeStyle=n.pal.sleeve;c.lineWidth=2.4;c.beginPath();c.moveTo(sx,sy);c.lineTo(tx-2,ty+1);c.stroke();
+  R(c,tx-3,ty,3,2.6,n.pal.skin);c.strokeStyle='#d9b25a';c.lineWidth=.9;c.beginPath();c.moveTo(tx-1,ty+1);c.lineTo(tx+2.5,ty-2.5);c.stroke();}
 function bubbleAt(c,x,y,t,dark){c.font='8px VT323';const w=c.measureText(t).width+10;c.fillStyle='#000';c.fillRect(x-w/2-.7,y-12.7,w+1.4,12.4);c.fillStyle=dark?'#1b1d2e':'#f2ecdf';c.fillRect(x-w/2,y-12,w,11);c.fillRect(x-2,y-1,4,3);c.fillStyle=dark?'#f2ecdf':'#141624';c.textBaseline='middle';c.textAlign='center';c.fillText(t,x,y-6.3);c.textAlign='left'}
 function headY(n){return n.cat?(n.y-26):n.state==='sit'?(n.y-58):n.y-50}
 function drawNPC(c,n){
   if(n.cat){c.save();c.globalAlpha=n.alpha;drawCat(c,n.x,n.y,n.dir,n.state==='walk'?'walk':n.state,n.frame,1);c.restore();return}
   if(n.state==='sit'&&n.seat){c.save();c.globalAlpha=n.alpha;drawSeated(c,n.x,150,n.dir,n.pal);c.restore();return}
+  if(n.sketch&&n.alpha>.3)drawEasel(c,n);
   drawSprite(c,n.x,n.y-(n.hop||0),n.dir,n.frame,n.moving,n.pal,n.alpha);
-  if(n.sketch&&n.alpha>.3){const k=KS();R(c,n.x-7*k,n.y-20*k,7*k,9*k,'#f4f0e6');R(c,n.x-6*k,n.y-18*k+((n.frame%3)),5*k,1,'#3a3a3a')}
+  if(n.sketch&&n.alpha>.3&&talkingNPC!==n)drawSketchArm(c,n);
   if(n.hasCup&&n.alpha>.3){const k=KS(),f=n.dir==='left'?-1:1;if(n.dir==='up'||n.dir==='down')drawCup(c,n.x+6*k,n.y-14*k);else drawCup(c,n.x+f*1.5*k-1,n.y-14*k)}
   if(n.umb){const col=n.pal.umbC||(n.pal.umbC=pick(['#9b2a2e','#24453a','#3a5f9a','#2a2a2e','#c9a24e']));R(c,n.x,n.y-62,1,24,'#2a2a2a');c.fillStyle=col;c.beginPath();c.moveTo(n.x-16,n.y-58);c.quadraticCurveTo(n.x,n.y-76,n.x+16,n.y-58);c.fill()}
 }
@@ -1215,7 +1324,7 @@ function chooseFloor(to){
   player.auto={tx:ELEV[from],cb:()=>{paused=true;player.inElev=true;player.dir='down';if(withM){mason.inElev=true;mason.x=ELEV[from]+9}
     setTimeout(()=>{lift.state='pclose';lift.t=0},500);
     setTimeout(()=>fadeThen(()=>{mode='ride';lift.state='player';
-      ride={from,to,t:0,phase:'close',moveDur:5+3.6*Math.abs(to-from),arrived:false,withM,px:132,mx:162,pdir:'down',door:1,fadeA:1};
+      ride={from,to,t:0,phase:'close',moveDur:6+4*Math.abs(to-from),arrived:false,withM,px:withM?-14:0,mx:16,pdir:'down',door:1,fadeA:1};
       paused=false;updateHUD()}),1500)}};
 }
 const RIDE_CLOSE=1.1;
@@ -1223,78 +1332,97 @@ function updateRide(dt){
   const r=ride;r.t+=dt;
   if(r.phase==='close'){r.door=clamp(1-r.t/RIDE_CLOSE,0,1);if(r.t>=RIDE_CLOSE+.3){r.phase='move';r.t=0;startElevMusic();if(r.withM)subtitle('MASON',MASON_EXTRA.elevator,2.6,'mason/elevator')}}
   else if(r.phase==='move'){lift.pos=ridePos();lift.floor=clamp(Math.round(lift.pos),0,3);if(r.t>=r.moveDur){r.phase='arrive';r.t=0;r.arrived=true;stopElevMusic();ding();lift.pos=lift.floor=r.to;if(r.withM)subtitle('MASON',MASON_EXTRA.arrive,2.6,'mason/arrive')}
-    if(Math.random()<dt*1.5)notes.push({x:rnd(150,220),y:150,s:0,life:1.6,ch:Math.random()<.5?'♪':'♫'})}
-  else if(r.phase==='arrive'){r.door=clamp(r.t/.8,0,1)}
-  else if(r.phase==='exit'){r.door=1;r.pdir='left';const doneP=walkRide(r,'px',46,dt),doneM=r.withM?walkRide(r,'mx',58,dt):true;
+    if(Math.random()<dt*1.5)notes.push({x:rnd(30,220),y:150,s:0,life:1.6,ch:Math.random()<.5?'♪':'♫'})}
+  else if(r.phase==='arrive'){r.door=clamp(r.t/.8,0,1);if(r.wantExit&&r.t>.9){r.phase='exit';r.t=0}}
+  else if(r.phase==='exit'){r.door=1;r.pdir='left';const doneP=walkRide(r,'px',-CW/2-58,dt),doneM=r.withM?walkRide(r,'mx',-CW/2-34,dt):true;
     if(doneP&&doneM){r.fadeA=clamp(r.fadeA-dt*2.5,0,1);if(r.fadeA<=0&&!r.leaving){r.leaving=1;finishExit()}}}
   for(const q of notes){q.y-=dt*16;q.life-=dt*.45}while(notes.length&&notes[0].life<=0)notes.shift();
 }
 function walkRide(r,k,tx,dt){const d=tx-r[k];if(Math.abs(d)<1){r[k]=tx;return true}r[k]+=Math.sign(d)*Math.min(Math.abs(d),58*dt);r.walkF=(r.walkF||0)+dt;return false}
-function stepOut(){if(!ride||ride.phase!=='arrive'||ride.t<.8)return;ride.phase='exit';ride.t=0}
+function stepOut(){if(!ride)return;if(ride.phase==='arrive'||ride.phase==='move')ride.wantExit=true}
 function finishExit(){const r=ride;showLoading(r.to,()=>{mode='world';scene=r.to;setScale();const e=ELEV[r.to],dx=r.to===0?-40:40;
-  lift.floor=r.to;lift.pos=r.to;lift.state='open';lift.t=0;elevOpen[r.to]=1;
-  player.x=e;player.inElev=false;player.dir=dx<0?'left':'right';paused=false;player.auto={tx:e+dx,cb:()=>{}};
-  if(r.withM){mason.floor=r.to;mason.y=FEET;mason.inElev=false;mason.alpha=1;mason.x=e+(r.to===0?12:-12);const i=nextStopOn(r.to);if(i<0)endTour();else{mason.stop=i;mason.spoke=false}}
-  ride=null;updateHUD()})}
+  lift.floor=r.to;lift.pos=r.to;lift.state='pclose';lift.t=0;elevOpen[r.to]=0;
+  player.x=e;player.inElev=true;player.dir='down';paused=true;
+  if(r.withM){mason.floor=r.to;mason.y=FEET;mason.inElev=true;mason.alpha=1;mason.x=e+9}
+  ride=null;updateHUD();
+  setTimeout(()=>{ding();lift.state='pexit'},450);
+  setTimeout(()=>{player.inElev=false;paused=false;player.auto={tx:e+dx,cb:()=>{}};
+    if(r.withM){mason.inElev=false;mason.x=e+(r.to===0?14:-14);mason.walkOut=e+dx+(r.to===0?22:-22);const i=nextStopOn(r.to);if(i<0)endTour();else{mason.stop=i;mason.spoke=false}}},1300);
+  setTimeout(()=>{if(lift.state==='pexit'){lift.state='open';lift.t=0}},2800)})}
 function ridePos(){if(!ride)return lift.pos;if(ride.phase==='close')return ride.from;if(ride.phase!=='move')return ride.to;const p=clamp(ride.t/ride.moveDur,0,1),e=p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2;return ride.from+(ride.to-ride.from)*e}
 const FAR=[],MID=[];
-(function(){let x=-40;while(x<300){const w=18+Math.floor(hash(x,11)*26),h=60+Math.floor(hash(11,x)*90);FAR.push({x,w,h});x+=w+2}
-  x=-60;while(x<320){const w=34+Math.floor(hash(x,21)*40),h=120+Math.floor(hash(21,x)*260),col=pick(['#3a3448','#4a3e3a','#34404a','#463a4a','#3e463a']);MID.push({x,w,h,col});x+=w+10+Math.floor(hash(x,5)*16)}})();
-function drawShaftWindow(c,x0,y0,w,h){
-  const pos=ridePos(),FH=64,elev=pos*FH,dl=daylight(),[top,bot]=skyColors(),night=1-dl;
-  c.save();c.beginPath();c.rect(x0,y0,w,h);c.clip();
-  for(let y=0;y<h;y+=3){c.fillStyle=rgb(mixA(top,bot,clamp((y+elev*.1)/(h+60),0,1)));c.fillRect(x0,y0+y,w,3)}
-  if(night>.3){c.globalAlpha=night;for(let i=0;i<30;i++)R(c,x0+hash(i,3)*w,y0+hash(3,i)*h*.6,1,1,'#dfe6ff');c.globalAlpha=1}
-  const farBase=y0+h-14+elev*.14;FAR.forEach(b=>{const bx=x0+b.x*.75-10,by=farBase-b.h*.6;R(c,bx,by,b.w*.75,b.h*.6+400,'#1e2440');if(night>.3)for(let yy=by+4;yy<farBase;yy+=6)for(let xx=bx+2;xx<bx+b.w*.75-2;xx+=4)if(hash(xx|0,yy|0)>.7)R(c,xx,yy,1,1,'#f2c86b')});
-  if(dl>.3){c.fillStyle=`rgba(150,170,200,${.35*dl})`;c.fillRect(x0,y0,w,h)}
-  const midBase=y0+h+30+elev*.5;MID.forEach((b,i)=>{const bx=x0+b.x,by=midBase-b.h;if(by>y0+h)return;R(c,bx,by,b.w,b.h+600,b.col);R(c,bx,by,b.w,2,'rgba(255,255,255,.15)');
-    for(let yy=by+6;yy<Math.min(midBase,y0+h+10);yy+=10)for(let xx=bx+4;xx<bx+b.w-5;xx+=8){const lit=hash(xx*3+i,yy|0)>(night>.4?.45:1.1);R(c,xx,yy,4,5,lit?'#f2c86b':(dl>.4?'rgba(170,200,230,.55)':'#1a1a26'))}
-    if(b.h>200){R(c,bx+b.w/2-1,by-10,2,10,b.col)}});
-  const g=y0+h-4+elev*1.0;
-  if(g<y0+h+80){R(c,x0,g,w,6,'#8a8478');R(c,x0,g+6,w,40,'#2a2a30');for(let xx=x0;xx<x0+w;xx+=18)R(c,xx+((time*0)|0),g+18,9,2,'#c9c2a0');
-    [x0+20,x0+w-30].forEach(lx=>{R(c,lx,g-34,2,34,'#2a2a30');R(c,lx,g-35,9,2,'#2a2a30');R(c,lx+6,g-34,4,3,night>.4?'#fff2c4':'#5a5a60')});
-    disc(c,x0+w*.55,g-16,10,9,'#2a5a36');R(c,x0+w*.55-1,g-8,3,8,'#5a3a22');
-    for(let i=0;i<2;i++){const cx=x0+((time*(30+i*18)+i*90)%(w+60))-30,cy=g+12+i*10;R(c,cx-10,cy-5,20,5,i?'#9b2a2e':'#2c4a7a');R(c,cx-5,cy-9,11,4,i?'#9b2a2e':'#2c4a7a');R(c,cx-8,cy,4,2,'#111');R(c,cx+5,cy,4,2,'#111')}}
-  if(WX.rain>.1){c.fillStyle='rgba(190,205,240,.5)';for(let k=0;k<50*WX.rain;k++){const xx=x0+(hash(k,9)*w),yy=y0+((hash(k,8)*h+time*200)%h);c.fillRect(xx,yy,.6,5)}}
-  if(WX.snow>.1){c.fillStyle='#fff';for(let k=0;k<40*WX.snow;k++){const xx=x0+((hash(k,9)*w+Math.sin(time+k)*4)%w),yy=y0+((hash(k,8)*h+time*18)%h);c.fillRect(xx,yy,1,1)}}
-  for(let k=-1;k<=4;k++){const yy=y0+h*.55+(pos-k)*FH;if(yy<y0-12||yy>y0+h+12)continue;
-    R(c,x0,yy,w,10,'#5a4e44');R(c,x0,yy,w,1,'#7a6e60');R(c,x0,yy+9,w,1,'#2a241e');
-    if(k>=0&&k<=3){c.font='7px VT323';c.textAlign='left';c.textBaseline='middle';c.fillStyle='#ffe2a8';c.fillText(k===0?'G · LOBBY':k+' · '+['','ABOUT ME','PROJECTS','PHOTOGRAPHY'][k],x0+5,yy+5.3)}}
-  R(c,x0+2,y0,3,h,'rgba(40,40,46,.9)');R(c,x0+w-5,y0,3,h,'rgba(40,40,46,.9)');
-  R(c,x0+w/2-1,y0,2,h,'#2a2420');
-  for(let i=0;i<3;i++){c.fillStyle='rgba(255,255,255,.07)';c.beginPath();c.moveTo(x0+8+i*44,y0+h);c.lineTo(x0+20+i*44,y0+h);c.lineTo(x0+40+i*44,y0);c.lineTo(x0+28+i*44,y0);c.fill()}
-  c.restore();R(c,x0-2,y0-2,w+4,3,'#c9a24e');R(c,x0-2,y0+h-1,w+4,3,'#c9a24e');R(c,x0-2,y0,3,h,'#c9a24e');R(c,x0+w-1,y0,3,h,'#c9a24e');
+(function(){let x=0;while(x<900){const w=22+Math.floor(hash(x,11)*34),h=70+Math.floor(hash(11,x)*120);FAR.push({x,w,h});x+=w+3}
+  x=0;while(x<1100){const w=40+Math.floor(hash(x,21)*50),h=140+Math.floor(hash(21,x)*320),col=['#3a3448','#4a3e3a','#34404a','#463a4a','#3e463a'][Math.floor(hash(x,9)*5)];MID.push({x,w,h,col});x+=w+14+Math.floor(hash(x,5)*20)}})();
+const CW=96,CH=104;
+function copperStair(c,x1,y1,x2,y2,t){
+  const g=c.createLinearGradient(0,Math.min(y1,y2),0,Math.max(y1,y2)+t);g.addColorStop(0,'#e0a070');g.addColorStop(.5,'#b06a3e');g.addColorStop(1,'#6a3a22');
+  c.fillStyle=g;c.beginPath();c.moveTo(x1,y1);c.lineTo(x2,y2);c.lineTo(x2,y2+t);c.lineTo(x1,y1+t);c.fill();
+  c.fillStyle='#2a3a52';c.beginPath();c.moveTo(x1,y1-1);c.lineTo(x2,y2-1);c.lineTo(x2,y2+3);c.lineTo(x1,y1+3);c.fill();
+  c.strokeStyle='rgba(200,220,240,.55)';c.lineWidth=.8;c.beginPath();c.moveTo(x1,y1-12);c.lineTo(x2,y2-12);c.stroke();
+  c.fillStyle='rgba(170,200,230,.16)';c.beginPath();c.moveTo(x1,y1-12);c.lineTo(x2,y2-12);c.lineTo(x2,y2);c.lineTo(x1,y1);c.fill();
+  const n=Math.floor(Math.abs(x2-x1)/7);c.fillStyle='rgba(30,40,60,.6)';for(let i=1;i<n;i++){const t2=i/n;c.fillRect(x1+(x2-x1)*t2,y1+(y2-y1)*t2-12,.6,12)}
 }
-const HALL=['#663628','#b08a68','#25243e','#e2dccf'],HALLF=['#5e3a24','#8a6040','#2a2836','#8a8680'];
-function drawRide(){
-  const r=ride,moving=r.phase==='move'&&r.t>.3&&r.t<r.moveDur-.3;
-  const jolt=(r.phase==='move'&&(r.t<.45||r.t>r.moveDur-.45))||(r.phase==='arrive'&&r.t<.25);
-  const s2=SI,vw=W/s2,vh=H/s2,ox=(vw-240)/2,oy=(vh-200)/2,bob=jolt?Math.sin(time*42)*.6:moving?Math.sin(time*16)*.3:0;
-  ctx.setTransform(1,0,0,1,0,0);ctx.fillStyle='#0b0a12';ctx.fillRect(0,0,W,H);ctx.setTransform(s2,0,0,s2,ox*s2,(oy+bob)*s2);ctx.imageSmoothingEnabled=false;const c=ctx;
-  R(c,0,0,240,200,'#2a1810');R(c,0,0,240,22,'#1a1210');[60,120,180].forEach(x=>R(c,x-7,18,14,3,'#fff2c4'));
-  R(c,6,24,228,136,'#5a3a24');for(let x=82;x<226;x+=36){R(c,x+3,28,30,128,'#6a4630');R(c,x+3,28,30,1,'#8a6040')}
-  const DX=18,DW=56,DY=40,DH=120,fl=r.phase==='move'?null:(r.phase==='close'?r.from:r.to);
-  R(c,DX-4,DY-6,DW+8,DH+6,'#c9a24e');R(c,DX-2,DY-4,DW+4,DH+4,'#3a2418');
-  if(fl!==null){R(c,DX,DY,DW,DH,HALL[fl]);R(c,DX,DY+DH-22,DW,22,HALLF[fl]);R(c,DX,DY+DH-24,DW,2,'#c9a24e');if(fl===0){for(let yy=DY;yy<DY+DH-24;yy+=8)R(c,DX,yy+7,DW,1,'rgba(0,0,0,.25)')}
-    c.globalAlpha=.6;R(c,DX+18,DY+30,20,16,'#c9a24e');R(c,DX+20,DY+32,16,12,'#1a1420');c.globalAlpha=1}
-  else R(c,DX,DY,DW,DH,'#1a1420');
-  const o=r.door;c.save();c.beginPath();c.rect(DX,DY,DW,DH);c.clip();[-1,1].forEach(s=>{const lw=DW/2,x1=s<0?DX-o*lw:DX+lw+o*lw;R(c,x1,DY,lw,DH,'#9aa0a8');for(let x=x1+3;x<x1+lw;x+=4)R(c,x,DY,1,DH,'#8a9098');R(c,s<0?x1+lw-2:x1,DY,2,DH,'#6a7078');R(c,x1+4,DY+56,lw-8,1,'#c9a24e')});c.restore();
-  R(c,DX+DW+6,74,8,30,'#a8843a');R(c,DX+DW+7,75,6,28,'#2a2016');[3,2,1,0].forEach((f,i)=>disc(c,DX+DW+10,79+i*7,2,2,f===r.to?'#ffd27a':'#5a4a30'));
-  drawShaftWindow(c,92,30,132,92);
-  R(c,82,126,148,4,'#c9a24e');R(c,82,126,148,1,'#f0d890');[96,156,216].forEach(x=>R(c,x,130,3,6,'#a8843a'));
-  R(c,0,160,240,40,'#5a1f2e');for(let x=0;x<240;x+=16)for(let y=166;y<200;y+=12)R(c,x+((y/12)%2?8:0),y,4,4,'#6a2a3a');
-  R(c,DX+6,2,44,16,'#a8843a');R(c,DX+8,4,40,12,'#0d0b12');
-  const cur=clamp(Math.round(ridePos()),0,3);
-  const walking=r.phase==='exit'&&r.fadeA>=1,wf=Math.floor((r.walkF||0)*7);
-  const pdir=r.phase==='exit'?'left':'down',pa=r.phase==='exit'?r.fadeA:1;
-  if(r.withM)drawSprite(c,r.mx,176,pdir,wf,walking,PAL.mason,pa);
-  drawSprite(c,r.px,176,pdir,wf,walking,PAL.player,pa);
-  c.save();c.font='10px VT323';c.textAlign='center';c.textBaseline='middle';c.fillStyle='#ff5a3a';c.shadowColor='#ff5a3a';c.shadowBlur=5*s2/3;const arrow=r.phase==='move'?(r.to>r.from?'▲ ':'▼ '):'';c.fillText(arrow+FLOOR_SHORT[cur],DX+28,10.5);
-  if(r.phase==='arrive'||r.phase==='exit'){if(r.phase==='arrive'&&r.t<2.2){c.font='14px MCPixel';c.fillStyle='#ffe2a8';c.shadowColor='#ffd27a';c.shadowBlur=10*s2/3;c.fillText('DING!',158,20)}}
-  c.font='10px VT323';c.shadowBlur=0;notes.forEach(q=>{c.globalAlpha=clamp(q.life,0,1);c.fillStyle='#ffe2a8';c.fillText(q.ch,q.x,q.y)});c.restore();
-  ctx.setTransform(1,0,0,1,0,0);const vg=ctx.createRadialGradient(W/2,H/2,Math.min(W,H)*.3,W/2,H/2,Math.max(W,H)*.7);vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(0,0,0,.55)');ctx.fillStyle=vg;ctx.fillRect(0,0,W,H);
+function drawGlassRide(){
+  const r=ride,s2=SI,vw=W/s2,vh=H/s2,cx=Math.round(vw/2),fy=Math.round(vh*.66),pos=ridePos(),FH=150,sc=pos*FH,dl=daylight(),night=1-dl,[top,bot]=skyColors();
+  const moving=r.phase==='move'&&r.t>.3&&r.t<r.moveDur-.3,jolt=(r.phase==='move'&&(r.t<.45||r.t>r.moveDur-.45))||(r.phase==='arrive'&&r.t<.25);
+  const bob=jolt?Math.sin(time*42)*.6:moving?Math.sin(time*16)*.25:0;
+  ctx.setTransform(s2,0,0,s2,0,0);ctx.imageSmoothingEnabled=false;const c=ctx;
+  for(let y=0;y<vh;y+=4){c.fillStyle=rgb(mixA(top,bot,clamp(y/(vh*.9)+.15-sc/2200,0,1)));c.fillRect(0,y,vw,4)}
+  if(night>.3){c.globalAlpha=night*(1-WX.cloud*.8);for(let i=0;i<90;i++)R(c,hash(i,3)*vw,hash(3,i)*vh*.55+sc*.05,1,1,'#dfe6ff');c.globalAlpha=1}
+  if(tod>5.6&&tod<19.8&&WX.cloud<.7){const p=(tod-5.8)/13.8;disc(c,vw*.15+p*vw*.7,vh*.32-Math.sin(Math.PI*clamp(p,0,1))*vh*.18+sc*.04,9,9,'#fff2c0')}
+  for(let i=0;i<4+Math.round(WX.cloud*6);i++){const x=((hash(i,1)*vw*1.4+time*(4+hash(i,2)*5))%(vw+160))-80,y=vh*.08+hash(i,3)*vh*.3+sc*.06;const col=dl>.4?'rgba(255,255,255,.8)':'rgba(70,76,104,.8)';for(let k=0;k<4;k++)disc(c,x+k*12,y+Math.sin(k)*2,10,5,col)}
+  const fb=fy+70+sc*.12;FAR.forEach(b=>{for(let o=0;o<vw;o+=900){const bx=b.x+o-((sc*.02)%900),by=fb-b.h;if(bx>vw)continue;R(c,bx,by,b.w,b.h+vh,dl>.4?'#6a7c98':'#1e2440');
+    if(night>.3)for(let yy=by+4;yy<fb;yy+=6)for(let xx=bx+3;xx<bx+b.w-3;xx+=5)if(hash(xx|0,yy|0)>.68)R(c,xx,yy,1,1,'#f2c86b')}});
+  if(dl>.3){c.fillStyle=`rgba(170,190,215,${.3*dl})`;c.fillRect(0,0,vw,vh)}
+  const mb=fy+160+sc*.4;MID.forEach((b,i)=>{for(let o=-1100;o<vw+1100;o+=1100){const bx=b.x+o+cx-550,by=mb-b.h;if(bx>vw||bx+b.w<0||by>vh)continue;
+    R(c,bx,by,b.w,b.h+vh,dl>.4?b.col.replace('#3','#5').replace('#4','#6'):b.col);R(c,bx,by,b.w,2,'rgba(255,255,255,.15)');
+    for(let yy=by+6;yy<Math.min(vh,mb);yy+=11)for(let xx=bx+5;xx<bx+b.w-6;xx+=9){const lit=night>.4&&hash(xx*3+i,(yy-by)|0)>.45;R(c,xx,yy,4,6,lit?'#f2c86b':dl>.4?'rgba(190,215,240,.6)':'#1a1a26')}}});
+  const g=fy+sc;
+  if(g<vh+40){R(c,0,g,vw,8,'#8a8478');R(c,0,g+8,vw,vh,'#2a2a30');for(let xx=((-time*0)|0)%40;xx<vw;xx+=40)R(c,xx,g+40,20,3,'#c9c2a0');
+    for(let i=0;i<3;i++){const carx=((time*(40+i*22)+i*200)%(vw+120))-60,cy=g+26+i*16,col=['#9b2a2e','#2c4a7a','#e9e1cf'][i];R(c,carx-14,cy-7,28,7,col);R(c,carx-8,cy-12,16,5,col);R(c,carx-11,cy,5,3,'#111');R(c,carx+6,cy,5,3,'#111')}
+    [cx-230,cx+190].forEach((tx,i)=>{R(c,tx,g-24,4,24,'#5a3a22');disc(c,tx+2,g-34,16,14,'#2a5a36');disc(c,tx-6,g-40,9,8,'#3a7048')});
+    [cx-150,cx+130].forEach(lx=>{R(c,lx,g-58,2,58,'#2a2a30');R(c,lx,g-59,10,2,'#2a2a30');R(c,lx+7,g-58,5,3,night>.4?'#fff2c4':'#5a5a60')})}
+  const sx0=cx-CW/2-14,sx1=cx+CW/2+14;
+  for(let k=0;k<=3;k++){const sy=fy+(pos-k)*FH;
+    if(k<3){const ny=sy-FH;if(ny<vh+20&&sy>-40){
+      c.fillStyle='rgba(150,190,225,.10)';c.fillRect(0,ny+10,sx0,FH-10);c.fillRect(sx1,ny+10,vw-sx1,FH-10);
+      for(let xx=sx0-30;xx>0;xx-=34)R(c,xx,ny+10,1,FH-10,'rgba(200,220,240,.18)');for(let xx=sx1+30;xx<vw;xx+=34)R(c,xx,ny+10,1,FH-10,'rgba(200,220,240,.18)');
+      copperStair(c,sx0-14,sy-2,sx0-170,ny+8,9);copperStair(c,sx0-200,sy-2,sx0-360,ny+8,9);
+      copperStair(c,sx1+14,sy-2,sx1+170,ny+8,9);copperStair(c,sx1+200,sy-2,sx1+360,ny+8,9)}}
+    if(sy<-20||sy>vh+30)continue;
+    if(k>0){const sg=c.createLinearGradient(0,sy,0,sy+12);sg.addColorStop(0,'#c08050');sg.addColorStop(1,'#5a3020');c.fillStyle=sg;c.fillRect(0,sy,sx0,12);c.fillRect(sx1,sy,vw-sx1,12);
+      R(c,0,sy,sx0,2,'#2a3a52');R(c,sx1,sy,vw-sx1,2,'#2a3a52');R(c,0,sy-12,sx0,1,'rgba(200,220,240,.6)');R(c,sx1,sy-12,vw-sx1,1,'rgba(200,220,240,.6)');
+      c.fillStyle='rgba(170,200,230,.14)';c.fillRect(0,sy-12,sx0,12);c.fillRect(sx1,sy-12,vw-sx1,12)}
+    c.save();c.font='8px VT323';c.textAlign='right';c.textBaseline='middle';c.fillStyle='#ffe2a8';c.shadowColor='#000';c.shadowBlur=3;c.fillText(k===0?'G · LOBBY & CAFÉ':k+' · '+FLOOR_NAMES[k].toUpperCase(),sx0-8,sy+(k?22:-8));c.restore()}
+  [sx0+2,sx1-8].forEach(x=>{R(c,x,0,6,vh,'#1e2230');R(c,x+1,0,1,vh,'#4a5068');for(let y=((sc|0)%24)-24;y<vh;y+=24)R(c,x+2,y,2,2,'#5a6078')});
+  if(night>.15){c.fillStyle=`rgba(8,10,28,${.42*night})`;c.fillRect(0,0,vw,vh)}
+  c.save();c.translate(0,bob);
+  const L=cx-CW/2,T=fy-CH;
+  c.fillStyle='#2a2a30';c.fillRect(cx-.5,0,1,T-12);c.fillRect(cx-6,0,1,T-12);c.fillRect(cx+5,0,1,T-12);
+  R(c,L-4,T-12,CW+8,12,'#2a2e3a');R(c,L-4,T-12,CW+8,2,'#c9a24e');R(c,L-4,T-1,CW+8,1,'#c9a24e');
+  R(c,cx-16,T-10,32,8,'#0d0b12');
+  const gl=c.createLinearGradient(0,T,0,fy);gl.addColorStop(0,'rgba(255,230,180,.22)');gl.addColorStop(1,'rgba(255,200,140,.12)');c.fillStyle=gl;c.fillRect(L,T,CW,CH);
+  R(c,L,fy-6,CW,6,'#4a3a30');R(c,L,fy-6,CW,1,'#8a6a4a');
+  R(c,L+6,fy-40,CW-12,2,'#c9a24e');
+  const wf=Math.floor((r.walkF||0)*7),walking=r.phase==='exit'&&r.fadeA>=1,pa=r.phase==='exit'?r.fadeA:1,dir=r.phase==='exit'?'left':'down';
+  if(r.withM)drawSprite(c,cx+r.mx,fy-2,dir,wf,walking,PAL.mason,pa);
+  drawSprite(c,cx+r.px,fy-2,dir,wf,walking,PAL.player,pa);
+  for(let i=1;i<4;i++)R(c,L+i*CW/4,T,1,CH-6,'rgba(30,34,46,.7)');
+  for(let i=0;i<3;i++){c.fillStyle='rgba(255,255,255,.10)';c.beginPath();c.moveTo(L+6+i*30,fy-6);c.lineTo(L+14+i*30,fy-6);c.lineTo(L+30+i*30,T);c.lineTo(L+22+i*30,T);c.fill()}
+  const dh=(CH-6)*(1-r.door);R(c,L-3,T,3,CH,'#2a2e3a');R(c,L+CW,T,3,CH,'#2a2e3a');
+  if(dh>1){c.fillStyle='rgba(180,215,240,.35)';c.fillRect(L,T,7,dh);R(c,L+6,T,1,dh,'#c9a24e')}
+  R(c,L-4,fy,CW+8,8,'#2a2e3a');R(c,L-4,fy,CW+8,1,'#c9a24e');R(c,cx-10,fy+8,20,6,'#1a1c24');
+  c.save();c.font='8px VT323';c.textAlign='center';c.textBaseline='middle';c.fillStyle='#ff5a3a';c.shadowColor='#ff5a3a';c.shadowBlur=5;
+  const cur=clamp(Math.round(pos),0,3);c.fillText((r.phase==='move'?(r.to>r.from?'▲ ':'▼ '):'')+FLOOR_SHORT[cur],cx,T-5.5);
+  if(r.phase==='arrive'&&r.t<2.2){c.font='13px MCPixel';c.fillStyle='#ffe2a8';c.shadowColor='#ffd27a';c.shadowBlur=10;c.fillText('DING!',cx,T-26)}
+  c.font='10px VT323';c.shadowBlur=0;notes.forEach(q=>{c.globalAlpha=clamp(q.life,0,1);c.fillStyle='#ffe2a8';c.fillText(q.ch,cx-CW/2+q.x*.38,T+20+(q.y-100)*.4)});c.restore();
+  c.restore();
+  if(WX.rain>.1&&!reduce){c.fillStyle='rgba(190,205,240,.5)';for(let k=0;k<160*WX.rain;k++){const xx=hash(k,9)*vw,yy=(hash(k,8)*vh+time*(260+hash(k,2)*60)+sc*0)%vh;c.fillRect(xx,yy,.6,7)}}
+  if(WX.snow>.1){c.fillStyle='#fff';for(let k=0;k<120*WX.snow;k++){const xx=((hash(k,9)*vw+Math.sin(time+k)*6)%vw+vw)%vw,yy=((hash(k,8)*vh+time*20+sc*.6)%vh);c.fillRect(xx,yy,1.2,1.2)}}
+  ctx.setTransform(1,0,0,1,0,0);const vg=ctx.createRadialGradient(W/2,H/2,Math.min(W,H)*.35,W/2,H/2,Math.max(W,H)*.8);vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(0,0,0,.45)');ctx.fillStyle=vg;ctx.fillRect(0,0,W,H);
   drawPrompt();
 }
+function drawRide(){drawGlassRide()}
 
 /* ---------- loading ---------- */
 const loadingEl=document.getElementById('loading');let tipOrder=[],tipI=0;
@@ -1399,7 +1527,7 @@ function typeText(text,choices){
 }
 function showChoices(ch){choicesEl.textContent='';sel=0;ch.forEach(([label,fn],i)=>{const b=document.createElement('button');b.textContent=label;b.onclick=fn;b.onmouseenter=()=>setSel(i);choicesEl.append(b)});setSel(0)}
 function setSel(i){const bs=[...choicesEl.children];if(!bs.length)return;sel=(i+bs.length)%bs.length;bs.forEach((b,j)=>b.classList.toggle('sel',j===sel));bs[sel].focus({preventScroll:true})}
-function endTalk(){dlg.hidden=true;paused=false;clearInterval(typing)}
+function endTalk(){dlg.hidden=true;paused=false;clearInterval(typing);talkingNPC=null}
 const M=(id,text,ch)=>talk('MASON · BARISTA',PAL.mason,text,ch,'mason/'+id);
 function openMason(){
   if(mason.mode==='tour'){const s=TOUR[mason.stop];if(s&&s.elev&&mason.spoke&&Math.abs(mason.x-s.x)<3)return callElevator()}
@@ -1412,14 +1540,29 @@ function menu(){
     ['Give me the tour',()=>M('tour',"A full tour, every floor? Love it. Follow me, and stay close.",[["Let's go",startTour]])],
     ['What should I see first?',()=>{guide='securedrop';M('recommend',LINES.recommend,[['Show me the way',endTalk],['Something else',menu]])}],
     ['Tell me a joke',joke],
+    ['Just chat for a bit',()=>convo(mason,'mason')],
     ['Who built this place?',()=>M('story',LINES.story,[["That's a good story",menu]])],
     ['Can I get a coffee?',()=>{if(performance.now()<buffUntil)M('coffee_again',LINES.coffee_again,[['Fair enough',menu]]);else{buffUntil=performance.now()+45000;M('coffee',LINES.coffee,[['Thanks!',endTalk]])}}],
     ['Just looking, thanks',()=>M('bye',LINES.bye,[['See you',endTalk]])]
   ]);
 }
 function joke(){const i=(parseInt(store.get('gallery-joke')||'0',10)||0)%JOKES.length;store.set('gallery-joke',String(i+1));M('joke'+(i+1),JOKES[i],[['Another one',joke],['Ha. Okay.',menu]])}
-function talkNamed(n){const N=NAMED[n.key],i=n.talkI%N.lines.length;n.talkI++;
+function talkNamed(n){if(CONVOS[n.key])return convo(n,n.key);const N=NAMED[n.key],i=n.talkI%N.lines.length;n.talkI++;
   talk(N.name.toUpperCase()+' · '+N.role.toUpperCase(),n.cat?null:n.pal,N.lines[i],[['Anything else?',()=>talkNamed(n)],['See you around',endTalk]],'npc/'+n.key+'_'+(i+1),n.cat)}
+function convo(n,key){
+  const C=CONVOS[key],N=key==='mason'?{name:'Mason',role:'Barista'}:NAMED[key],T=N.name.toUpperCase()+' · '+N.role.toUpperCase(),P=key==='mason'?PAL.mason:(n.cat?null:n.pal),vp=key==='mason'?'mason/chat_':'npc/'+key+'_';
+  const seen=n.seen||(n.seen=new Set());talkingNPC=n;
+  const line=(id,text,ch)=>{talk(T,P,text,ch,vp+id,n.cat);talkingNPC=n};
+  function hub(first){
+    const opts=C.topics.map((t,i)=>[(seen.has(i)?'✓ ':'')+t[0],()=>run(i,0)]);
+    opts.push([key==='byte'?'Let Byte nap':'I should keep exploring',()=>line('bye',C.bye,[[n.cat?'Bye, Byte':'See you!',endTalk]])]);
+    if(first){const t=n.talked?C.again:C.hi;n.talked=1;line(n.talked&&t===C.again?'again':'hi',t,opts)}
+    else{const i=Math.floor(Math.random()*C.more.length);line('more'+(i+1),C.more[i],opts)}
+  }
+  function run(i,k){const t=C.topics[i],st=t[1][k],last=k===t[1].length-1;seen.add(i);
+    line('t'+(i+1)+'_'+(k+1),st[0],[[st[1],last?()=>hub(false):()=>run(i,k+1)]])}
+  hub(true);
+}
 function tableChat(){
   const m=playerMateSeat(),c=m&&m.taken&&m.taken.cust?m.taken:null;
   if(!c)return sys('CAFÉ TABLE',"Nobody's sitting across from you yet. Relax for a bit, and someone will probably join you.",[['Wait here',endTalk],['Stand up',()=>{endTalk();leaveChair()}]]);
@@ -1482,7 +1625,7 @@ if(location.hash==='#list')openList();
 updateHUD();setTimeout(hideHint,6000);
 function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;update(dt);draw();requestAnimationFrame(loop)}
 requestAnimationFrame(t=>{last=t;loop(t)});
-window.__G={get scene(){return scene},set scene(v){scene=v;setScale()},player,mason,WX,setTod:v=>tod=v,get ride(){return ride},lift,piano,SC,playerMateSeat,dl:()=>daylight(),pickWeather,npcs,interact,TOUR,get mode(){return mode},chooseFloor,ALL,NAMED,JOKES,LINES,MASON_EXTRA,MASON_BARKS};
+window.__G={get scene(){return scene},set scene(v){scene=v;setScale()},player,mason,WX,setTod:v=>tod=v,get ride(){return ride},CONVOS,lift,piano,SC,playerMateSeat,dl:()=>daylight(),pickWeather,npcs,interact,TOUR,get mode(){return mode},chooseFloor,ALL,NAMED,JOKES,LINES,MASON_EXTRA,MASON_BARKS};
 })();
 </script>
 </body>
