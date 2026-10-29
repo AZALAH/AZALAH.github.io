@@ -80,6 +80,7 @@ body.touch #subtitle{bottom:calc(108px + env(safe-area-inset-bottom,0px))}
 .fbtn.next{box-shadow:inset 0 0 0 2px var(--sage)}
 #loading{position:fixed;inset:0;z-index:15;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px;text-align:center}
 #loading .lf{font-family:var(--f-ui);font-size:clamp(16px,3.4vw,26px);color:var(--gold);letter-spacing:.08em}
+#loading .ln .ea,#fname .ea{position:relative;display:inline-block}#loading .ln .ea::before,#fname .ea::before{content:'';position:absolute;left:38%;top:-.16em;width:.22em;height:.1em;background:currentColor;transform:skewY(-30deg)}
 #loading .ln{font-family:var(--f-ui);font-size:clamp(22px,6vw,44px);color:var(--ink);text-shadow:3px 3px 0 #000}
 #loading .bar{width:min(420px,80vw);height:16px;background:#1b1d2e;box-shadow:0 0 0 2px #000,inset 0 0 0 2px #3a3d5c;padding:3px}
 #loading .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#a8843a,#e0b469)}
@@ -164,6 +165,8 @@ function hash(x,y){let h=(x|0)*374761393+(y|0)*668265263;h=Math.imul(h^(h>>>13),
 function R(c,x,y,w,h,col){c.fillStyle=col;c.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h))}
 function disc(c,cx,cy,rx,ry,col){c.fillStyle=col;for(let dy=-ry;dy<=ry;dy++){const w=Math.round(rx*Math.sqrt(Math.max(0,1-(dy/(ry+.5))**2)));c.fillRect(Math.round(cx-w),Math.round(cy+dy),w*2,1)}}
 const FLOOR_SHORT=['G','1','2','3'];
+
+function pixE(t){return String(t).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])).replace(/É/g,'<span class="ea">E</span>')}
 const EX=[
  {id:'securedrop',title:'SecureDrop',kind:'wall',x:22.5,w:44,img:'assets/slides/slide-01.jpg',meta:'Cybersecurity · Python · Fall 2025',featured:true,
   feat:'The centerpiece. This is the project that made me sure about cybersecurity.',
@@ -836,7 +839,7 @@ function buildStreet(c,sc){
   R(c,476,80,128,12,'#1a1420');R(c,478,82,124,8,'#241c2a');
   R(c,462,-100,176,28,'#1a1420');R(c,464,-98,172,24,'#241c2a');[480,620].forEach(x=>R(c,x,-72,4,12,'#2a2230'));
 }
-SC.street.facadeWins=[];[-50,0,50].forEach((y,fl)=>{for(let i=0;i<8;i++)SC.street.facadeWins.push({x:285+i*70,y:y+10,w:40,h:30,f:3-fl})});
+SC.street.facadeWins=[];[-50,0,50].forEach((y,fl)=>{for(let i=0;i<8;i++){const x=285+i*70;if(fl===2&&x>440&&x<620)continue;SC.street.facadeWins.push({x,y:y+10,w:40,h:30,f:3-fl})}});
 
 SC.study={w:580,name:'The Study',windows:[{x:186,y:44,w:52,h:70}],
   lights:[{x:300,y:140,r:120,i:1},{x:416,y:110,r:70,i:.9},{x:500,y:118,r:56,i:.8},{x:110,y:60,r:70,i:.5}],
@@ -1524,7 +1527,7 @@ function drawRide(){
 const loadingEl=document.getElementById('loading');let tipOrder=[],tipI=0;
 function nextTip(){if(tipI>=tipOrder.length){tipOrder=TIPS.map((_,i)=>i).sort(()=>Math.random()-.5);tipI=0}return TIPS[tipOrder[tipI++]]}
 function showLoading(to,cb){
-  paused=true;const tip=nextTip();document.getElementById('lf').textContent=FLOOR_TAGS[to];document.getElementById('ln').textContent=FLOOR_NAMES[to].toUpperCase();
+  paused=true;const tip=nextTip();document.getElementById('lf').textContent=to===0?'GROUND FLOOR':FLOOR_TAGS[to];document.getElementById('ln').innerHTML=pixE(FLOOR_NAMES[to].toUpperCase());
   const tl=document.getElementById('ltip');tl.querySelector('b').textContent=tip[0];tl.querySelector('span').textContent=tip[1];
   const bar=document.getElementById('lbar');bar.style.transition='none';bar.style.width='0';loadingEl.hidden=false;loadingEl.style.opacity=1;
   requestAnimationFrame(()=>{bar.style.transition=`width ${reduce?.5:1.3}s linear`;bar.style.width='100%'});
@@ -1557,7 +1560,7 @@ mb.onclick=()=>{if(!music){music=new Audio('assets/music.mp3');music.loop=true;m
 
 /* ---------- HUD ---------- */
 function updateHUD(){
-  document.getElementById('fname').textContent=scene==='street'?'OUTSIDE · THE GALLERY':scene==='study'?"FLOOR 3 · BYTE'S LIBRARY":FLOOR_TAGS[scene]+' · '+FLOOR_NAMES[scene].toUpperCase();
+  document.getElementById('fname').innerHTML=pixE(scene==='street'?'OUTSIDE · THE GALLERY':scene==='study'?"FLOOR 3 · BYTE'S LIBRARY":FLOOR_TAGS[scene]+' · '+FLOOR_NAMES[scene].toUpperCase());
   const dl=daylight();document.getElementById('clock').textContent=(dl>.5?'☀ ':'☾ ')+clockText()+' · '+WNAME[WX.kind];
   const fl=typeof scene!=='number'||scene===0?null:COUNTED.filter(e=>e.floor===scene);
   document.getElementById('visited').textContent=fl?'Seen here: '+fl.filter(e=>visited.has(e.id)).length+' / '+fl.length+' · Total: '+COUNTED.filter(e=>visited.has(e.id)).length+' / '+COUNTED.length:'Exhibits seen: '+COUNTED.filter(e=>visited.has(e.id)).length+' / '+COUNTED.length;
