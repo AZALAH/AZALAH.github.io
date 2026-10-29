@@ -3,263 +3,368 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="Ahmed Salah: Computer Science student at UMass Lowell (Cybersecurity). Projects, resume, and more.">
+<meta name="description" content="Ahmed Salah: Computer Science student at UMass Lowell (Cybersecurity). Projects, resume, a walkable gallery, and more.">
+<meta name="theme-color" content="#12141c">
 <title>Ahmed Salah Portfolio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap">
 <style>
-*,*::before,*::after{box-sizing:border-box}
-body{margin:0;font-size:14px}
-[hidden]{display:none!important}
-img{max-width:100%}
 @font-face{font-family:'VT323';src:url(assets/vt323.ttf) format('truetype');font-display:swap}
 @font-face{font-family:'MCPixel';src:url(assets/minecraft.ttf) format('truetype');font-display:block}
-/* Layout: full-screen procedural block world, centered pixel title + stacked stone menu; each menu item opens a framed panel over the world */
+/*
+  Concept: every screen is a real Minecraft menu screen, matched to its content.
+  Projects = Select World list. About = Book & Quill. Contact = Multiplayer server list.
+  Current Work = Advancements. Music = Options. Palette = Minecraft's own chat colours.
+*/
 :root{
-  --sky-top:#1b2340; --sky-bot:#e0875a;
-  --stone:#7d7f86; --stone-hi:#b4b6bd; --stone-lo:#3d3f45; --stone-hover:#6d7fbf;
-  --ink:#f2f0e8; --ink-dim:#c9c6ba; --shadow:#1a1a1f;
-  --panel:#16181f; --panel-edge:#4a4d57; --accent:#6a9e86; --warn:#f2c94c;
-  --f-display:'MCPixel','Courier New',monospace;
+  --white:#ffffff; --gray:#aaaaaa; --dgray:#555555; --green:#55ff55; --yellow:#ffff55; --gold:#ffaa00; --aqua:#55ffff; --red:#ff5555;
+  --ink:#f0eee6; --ink-dim:#b8b6ae; --shade:#3e3e3e;
+  --stone:#727272; --stone-hi:#a9a9a9; --stone-lo:#404040;
+  --band:rgba(0,0,0,.52); --sep-hi:rgba(255,255,255,.22); --sep-lo:rgba(0,0,0,.6);
+  --book:#e9dcb4; --book-ink:#2e2213; --book-edge:#8b6b3d;
   --f-ui:'MCPixel','Courier New',monospace;
-  --f-body:'VT323','IBM Plex Mono',ui-monospace,Consolas,monospace;
+  --f-body:'VT323','Courier New',monospace;
+  --f-paper:'Atkinson Hyperlegible',system-ui,sans-serif;
+  --ease-out:cubic-bezier(.23,1,.32,1);
   color-scheme:dark;
 }
-html,body{height:100%}
-body{background:var(--sky-top);color:var(--ink);font-family:var(--f-body);overflow:hidden}
-video#world{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;will-change:transform;transform:translateZ(0)}
-.vignette{position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse at center,rgba(0,0,0,0) 55%,rgba(0,0,0,.3) 100%)}
-.screen{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;padding-block:24px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%;margin:0}
+body{background:#12141c;color:var(--ink);font-family:var(--f-body);font-size:20px;overflow:hidden;-webkit-font-smoothing:none}
+img{max-width:100%;display:block}
+a{color:var(--aqua);text-underline-offset:3px}
+a:hover{color:var(--white)}
+:focus-visible{outline:2px solid var(--white);outline-offset:2px}
 
-.logo{position:relative;text-align:center;display:flex;flex-direction:column;align-items:center;gap:4px;animation:drop .9s cubic-bezier(.2,1.4,.4,1) both}
-.logo h1,.logo .sub{margin:0;font-family:var(--f-display);font-weight:400;line-height:.95;letter-spacing:.04em;color:#cfc8c0;
+/* ---------- panorama ---------- */
+.pano{position:fixed;inset:-3%;z-index:0;overflow:hidden}
+.pano video{width:100%;height:100%;object-fit:cover;transform:scale(1.04);will-change:transform}
+.pano::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 42%,rgba(0,0,0,0) 40%,rgba(0,0,0,.45) 100%)}
+body.in-screen .title,body.in-screen .corner{visibility:hidden}
+body.in-screen .pano video{filter:blur(7px) brightness(.62);transition:filter .18s ease}
+
+/* ---------- Minecraft text + buttons ---------- */
+.mc{font-family:var(--f-ui);text-shadow:2px 2px 0 var(--shade)}
+.btn{font-family:var(--f-ui);font-size:16px;line-height:1;color:var(--ink);text-shadow:2px 2px 0 var(--shade);display:flex;align-items:center;justify-content:center;gap:8px;
+  min-height:42px;padding:0 14px;border:0;cursor:pointer;text-decoration:none;text-align:center;
+  background:var(--stone) var(--stonetex);background-size:64px 64px;image-rendering:pixelated;
+  box-shadow:inset 0 2px 0 var(--stone-hi),inset 2px 0 0 var(--stone-hi),inset 0 -3px 0 var(--stone-lo),inset -2px 0 0 var(--stone-lo),0 0 0 2px #000}
+.btn:hover,.btn:focus-visible{outline:none;color:var(--yellow);box-shadow:inset 0 2px 0 var(--stone-hi),inset 2px 0 0 var(--stone-hi),inset 0 -3px 0 var(--stone-lo),inset -2px 0 0 var(--stone-lo),0 0 0 2px #fff}
+.btn:active{transform:translateY(1px);box-shadow:inset 0 3px 0 var(--stone-lo),inset 2px 0 0 var(--stone-lo),inset 0 -2px 0 var(--stone-hi),0 0 0 2px #fff}
+.btn[disabled],.btn[aria-disabled="true"]{color:#a0a0a0;cursor:default;background:#3c3c3c;box-shadow:0 0 0 2px #000;transform:none}
+.btn.icon{width:42px;padding:0;flex:none}
+.btn svg{width:20px;height:20px;image-rendering:pixelated}
+
+/* ---------- title screen ---------- */
+.title{position:relative;z-index:1;height:100%;display:grid;grid-template-rows:1fr auto 1.15fr;justify-items:center;padding:24px max(16px,env(safe-area-inset-right,0px)) 72px max(16px,env(safe-area-inset-left,0px))}
+.logo{grid-row:2;position:relative;display:flex;flex-direction:column;align-items:center;margin-bottom:34px;animation:drop .9s var(--ease-out) both}
+.logo h1,.logo .sub{margin:0;font-family:var(--f-ui);font-weight:400;line-height:.95;letter-spacing:.04em;
   background:repeating-linear-gradient(0deg,#d8d2ca 0 6px,#bfb8af 6px 9px,#e4dfd8 9px 14px);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
-  filter:drop-shadow(0 1px 0 #6d6760) drop-shadow(0 2px 0 #5c5650) drop-shadow(0 3px 0 #4b4640) drop-shadow(0 4px 0 #3a3632) drop-shadow(3px 6px 0 rgba(0,0,0,.6))}
-.logo h1{font-size:clamp(40px,10vw,110px);animation:bob 3.2s ease-in-out infinite}
-.logo .sub{animation:bob 3.2s ease-in-out .25s infinite}
-@keyframes bob{0%,100%{transform:translateY(0) rotate(0)}25%{transform:translateY(-6px) rotate(-.6deg)}75%{transform:translateY(4px) rotate(.6deg)}}
-.logo .sub{font-size:clamp(24px,5.5vw,62px)}
-.splash{position:absolute;right:-6%;bottom:-4px;font-family:var(--f-display);font-size:clamp(12px,2vw,20px);color:#ffff3c;text-shadow:2px 2px 0 #3f3f00;white-space:nowrap;transform:rotate(-18deg);animation:pulse .5s ease-in-out infinite alternate;transform-origin:center}
-@keyframes pulse{from{transform:rotate(-18deg) scale(1)}to{transform:rotate(-18deg) scale(1.1)}}
-@keyframes drop{from{opacity:0;transform:translateY(-40px) scale(.92)}to{opacity:1;transform:none}}
-nav.menu{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:min(460px,100%)}
-.btn{grid-column:span 2;font-family:var(--f-ui);font-size:17px;color:var(--ink);background:var(--stone) var(--stonetex);image-rendering:pixelated;background-size:64px 64px;border:0;padding:11px 12px;cursor:pointer;text-shadow:2px 2px 0 var(--shadow);
-  box-shadow:inset 3px 3px 0 var(--stone-hi),inset -3px -3px 0 var(--stone-lo),0 0 0 2px #000}
-.btn.half{grid-column:span 1;font-size:15px}
-.btn:hover,.btn:focus-visible{background:var(--stone-hover) var(--stonetex);background-size:64px 64px;background-blend-mode:multiply;outline:none;box-shadow:inset 3px 3px 0 #9fb0ec,inset -3px -3px 0 #39467a,0 0 0 2px #fff}
-.btn:active{transform:translateY(1px)}
-.audiobar{display:flex;align-items:center;gap:10px;background:rgba(20,20,26,.78);box-shadow:0 0 0 2px #000,inset 0 0 0 2px #4a4d57;padding:6px 10px;flex-wrap:wrap;pointer-events:auto}
-.abtn{display:flex;align-items:center;gap:6px;font-family:var(--f-ui);font-size:12px;color:var(--ink);background:var(--stone) var(--stonetex);background-size:64px 64px;border:0;padding:6px 10px;cursor:pointer;box-shadow:inset 2px 2px 0 var(--stone-hi),inset -2px -2px 0 var(--stone-lo),0 0 0 2px #000;text-shadow:1px 1px 0 var(--shadow)}
-.abtn:hover,.abtn:focus-visible{outline:none;box-shadow:inset 2px 2px 0 #9fb0ec,inset -2px -2px 0 #39467a,0 0 0 2px #fff}
-#vol{width:90px;accent-color:#8bc34a}
-.audiobar{position:relative}
-.credit{position:absolute;left:0;bottom:calc(100% + 8px);white-space:nowrap;font-family:var(--f-ui);font-size:12px;color:var(--ink);background:rgba(20,20,26,.92);box-shadow:0 0 0 2px #000,inset 0 0 0 2px #4a4d57;padding:6px 10px;opacity:0;transform:translateY(4px);transition:opacity .2s,transform .2s;pointer-events:none}
-.audiobar:hover .credit,.audiobar:focus-within .credit{opacity:1;transform:none}
-#volpct,.ver{font-family:var(--f-ui);font-size:12px;font-variant-numeric:tabular-nums;color:var(--ink-dim)}
-.foot{align-items:flex-end;position:fixed;bottom:0;left:0;right:0;z-index:1;display:flex;justify-content:space-between;gap:12px;font-family:var(--f-ui);font-size:12px;color:var(--ink-dim);text-shadow:1px 1px 0 var(--shadow);
-  padding:8px max(16px,env(safe-area-inset-right,0px)) calc(8px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
-/* panels */
-.panel{position:fixed;inset:0;z-index:5;display:flex;align-items:center;justify-content:center;background:rgba(10,11,16,.72);padding-block:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-.frame{background:var(--panel);width:min(860px,100%);max-height:100%;display:flex;flex-direction:column;box-shadow:inset 0 0 0 3px var(--panel-edge),0 0 0 3px #000,8px 8px 0 rgba(0,0,0,.5)}
-.frame header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-bottom:3px solid var(--panel-edge)}
-.frame h2{margin:0;font-family:var(--f-display);font-size:clamp(16px,3vw,22px);letter-spacing:.04em}
-.frame .body{overflow:auto;padding:18px;display:flex;flex-direction:column;gap:16px;line-height:1.35;font-size:21px;min-width:0}
-.frame .btn{grid-column:auto;font-size:14px;padding:7px 14px}
-h3{margin:0;font-family:var(--f-ui);font-weight:600;font-size:18px;color:var(--accent)}
-.lede{color:var(--ink-dim);max-width:65ch;margin:0}
-.slot{background:#1e2129;box-shadow:inset 0 0 0 2px var(--panel-edge);padding:14px;display:flex;flex-direction:column;gap:8px;min-width:0}
-.slot p{margin:0;max-width:68ch}
-.tags{display:flex;flex-wrap:wrap;gap:6px}
-.tag{font-family:var(--f-ui);font-size:12px;padding:2px 8px;background:#2a2e38;color:var(--ink-dim);box-shadow:inset 0 0 0 1px #4a4d57}
-.status{font-family:var(--f-ui);font-size:12px;padding:2px 8px;align-self:flex-start}
-.s-done{background:#22392e;color:#a9cdb9}.s-wip{background:#4d4116;color:var(--warn)}.s-plan{background:#2a2e38;color:var(--ink-dim)}
-.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
-ol.steps{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:6px;max-width:68ch}
-code{font-family:var(--f-body);background:#0d0e13;padding:1px 5px;color:var(--accent)}
-.note{font-size:12px;color:var(--warn);font-family:var(--f-ui)}
-/* resume */
-.deck{display:flex;flex-direction:column;gap:8px;margin-top:6px;width:min(560px,100%);align-self:center}
-.deckbar{display:flex;justify-content:flex-end;gap:8px;font-family:var(--f-ui);font-size:12px;color:var(--ink-dim)}
-.dcount{font-variant-numeric:tabular-nums}
-.slidebox{background:#000;box-shadow:0 0 0 2px #000,inset 0 0 0 2px #4a4d57;aspect-ratio:16/9;max-width:100%;display:flex;align-items:center;justify-content:center;overflow:hidden}
-.slidebox img{width:100%;height:100%;object-fit:contain;display:block;image-rendering:auto}
-.dnarr{margin:0;min-height:4.8em;color:var(--ink-dim);font-size:20px;max-width:none}
-.dctrl{display:flex;gap:8px;flex-wrap:wrap}
-.dctrl .btn{flex:1 1 120px}
-.dctrl .btn[aria-pressed="true"]{background:#3f8a62}
-.frame.wide{width:min(1100px,100%)}
-.resume{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:16px;align-items:start}
-.paper{background:#f4f1ea;color:#1c1d22;padding:22px 24px;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:12.5px;line-height:1.45;box-shadow:0 0 0 3px #000;min-width:0}
-.paper a{color:#2b5a8a}
-.rname{margin:0;text-align:center;font-family:var(--f-display);font-weight:400;font-size:26px;letter-spacing:.08em}
-.rcontact{margin:4px 0 0;text-align:center;font-size:11.5px;overflow-wrap:anywhere}
-.rh{font-family:var(--f-ui);font-weight:400;font-size:15px;letter-spacing:.1em;text-transform:uppercase;margin:14px 0 6px;padding-bottom:3px;border-bottom:2px solid #1c1d22}
-.rjob{padding:6px 8px;margin:0 -8px;cursor:pointer;outline:none;transition:background .15s}
-.rjob:hover,.rjob:focus-visible,.rjob.on{background:#dfe9e2;box-shadow:inset 3px 0 0 #3f8a62}
+  filter:drop-shadow(0 1px 0 #6d6760) drop-shadow(0 2px 0 #5c5650) drop-shadow(0 3px 0 #4b4640) drop-shadow(0 4px 0 #3a3632) drop-shadow(3px 7px 0 rgba(0,0,0,.55))}
+.logo h1{font-size:clamp(42px,10.5vw,118px)}
+.logo .sub{font-size:clamp(22px,5vw,58px);margin-top:6px;letter-spacing:.18em}
+.splash{position:absolute;right:-7%;bottom:2px;font-family:var(--f-ui);font-size:clamp(13px,1.9vw,21px);color:var(--yellow);text-shadow:2px 2px 0 #3f3f15;white-space:nowrap;transform:rotate(-20deg);transform-origin:center;animation:pulse .45s ease-in-out infinite alternate;pointer-events:none}
+@keyframes pulse{to{transform:rotate(-20deg) scale(1.09)}}
+@keyframes drop{from{opacity:0;transform:translateY(-36px)}to{opacity:1;transform:none}}
+.menu{grid-row:3;align-self:start;display:grid;grid-template-columns:42px 1fr 1fr 42px;gap:10px;width:min(480px,100%);animation:rise .6s var(--ease-out) .25s both}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.menu .wide{grid-column:2/4}
+.menu .gap{height:6px;grid-column:1/-1}
+.menu .optbtn{grid-column:1}
+.menu .lhalf{grid-column:2}.menu .rhalf{grid-column:3}.menu .catbtn{grid-column:4}
+.corner{position:fixed;bottom:0;z-index:1;padding:10px max(12px,env(safe-area-inset-left,0px)) calc(10px + env(safe-area-inset-bottom,0px));font-family:var(--f-ui);font-size:12px;color:var(--ink);text-shadow:1px 1px 0 var(--shade)}
+.corner.l{left:0}.corner.r{right:0;text-align:right;padding-right:max(12px,env(safe-area-inset-right,0px));max-width:60vw}
+.toast{position:fixed;top:max(14px,env(safe-area-inset-top,0px));right:14px;z-index:30;width:min(320px,calc(100vw - 28px));display:grid;grid-template-columns:40px 1fr;gap:4px 12px;align-items:center;padding:10px 14px;background:#212121;box-shadow:0 0 0 2px #000,inset 0 0 0 2px #555,inset 0 0 0 4px #212121,inset 0 0 0 6px #3a3a3a;transform:translateX(120%);transition:transform .4s var(--ease-out)}
+.toast.on{transform:none}
+.toast .ti{grid-row:1/3;width:40px;height:40px}
+.toast b{font-family:var(--f-ui);font-weight:400;font-size:13px;color:var(--yellow);text-shadow:1px 1px 0 #3f3f15}
+.toast span{font-family:var(--f-ui);font-size:13px;color:var(--white);text-shadow:1px 1px 0 var(--shade)}
+
+/* ---------- menu screens ---------- */
+.screen{position:fixed;inset:0;z-index:10;background:rgba(0,0,0,.28);display:grid;grid-template-rows:auto 1fr auto}
+.screen.anim{animation:sIn .14s ease-out}
+@keyframes sIn{from{opacity:0}}
+.sh{text-align:center;padding:max(18px,env(safe-area-inset-top,0px)) 16px 14px}
+.sh h2{margin:0;font-family:var(--f-ui);font-weight:400;font-size:clamp(17px,2.4vw,22px);text-shadow:2px 2px 0 var(--shade)}
+.sh p{margin:6px auto 0;max-width:62ch;color:var(--ink-dim);font-size:19px;line-height:1.15}
+.band{min-height:0;overflow:auto;background:var(--band);box-shadow:inset 0 2px 0 var(--sep-lo),inset 0 3px 0 var(--sep-hi),inset 0 -2px 0 var(--sep-lo),inset 0 -3px 0 var(--sep-hi);scrollbar-color:#8b8b8b #000;scrollbar-width:thin}
+.inner{width:min(900px,100%);margin:0 auto;padding:18px 16px 26px}
+.sb{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;padding:14px 16px max(16px,env(safe-area-inset-bottom,0px))}
+.sb .btn{width:min(220px,calc(50vw - 21px))}
+.sb .btn.solo{width:min(300px,100%)}
+
+/* ---------- select-world list (projects) ---------- */
+.worlds{display:flex;flex-direction:column;gap:4px;max-width:640px;margin:0 auto}
+.world{display:grid;grid-template-columns:64px 1fr;gap:4px 12px;align-items:center;padding:4px;background:none;border:0;color:inherit;text-align:left;cursor:pointer;font:inherit;box-shadow:inset 0 0 0 2px transparent}
+.world:hover{box-shadow:inset 0 0 0 2px #808080}
+.world[aria-current="true"],.world:focus-visible{outline:none;box-shadow:inset 0 0 0 2px #fff;background:rgba(0,0,0,.35)}
+.world .ic{width:64px;height:64px;grid-row:1/4;object-fit:cover;image-rendering:auto;background:#000;box-shadow:0 0 0 1px #000}
+.world .ic.px{image-rendering:pixelated}
+.world b{font-family:var(--f-ui);font-weight:400;font-size:15px;color:var(--white);text-shadow:2px 2px 0 var(--shade)}
+.world span{font-size:19px;line-height:1;color:var(--gray)}
+.world .st-done{color:var(--green)}.world .st-wip{color:var(--gold)}.world .st-live{color:var(--aqua)}
+.detail{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:16px;font-size:21px;line-height:1.22}
+.detail h3{margin:0;font-family:var(--f-ui);font-weight:400;font-size:clamp(20px,3vw,26px);text-shadow:2px 2px 0 var(--shade)}
+.detail .meta{color:var(--gray);margin-top:-8px}
+.detail p{margin:0;max-width:66ch}
+.detail h4{margin:4px 0 -8px;font-family:var(--f-ui);font-weight:400;font-size:14px;color:var(--yellow);text-shadow:2px 2px 0 #3f3f15}
+.detail .hero{width:100%;box-shadow:0 0 0 2px #000,0 0 0 4px #5a5a5a}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-family:var(--f-ui);font-size:12px;padding:5px 8px 4px;color:var(--ink);background:#2b2b2b;box-shadow:inset 0 0 0 2px #4a4a4a;text-shadow:1px 1px 0 #000}
+.links{display:flex;flex-wrap:wrap;gap:10px}
+.links .btn{min-height:38px;font-size:14px}
+.deck{display:flex;flex-direction:column;gap:10px}
+.slidebox{background:#000;aspect-ratio:16/9;box-shadow:0 0 0 2px #000,0 0 0 4px #5a5a5a;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.slidebox img{width:100%;height:100%;object-fit:contain}
+.dnarr{min-height:3.7em;color:var(--ink-dim)}
+.dctrl{display:grid;grid-template-columns:1fr 1.4fr 1fr;gap:10px}
+.dctrl .btn{font-size:14px}
+.dcount{font-family:var(--f-ui);font-size:12px;color:var(--gray);text-align:right;font-variant-numeric:tabular-nums}
+
+/* ---------- tabs ---------- */
+.tabs{display:flex;justify-content:center;gap:0;margin:0 auto 18px;width:min(520px,100%)}
+.tab{flex:1;font-family:var(--f-ui);font-size:14px;color:var(--gray);background:#2a2a2a;border:0;padding:12px 8px;cursor:pointer;text-shadow:2px 2px 0 #000;box-shadow:inset 0 0 0 2px #000,inset 0 -4px 0 #1a1a1a}
+.tab[aria-selected="true"]{color:var(--white);background:#4a4a4a;box-shadow:inset 0 0 0 2px #000,inset 0 3px 0 #777}
+.steps{margin:0 auto;padding:0;list-style:none;counter-reset:s;max-width:720px;display:flex;flex-direction:column;gap:12px;font-size:21px;line-height:1.22}
+.steps li{counter-increment:s;display:grid;grid-template-columns:34px 1fr;gap:12px}
+.steps li::before{content:counter(s);font-family:var(--f-ui);font-size:14px;color:var(--yellow);text-shadow:2px 2px 0 #3f3f15;width:34px;height:34px;display:grid;place-items:center;background:#1c1c1c;box-shadow:inset 0 0 0 2px #555}
+code{font-family:var(--f-body);font-size:1em;color:var(--green);background:rgba(0,0,0,.55);padding:0 5px;overflow-wrap:anywhere}
+.repo{text-align:center;margin:0 0 16px;color:var(--ink-dim)}
+
+/* ---------- book & quill (about) ---------- */
+.bookwrap{display:flex;flex-direction:column;align-items:center;gap:16px;padding-top:6px}
+.book{display:grid;grid-template-columns:1fr 1fr;width:min(820px,100%);filter:drop-shadow(6px 8px 0 rgba(0,0,0,.45))}
+.page{position:relative;min-height:410px;padding:44px 34px 34px;color:var(--book-ink);font-size:21px;line-height:1.2;
+  background:var(--book) var(--papertex);background-size:96px 96px;image-rendering:pixelated;box-shadow:inset 0 0 0 3px var(--book-edge),inset 0 0 0 5px #c9b27c}
+.page:first-child{box-shadow:inset 0 0 0 3px var(--book-edge),inset 0 0 0 5px #c9b27c,inset -14px 0 14px -10px rgba(80,50,10,.45)}
+.page:last-child{box-shadow:inset 0 0 0 3px var(--book-edge),inset 0 0 0 5px #c9b27c,inset 14px 0 14px -10px rgba(80,50,10,.45)}
+.page .pn{position:absolute;top:16px;right:22px;font-family:var(--f-ui);font-size:12px;color:#6b5434}
+.page h3{margin:0 0 12px;font-family:var(--f-ui);font-weight:400;font-size:17px;color:#1f160b}
+.page p{margin:0 0 12px}
+.page b{color:#6a3d12}
+.booknav{display:flex;gap:14px;align-items:center}
+.booknav .btn{width:58px}
+.booknav span{font-family:var(--f-ui);font-size:12px;color:var(--ink-dim);min-width:110px;text-align:center}
+
+/* ---------- resume ---------- */
+.resume{display:grid;grid-template-columns:minmax(0,1.75fr) minmax(0,1fr);gap:18px;align-items:start;width:min(1120px,100%);margin:0 auto;padding:18px 16px 26px}
+.paper{background:#f7f5ef;color:#1d1e23;padding:28px 30px;font-family:var(--f-paper);font-size:14px;line-height:1.45;box-shadow:0 0 0 3px #000,6px 8px 0 rgba(0,0,0,.4);-webkit-font-smoothing:antialiased;min-width:0}
+.paper a{color:#1f5288}
+.rname{margin:0;text-align:center;font-family:var(--f-ui);font-weight:400;font-size:30px;letter-spacing:.06em;color:#111}
+.rcontact{margin:6px 0 0;text-align:center;font-size:13px;overflow-wrap:anywhere;color:#40424a}
+.rh{font-family:var(--f-paper);font-weight:700;font-size:15px;margin:18px 0 6px;padding-bottom:3px;border-bottom:2px solid #1d1e23;color:#111}
+.rjob{padding:6px 10px;margin:0 -10px;cursor:pointer;outline:none}
+.rjob:hover,.rjob:focus-visible,.rjob.on{background:#e2ece4;box-shadow:inset 4px 0 0 #2f8a4e}
 .rrow{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.rsub{font-size:12px}
+.rsub{font-size:13px;color:#40424a}
 .paper ul{margin:3px 0 0;padding-left:18px}
 .skills{padding-left:0!important;list-style:none}
-.rentry{background:#1e2129;box-shadow:inset 0 0 0 2px var(--panel-edge);padding:10px 12px;cursor:pointer;text-align:left;color:var(--ink);font-family:var(--f-body);font-size:13px;border:0;width:100%;display:flex;flex-direction:column;gap:2px}
-.rentry b{font-family:var(--f-ui);font-size:15px;font-weight:600}
-.rentry span{color:var(--ink-dim)}
-.rentry:hover,.rentry:focus-visible,.rentry.on{outline:none;box-shadow:inset 0 0 0 2px var(--accent)}
-.rcol{display:flex;flex-direction:column;gap:8px;min-width:0}
-.take{position:sticky;top:0;background:#101218;box-shadow:inset 0 0 0 2px #3a5a48;padding:14px;display:flex;flex-direction:column;gap:8px;align-self:start}
-.take .who{font-family:var(--f-ui);color:var(--accent)}
-.take p{margin:0;font-size:21px;line-height:1.3}
-.rsec{font-family:var(--f-ui);font-size:12px;letter-spacing:.12em;color:var(--ink-dim);text-transform:uppercase;margin-top:4px}
-/* reviews */
-form.rv{display:flex;flex-direction:column;gap:8px}
-form.rv input,form.rv textarea,form.rv select{font-family:var(--f-body);font-size:20px;background:#0d0e13;color:var(--ink);border:0;box-shadow:inset 0 0 0 2px var(--panel-edge);padding:8px}
-form.rv label{font-family:var(--f-ui);font-size:13px;color:var(--ink-dim)}
-.review{border-left:3px solid var(--accent);padding-left:10px}
-.review .stars{color:var(--warn);font-family:var(--f-ui)}
-a{color:var(--accent)}
-@media (max-width:640px){.resume{grid-template-columns:1fr}.paper{padding:16px}.take{position:static}.foot{font-size:10px;flex-direction:column}.splash{right:0}}
-@media (prefers-reduced-motion:reduce){.logo h1,.logo .sub{animation-duration:6s}}
+.take{position:sticky;top:0;display:flex;flex-direction:column;gap:10px;padding:18px;background:rgba(0,0,0,.6);box-shadow:0 0 0 2px #000,inset 0 0 0 2px #555}
+.take .who{font-family:var(--f-ui);font-size:15px;color:var(--yellow);text-shadow:2px 2px 0 #3f3f15}
+.take p{margin:0;font-size:22px;line-height:1.2}
+.take small{font-family:var(--f-ui);font-size:12px;color:var(--gray)}
+
+/* ---------- advancements (status) ---------- */
+.adv{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;margin-bottom:26px}
+.advt{display:grid;grid-template-columns:52px 1fr;gap:4px 12px;align-items:start;padding:12px;background:rgba(0,0,0,.45);box-shadow:0 0 0 2px #000,inset 0 0 0 2px #444}
+.frm{grid-row:1/3;width:52px;height:52px;display:grid;place-items:center;background:#2a2a2a}
+.frm.done{box-shadow:inset 0 0 0 3px #c9a227,inset 0 0 0 5px #6b5410}
+.frm.wip{box-shadow:inset 0 0 0 3px #7a7a7a,inset 0 0 0 5px #333}
+.frm.plan{box-shadow:inset 0 0 0 3px #4a4a4a,inset 0 0 0 5px #222;opacity:.75}
+.frm svg{width:30px;height:30px}
+.advt b{font-family:var(--f-ui);font-weight:400;font-size:14px;color:var(--white);text-shadow:2px 2px 0 var(--shade)}
+.advt b.wip{color:var(--gold)}.advt b.done{color:var(--green)}.advt b.plan{color:var(--gray)}
+.advt p{margin:0;font-size:19px;line-height:1.15;color:var(--ink-dim)}
+.sec{font-family:var(--f-ui);font-weight:400;font-size:16px;margin:0 0 12px;text-shadow:2px 2px 0 var(--shade)}
+form.rv{display:grid;grid-template-columns:1fr 140px;gap:10px;margin-bottom:18px}
+form.rv label{font-family:var(--f-ui);font-size:12px;color:var(--gray);display:block;margin-bottom:6px}
+form.rv .full{grid-column:1/-1}
+form.rv input,form.rv textarea,form.rv select{width:100%;font-family:var(--f-body);font-size:21px;color:var(--white);background:#000;border:0;padding:8px 10px;box-shadow:inset 0 0 0 2px #a0a0a0}
+form.rv input:focus,form.rv textarea:focus,form.rv select:focus{outline:none;box-shadow:inset 0 0 0 2px #fff}
+form.rv .btn{grid-column:1/-1;justify-self:start;width:220px}
+.reviews{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.review{padding:12px 14px;background:#8a6a3c var(--planktex);background-size:64px 64px;image-rendering:pixelated;color:#1a1208;box-shadow:0 0 0 2px #000;font-size:20px;line-height:1.15}
+.review .stars{font-family:var(--f-ui);font-size:13px;color:#1a1208}
+.review b{display:block;font-family:var(--f-ui);font-weight:400;font-size:13px;margin:4px 0}
+.review p{margin:0}
+
+/* ---------- server list (contact) ---------- */
+.servers{display:flex;flex-direction:column;gap:4px;max-width:640px;margin:0 auto}
+.server{display:grid;grid-template-columns:64px 1fr auto;gap:2px 12px;align-items:center;padding:4px;background:none;border:0;color:inherit;text-align:left;font:inherit;cursor:pointer;box-shadow:inset 0 0 0 2px transparent}
+.server:hover{box-shadow:inset 0 0 0 2px #808080}
+.server[aria-current="true"],.server:focus-visible{outline:none;box-shadow:inset 0 0 0 2px #fff;background:rgba(0,0,0,.35)}
+.server .ic{grid-row:1/3;width:64px;height:64px;image-rendering:pixelated}
+.server b{font-family:var(--f-ui);font-weight:400;font-size:15px;color:var(--white);text-shadow:2px 2px 0 var(--shade)}
+.server .motd{grid-column:2;font-size:19px;line-height:1.05;color:var(--gray)}
+.server .ping{grid-column:3;grid-row:1;display:flex;align-items:center;gap:8px;font-family:var(--f-ui);font-size:12px;color:var(--gray);text-shadow:1px 1px 0 #000}
+.bars{display:flex;align-items:flex-end;gap:1px;height:14px}
+.bars i{width:3px;background:var(--green);box-shadow:1px 1px 0 #0a3a0a}
+.bars i:nth-child(1){height:4px}.bars i:nth-child(2){height:6px}.bars i:nth-child(3){height:8px}.bars i:nth-child(4){height:11px}.bars i:nth-child(5){height:14px}
+
+/* ---------- options ---------- */
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:min(620px,100%);margin:0 auto}
+.slider{position:relative;height:42px;box-shadow:0 0 0 2px #000;background:#000}
+.slider input{position:absolute;inset:0;width:100%;height:100%;margin:0;-webkit-appearance:none;appearance:none;background:#2a2a2a;cursor:pointer;box-shadow:inset 0 0 0 2px #444}
+.slider input::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:42px;background:var(--stone) var(--stonetex);background-size:64px;box-shadow:inset 0 2px 0 var(--stone-hi),inset 2px 0 0 var(--stone-hi),inset 0 -3px 0 var(--stone-lo),inset -2px 0 0 var(--stone-lo),0 0 0 2px #000}
+.slider input::-moz-range-thumb{width:16px;height:42px;border:0;border-radius:0;background:var(--stone);box-shadow:0 0 0 2px #000}
+.slider input:focus-visible{outline:none;box-shadow:inset 0 0 0 2px #fff}
+.slider span{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--f-ui);font-size:15px;color:var(--ink);text-shadow:2px 2px 0 var(--shade);pointer-events:none}
+.opts .full{grid-column:1/-1}
+.credit{grid-column:1/-1;text-align:center;color:var(--ink-dim);margin-top:8px}
+
+@media (max-width:980px){.resume{grid-template-columns:1fr}.take{position:static;order:-1}}
+@media (max-width:720px){
+  .book{grid-template-columns:1fr}.book .page:last-child{display:none}.page{min-height:420px;padding:40px 24px 26px}
+  .dctrl{grid-template-columns:1fr 1fr}.dctrl #dread{grid-column:1/-1;order:-1}
+  form.rv{grid-template-columns:1fr}.paper{padding:20px 18px}
+  .opts{grid-template-columns:1fr}
+  .corner.r{font-size:10px}
+}
+@media (max-width:520px){.menu{grid-template-columns:42px 1fr 1fr 42px;gap:8px}.btn{font-size:14px}.logo{margin-bottom:26px}.splash{right:-2%}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition:none!important}}
 </style>
 </head>
 <body>
 
+<div class="pano" aria-hidden="true"><video id="world" src="assets/background.mp4" autoplay muted loop playsinline></video></div>
 
-<video id="world" src="assets/background.mp4" autoplay muted loop playsinline aria-hidden="true"></video><div class="vignette"></div>
-
-<main class="screen" id="title">
+<main class="title" id="title">
   <div class="logo">
     <h1>AHMED SALAH</h1>
     <div class="sub">PORTFOLIO</div>
     <span class="splash" id="splash">Block by block!</span>
   </div>
   <nav class="menu" aria-label="Main menu">
-    <button class="btn" data-open="projects">Projects</button>
-    <a class="btn" href="gallery.html" style="display:block;text-align:center;text-decoration:none">Enter the Gallery</a>
-    <button class="btn" data-open="tutorials">How to Use &amp; Test My Projects</button>
-    <button class="btn" data-open="about">About Me</button>
-    <button class="btn" data-open="resume">Resume</button>
-    <button class="btn half" data-open="status">Current Work &amp; Reviews</button>
-    <button class="btn half" data-open="contact">Contact</button>
+    <button class="btn wide" data-open="projects">Projects</button>
+    <a class="btn wide" href="gallery.html" data-sound>Enter the Gallery</a>
+    <button class="btn wide" data-open="tutorials">Run My Projects</button>
+    <button class="btn wide" data-open="about">About Me</button>
+    <button class="btn wide" data-open="resume">Resume</button>
+    <span class="gap" aria-hidden="true"></span>
+    <button class="btn icon optbtn" data-open="options" aria-label="Options: music and sound"><svg viewBox="0 0 10 10" aria-hidden="true"><path fill="currentColor" d="M3 1h5v5H7V3H4v4H1V5h2z"/><rect x="0" y="6" width="3" height="3" fill="currentColor"/><rect x="5" y="5" width="3" height="3" fill="currentColor"/></svg></button>
+    <button class="btn lhalf" data-open="status">Current Work</button>
+    <button class="btn rhalf" data-open="contact">Contact</button>
+    <a class="btn icon catbtn" href="gallery.html#study" aria-label="Visit Byte the cat in his library"><svg viewBox="0 0 10 10" aria-hidden="true"><path fill="currentColor" d="M1 1h2v1h4V1h2v6H8v1H2V7H1z"/><rect x="3" y="4" width="1" height="1" fill="#3e3e3e"/><rect x="6" y="4" width="1" height="1" fill="#3e3e3e"/><rect x="4" y="6" width="2" height="1" fill="#3e3e3e"/></svg></a>
   </nav>
 </main>
-<div class="foot"><div class="audiobar">
-  <button class="abtn" id="musicBtn" aria-pressed="false"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M2 6h3l4-3v10l-4-3H2z"/><path id="mwave" fill="none" stroke="currentColor" stroke-width="1.5" d="M11 5.5c1 1 1 4 0 5M13 4c2 2 2 6 0 8" style="display:none"/><path id="mx" fill="none" stroke="currentColor" stroke-width="1.5" d="M11 6l4 4M15 6l-4 4"/></svg><span id="mlabel">MUSIC OFF</span></button>
-  <input type="range" id="vol" min="0" max="100" value="40" aria-label="Music volume"><span id="volpct">40%</span>
-  <span class="ver">PORTFOLIO V1.0</span><span class="credit" role="tooltip" id="mcredit">♪ "Lofi Chill Vlog Beats" by alex-morgan (Pixabay)</span>
-</div><span>© 2026 Ahmed Salah. Not an official Minecraft product. Not affiliated with Mojang or Microsoft.</span></div>
+<div class="corner l">Portfolio 2.0</div>
+<div class="corner r">Copyright Ahmed Salah. Not affiliated with Mojang.</div>
 
-<!-- PROJECTS -->
-<section class="panel" id="projects" hidden><div class="frame">
-  <header><h2>Projects</h2><button class="btn" data-close>Done</button></header>
-  <div class="body">
-    <p class="lede">Everything I've built, with what it does, how it works, and what I learned. Click into a project's tutorial to run it yourself.</p>
-    <div class="slot">
-      <span class="status s-wip">Updating docs</span>
-      <h3>SecureDrop</h3>
-      <p>A secure client-server application for authenticated, encrypted file exchange, and my final project for Intro to Cybersecurity. Click through the slides below, or press Play narration for a guided walkthrough.</p>
-      <p>Users authenticate with salted password hashes, each connection negotiates a session key, transfers are encrypted over TCP, and the protocol rejects replayed messages.</p>
-      <p><a href="https://github.com/AZALAH/SecureDrop" target="_blank" rel="noopener">View the code on GitHub</a></p>
-      <div class="tags"><span class="tag">Python</span><span class="tag">TCP sockets</span><span class="tag">Encryption</span><span class="tag">Salted hashing</span><span class="tag">Session keys</span><span class="tag">Replay protection</span></div>
+<div class="toast" id="toast" role="status" aria-live="polite"><svg class="ti" viewBox="0 0 10 10" aria-hidden="true"><rect x="1" y="1" width="8" height="8" fill="#c9a227"/><rect x="2" y="2" width="6" height="6" fill="#2a2a2a"/><path d="M3 5h1v1h1V4h1V3h1v2H6v1H5v1H4V6H3z" fill="#55ff55"/></svg><b id="toastT">Advancement Made!</b><span id="toastS"></span></div>
+
+<!-- PROJECTS · select world -->
+<section class="screen" id="projects" role="dialog" aria-modal="true" aria-labelledby="pjT" hidden>
+  <header class="sh"><h2 id="pjT">Select a Project</h2></header>
+  <div class="band"><div class="inner">
+    <div class="worlds" id="worlds" role="list">
+      <button class="world" role="listitem" data-proj="securedrop"><img class="ic" src="assets/slides/slide-01.jpg" alt=""><b>SecureDrop</b><span>Encrypted file transfer in Python</span><span><span class="st-done">Complete</span> · Fall 2025 · narrated walkthrough</span></button>
+      <button class="world" role="listitem" data-proj="tokenizer"><img class="ic" src="assets/gallery/tokenizer.png" alt=""><b>Assembly Tokenizer</b><span>Assembler first pass, all in MIPS</span><span><span class="st-done">Complete</span> · Spring 2026</span></button>
+      <button class="world" role="listitem" data-proj="comp4"><img class="ic" src="assets/gallery/ps7.png" alt=""><b>Computing IV Collection</b><span>Eight C++ projects, from SFML games to log parsing</span><span><span class="st-done">Complete</span> · Spring 2026 · on display in the Gallery</span></button>
+      <button class="world" role="listitem" data-proj="site"><img class="ic" src="assets/gallery/portfolio.jpg" alt=""><b>This Portfolio</b><span>Title screen, walkable gallery, café, and an elevator</span><span><span class="st-live">Live</span> · Fall 2026</span></button>
+      <button class="world" role="listitem" data-proj="r36s"><canvas class="ic px" id="r36icon" width="16" height="16" aria-hidden="true"></canvas><b>Handheld Streaming</b><span>Turning an R36S Linux handheld into a game-streaming client</span><span><span class="st-wip">In progress</span> · waiting on Wi-Fi</span></button>
+    </div>
+
+    <article class="detail" data-detail="securedrop" hidden>
+      <h3>SecureDrop</h3><div class="meta">Python · Fall 2025 · Intro to Cybersecurity final project</div>
+      <p>A secure client-server app for authenticated, encrypted file exchange. Users log in against salted password hashes, every file gets a fresh encryption key, transfers travel over TCP, and the receiver rejects replayed messages.</p>
       <div class="deck" id="deck">
-        <div class="deckbar"><span id="dcount" class="dcount">1 / 12</span></div>
+        <div class="dcount" id="dcount">1 / 12</div>
         <div class="slidebox"><img id="dimg" alt="SecureDrop presentation slide 1"></div>
-        <p id="dnarr" class="dnarr"></p>
-        <div class="dctrl">
-          <button class="btn" id="dprev" type="button">◀ Prev</button>
-          <button class="btn" id="dread" type="button" aria-pressed="false">▶ Play narration</button>
-          <button class="btn" id="dnext" type="button">Next ▶</button>
-        </div>
+        <p class="dnarr" id="dnarr"></p>
+        <div class="dctrl"><button class="btn" id="dprev" type="button">Previous</button><button class="btn" id="dread" type="button" aria-pressed="false">Play narration</button><button class="btn" id="dnext" type="button">Next</button></div>
       </div>
+      <div class="chips"><span class="chip">Python</span><span class="chip">TCP and UDP sockets</span><span class="chip">Fernet encryption</span><span class="chip">scrypt hashing</span><span class="chip">Replay protection</span><span class="chip">Multithreading</span></div>
+      <div class="links"><a class="btn" href="https://github.com/AZALAH/SecureDrop" target="_blank" rel="noopener">View the code</a><button class="btn" data-jump="tutorials:sd">Run it yourself</button></div>
+    </article>
 
-    </div>
-    <div class="slot">
-      <span class="status s-done">Complete</span>
-      <h3>Assembly Tokenizer &amp; Symbol Table Generator</h3>
-      <p>The first pass of an assembler, written entirely in MIPS assembly. A finite state machine reads each line character by character, splits it into typed tokens, then a symbol table records every label definition and reference along with its address.</p>
-      <p>Built in three stages: character classification, then the state machine tokenizer, then the symbol table. After submission I tracked down a register-saving bug that made symbols appear multiple times and fixed it.</p>
-      <p><a href="https://github.com/AZALAH/Assembly-Tokenizer" target="_blank" rel="noopener">View the code on GitHub</a></p>
-      <div class="tags"><span class="tag">MIPS assembly</span><span class="tag">Finite state machine</span><span class="tag">Stack frames</span><span class="tag">Function pointers</span></div>
-    </div>
-    <div class="slot">
-      <span class="status s-wip">In progress</span>
-      <h3>Handheld Streaming (R36S)</h3>
-      <p>Turning a $40 Linux handheld into a game-streaming client: flashed and managed ArkOS, installed PortMaster offline, and staging Moonlight. Next step is adding Wi-Fi support.</p>
-      <div class="tags"><span class="tag">ArkOS / Linux</span><span class="tag">ARM</span><span class="tag">PortMaster</span></div>
-    </div>
-    <div class="slot">
-      <span class="status s-wip">You're looking at it</span>
-      <h3>This Portfolio</h3>
-      <p>A hand-built HTML, CSS, and JavaScript site styled like a game title screen, with a looping video background, music controls, an interactive resume, and a narrated project walkthrough. No framework, hosted on GitHub Pages.</p>
-      <div class="tags"><span class="tag">HTML / CSS / JS</span><span class="tag">GitHub Pages</span><span class="tag">Git</span></div>
-    </div>
-  </div>
-</div></section>
+    <article class="detail" data-detail="tokenizer" hidden>
+      <h3>Assembly Tokenizer &amp; Symbol Table</h3><div class="meta">MIPS assembly · Spring 2026</div>
+      <img class="hero" src="assets/gallery/tokenizer.png" alt="Terminal output of the tokenizer listing tokens and a symbol table">
+      <p>The first pass of an assembler, written entirely in MIPS. A finite state machine reads each line character by character and splits it into typed tokens, then a symbol table records every label definition and reference along with its address.</p>
+      <h4>The hard part</h4>
+      <p>After turning it in, I found a register that wasn't saved across a function call, so symbols showed up several times. Nobody was grading that anymore. I fixed it anyway.</p>
+      <div class="chips"><span class="chip">MIPS assembly</span><span class="chip">Finite state machine</span><span class="chip">Stack frames</span><span class="chip">Function pointers</span></div>
+      <div class="links"><a class="btn" href="https://github.com/AZALAH/Assembly-Tokenizer" target="_blank" rel="noopener">View the code</a><button class="btn" data-jump="tutorials:tok">Run it yourself</button></div>
+    </article>
+
+    <article class="detail" data-detail="comp4" hidden>
+      <h3>Computing IV Collection</h3><div class="meta">C++ · SFML · Boost · Spring 2026</div>
+      <img class="hero" src="assets/gallery/ps7.png" alt="Kronos boot log report">
+      <p>Eight projects from Computing IV, each with its own write-up: a sprite engine, a recursive fractal tree, a playable Sokoban, a JSON-driven animation player, DNA sequence alignment, a Markov text generator, and a Kronos log parser that rebuilds boot timelines from raw device logs.</p>
+      <p>The log parser is my favorite. Reconstructing what happened, and when, from raw logs is everyday work for a SOC analyst.</p>
+      <div class="chips"><span class="chip">C++</span><span class="chip">SFML</span><span class="chip">std::regex</span><span class="chip">Dynamic programming</span><span class="chip">Boost.Test</span></div>
+      <div class="links"><a class="btn" href="gallery.html#floor2">See them in the Gallery</a></div>
+    </article>
+
+    <article class="detail" data-detail="site" hidden>
+      <h3>This Portfolio</h3><div class="meta">HTML · CSS · JavaScript · Fall 2026</div>
+      <img class="hero" src="assets/gallery/portfolio.jpg" alt="The portfolio title screen">
+      <p>Hand-built with plain HTML, CSS, and JavaScript, no framework, hosted on GitHub Pages. The title screen you're on borrows Minecraft's menus. The Gallery is a walkable pixel-art museum I drew in code: a working café with customers and baristas, a shared elevator other visitors ride, characters with their own conversations, a piano, day and night, and weather.</p>
+      <h4>The hard part</h4>
+      <p>Making a canvas game engine stay sharp and fast on every screen, from a phone held sideways to a 4K monitor, with keyboard and touch controls.</p>
+      <div class="chips"><span class="chip">HTML</span><span class="chip">CSS</span><span class="chip">JavaScript</span><span class="chip">Canvas 2D</span><span class="chip">Web Audio</span><span class="chip">GitHub Pages</span></div>
+      <div class="links"><a class="btn" href="gallery.html">Enter the Gallery</a><a class="btn" href="https://github.com/AZALAH/AZALAH.github.io" target="_blank" rel="noopener">View the code</a></div>
+    </article>
+
+    <article class="detail" data-detail="r36s" hidden>
+      <h3>Handheld Streaming</h3><div class="meta">Linux · ARM · In progress</div>
+      <p>Turning a $40 R36S Linux handheld into a game-streaming client for my dorm PC. So far: backed up and reflashed ArkOS, installed PortMaster offline, and staged Moonlight.</p>
+      <h4>Where it's stuck</h4>
+      <p>The handheld doesn't detect my USB Wi-Fi adapter yet. I wrote a logging script to read the USB and kernel state on the device, and the next step is testing a different adapter.</p>
+      <div class="chips"><span class="chip">ArkOS</span><span class="chip">Linux</span><span class="chip">ARM</span><span class="chip">PortMaster</span><span class="chip">Moonlight</span><span class="chip">Tailscale</span></div>
+    </article>
+  </div></div>
+  <footer class="sb"><button class="btn" id="pjBack" hidden>Back to projects</button><button class="btn" data-close>Done</button></footer>
+</section>
 
 <!-- TUTORIALS -->
-<section class="panel" id="tutorials" hidden><div class="frame">
-  <header><h2>How to Use &amp; Test</h2><button class="btn" data-close>Done</button></header>
-  <div class="body">
-    <p class="lede">Step-by-step guides so you can run my projects on your own machine. Each guide lists what you need first.</p>
-    <div class="slot">
-      <h3>SecureDrop</h3>
-      <p>Source code: <a href="https://github.com/AZALAH/SecureDrop" target="_blank" rel="noopener">github.com/AZALAH/SecureDrop</a></p>
+<section class="screen" id="tutorials" role="dialog" aria-modal="true" aria-labelledby="tuT" hidden>
+  <header class="sh"><h2 id="tuT">Run My Projects</h2><p>Step-by-step, on your own machine.</p></header>
+  <div class="band"><div class="inner">
+    <div class="tabs" role="tablist"><button class="tab" role="tab" aria-selected="true" data-tab="sd">SecureDrop</button><button class="tab" role="tab" aria-selected="false" data-tab="tok">Assembly Tokenizer</button></div>
+    <div data-tabp="sd" role="tabpanel">
+      <p class="repo"><a href="https://github.com/AZALAH/SecureDrop" target="_blank" rel="noopener">github.com/AZALAH/SecureDrop</a></p>
       <ol class="steps">
-        <li>Install Python 3.10 or newer.</li>
-        <li>Clone the repo: <code>git clone https://github.com/AZALAH/SecureDrop.git</code>, then <code>cd SecureDrop</code>.</li>
-        <li>Install the one dependency: <code>pip install -r requirements.txt</code>.</li>
-        <li>Run <code>python src/secure_drop.py</code> and register with a name, email, and password.</li>
-        <li>Run it again to log in, then type <code>help</code> at the <code>secure_drop&gt;</code> prompt.</li>
-        <li>Add a contact with <code>add</code>, see who's online with <code>list</code>, and send an encrypted file with <code>send friend@email.com ./file.txt</code>.</li>
-        <li>No second computer? Set <code>LOCAL_TEST = True</code> in the code and use <code>src/test_friend.py</code> to simulate another user.</li>
+        <li><span>Install Python 3.10 or newer.</span></li>
+        <li><span>Clone the repo with <code>git clone https://github.com/AZALAH/SecureDrop.git</code>, then <code>cd SecureDrop</code>.</span></li>
+        <li><span>Install the one dependency: <code>pip install -r requirements.txt</code>.</span></li>
+        <li><span>Run <code>python src/secure_drop.py</code> and register with a name, email, and password.</span></li>
+        <li><span>Run it again to log in, then type <code>help</code> at the <code>secure_drop&gt;</code> prompt.</span></li>
+        <li><span>Add a contact with <code>add</code>, see who's online with <code>list</code>, and send an encrypted file with <code>send friend@email.com ./file.txt</code>.</span></li>
+        <li><span>No second computer? Set <code>LOCAL_TEST = True</code> and use <code>src/test_friend.py</code> to simulate another user.</span></li>
       </ol>
     </div>
-    <div class="slot">
-      <h3>Assembly Tokenizer</h3>
-      <p>Source code: <a href="https://github.com/AZALAH/Assembly-Tokenizer" target="_blank" rel="noopener">github.com/AZALAH/Assembly-Tokenizer</a></p>
+    <div data-tabp="tok" role="tabpanel" hidden>
+      <p class="repo"><a href="https://github.com/AZALAH/Assembly-Tokenizer" target="_blank" rel="noopener">github.com/AZALAH/Assembly-Tokenizer</a></p>
       <ol class="steps">
-        <li>Install Java, then download the MARS 4.5 MIPS simulator (<code>Mars4_5.jar</code>).</li>
-        <li>Download <code>src/symbol_table.asm</code> from the repo.</li>
-        <li>Open it in MARS, press <code>F3</code> to assemble, then <code>F5</code> to run.</li>
-        <li>In the Run I/O panel, type a line of assembly ending in <code>#</code>, like <code>FIRST: li $t0, VALUE #</code>.</li>
-        <li>You'll see every token with its type, then the symbol table with each label and reference and its address.</li>
-        <li>Keep entering lines and watch the addresses climb by 4. Compare with <code>examples/expected_output.txt</code>.</li>
+        <li><span>Install Java, then download the MARS 4.5 MIPS simulator (<code>Mars4_5.jar</code>).</span></li>
+        <li><span>Download <code>src/symbol_table.asm</code> from the repo.</span></li>
+        <li><span>Open it in MARS, press <code>F3</code> to assemble, then <code>F5</code> to run.</span></li>
+        <li><span>In the Run I/O panel, type a line ending in <code>#</code>, like <code>FIRST: li $t0, VALUE #</code>.</span></li>
+        <li><span>You'll see every token with its type, then the symbol table with each label, reference, and address.</span></li>
+        <li><span>Keep entering lines and watch the addresses climb by 4. Compare with <code>examples/expected_output.txt</code>.</span></li>
       </ol>
     </div>
-  </div>
-</div></section>
+  </div></div>
+  <footer class="sb"><button class="btn solo" data-close>Done</button></footer>
+</section>
 
-<!-- ABOUT -->
-<section class="panel" id="about" hidden><div class="frame">
-  <header><h2>About Me</h2><button class="btn" data-close>Done</button></header>
-  <div class="body">
-    <div class="slot">
-      <h3>Hey, I'm Ahmed</h3>
-      <p>I'm a Computer Science student at UMass Lowell in the Cybersecurity option, based in the Boston area. I like understanding how systems work at the lowest level, and then figuring out how to protect them.</p>
-      <p>Minecraft was one of my favorite games growing up. Building things block by block and breaking stuff to see how it worked is a big part of why I ended up in computer science, so this site is built to feel like that world.</p>
-    </div>
-    <div class="slot"><h3>The pivot</h3>
-      <p>I came into college planning to be a software engineer. Then I took my first cybersecurity course, and it clicked: I liked thinking about how things break as much as how they're built.</p>
-      <p>That course's final project became SecureDrop, an encrypted file-transfer app my team built with salted password hashing, session keys, and replay-attack protection. Designing defenses against real attacks is what made me switch my focus to security.</p>
-    </div>
-    <div class="slot"><h3>Where I'm headed</h3>
-      <p>My goal is to work in a Security Operations Center: watching for threats, investigating alerts, and responding to incidents. I'm also interested in IT roles in healthcare, where keeping systems and patient data secure really matters.</p>
-      <p>To get there I'm building hands-on skills outside class, from Python scripting to networking, and I'm applying for Summer 2027 internships.</p>
-    </div>
-    <div class="slot"><h3>Outside class</h3>
-      <p><b>Esports:</b> I compete on the UML Valorant Varsity team, coach the Academy team, and I'm part of the UML Valorant Club. Competitive play has taught me communication, quick decisions under pressure, and how to review my own mistakes.</p>
-      <p><b>Security:</b> I'm a member of the UML Cyber Security Club, where I keep learning outside the classroom.</p>
-      <p><b>Tinkering:</b> I'm turning a Linux handheld into a game-streaming client, which has taught me a lot about Linux, ARM hardware, and working without internet access.</p>
-      <p><b>Work:</b> I'm a Shift Supervisor at CVS, where I run the store during my shifts, guide my team, and stay calm and helpful with customers under pressure.</p>
-      <p><b>Favorite languages:</b> C++, x86 assembly, and MIPS. I like being close to the hardware.</p>
-    </div>
-  </div>
-</div></section>
+<!-- ABOUT · book & quill -->
+<section class="screen" id="about" role="dialog" aria-modal="true" aria-labelledby="abT" hidden>
+  <header class="sh"><h2 id="abT">About Me</h2></header>
+  <div class="band"><div class="inner bookwrap">
+    <div class="book" id="book" aria-live="polite"><div class="page" id="pgL"></div><div class="page" id="pgR"></div></div>
+    <div class="booknav"><button class="btn" id="bPrev" aria-label="Previous page"><svg viewBox="0 0 8 8" aria-hidden="true"><path fill="currentColor" d="M5 1h1v6H5V6H4V5H3V3h1V2h1z"/></svg></button><span id="bCount">Pages 1–2 of 6</span><button class="btn" id="bNext" aria-label="Next page"><svg viewBox="0 0 8 8" aria-hidden="true"><path fill="currentColor" d="M2 1h1v1h1v1h1v2H4v1H3v1H2z"/></svg></button></div>
+  </div></div>
+  <footer class="sb"><button class="btn solo" data-close>Done</button></footer>
+</section>
 
 <!-- RESUME -->
-<section class="panel" id="resume" hidden><div class="frame wide">
-  <header><h2>Resume</h2><button class="btn" data-close>Done</button></header>
-  <div class="body">
-    <p class="lede">Hover or tap any experience or project to read my own take on it.</p>
-    <div class="resume">
+<section class="screen" id="resume" role="dialog" aria-modal="true" aria-labelledby="rsT" hidden>
+  <header class="sh"><h2 id="rsT">Resume</h2><p>Hover or tap any line to read my take on it.</p></header>
+  <div class="band"><div class="resume">
       <article class="paper">
         <h1 class="rname">AHMED SALAH</h1>
         <p class="rcontact">AhmedSalah32406@gmail.com · Boston, MA · <a href="https://www.linkedin.com/in/ahmed-salah-cs2006" target="_blank" rel="noopener">linkedin.com/in/ahmed-salah-cs2006</a> · <a href="https://github.com/AZALAH" target="_blank" rel="noopener">github.com/AZALAH</a> · azalah.github.io</p>
@@ -278,114 +383,204 @@ a{color:var(--accent)}
         <div class="rjob" tabindex="0" data-k="tok"><div class="rrow"><b>Assembly Tokenizer &amp; Symbol Table Generator</b><span>Spring 2026</span></div><div class="rrow rsub"><i>MIPS Assembly</i><span></span></div><ul><li>Designed a finite state machine in MIPS assembly to scan input strings and classify characters into typed tokens</li><li>Built a symbol table generator to detect label definitions versus references and track their addresses</li><li>Managed stack allocated parse variable structs and pointer based function calls to preserve state</li><li>Verified token and symbol table output against test inputs, correctly identifying label definitions and references</li></ul></div>
         <div class="rjob" tabindex="0" data-k="sd"><div class="rrow"><b>SecureDrop – Secure Network File Transfer System</b><span>Fall 2025</span></div><div class="rrow rsub"><i>Python</i><span></span></div><ul><li>Built secure client server application for authenticated encrypted file exchange</li><li>Implemented salted password hashing to prevent plaintext credential storage</li><li>Designed per-user contact management using JSON</li><li>Engineered encrypted TCP transfer with session keys and sequence number replay protection</li><li>Presented live technical demonstration successfully defending the security architecture</li></ul></div>
       </article>
-      <aside class="take" aria-live="polite">
-        <span class="who" id="twho"></span>
-        <p id="ttext"></p>
-      </aside>
-    </div>
-  </div>
-</div></section>
+      <aside class="take" aria-live="polite"><small>My take</small><span class="who" id="twho"></span><p id="ttext"></p></aside>
+  </div></div>
+  <footer class="sb"><button class="btn solo" data-close>Done</button></footer>
+</section>
 
-<!-- STATUS & REVIEWS -->
-<section class="panel" id="status" hidden><div class="frame">
-  <header><h2>Current Work &amp; Reviews</h2><button class="btn" data-close>Done</button></header>
-  <div class="body">
-    <h3>What I'm working on</h3>
-    <div class="grid2">
-      <div class="slot"><span class="status s-wip">Updating</span><b>SecureDrop</b><p>Cleaning up the repo and writing full docs.</p></div>
-      <div class="slot"><span class="status s-wip">In progress</span><b>R36S streaming</b><p>Waiting on a Wi-Fi adapter.</p></div>
-      <div class="slot"><span class="status s-plan">Planned</span><b>Home lab</b><p>Proxmox on an old laptop with isolated attack VMs.</p></div>
+<!-- STATUS · advancements -->
+<section class="screen" id="status" role="dialog" aria-modal="true" aria-labelledby="stT" hidden>
+  <header class="sh"><h2 id="stT">Current Work</h2><p>What I'm working on now, and room for your review.</p></header>
+  <div class="band"><div class="inner">
+    <div class="adv">
+      <div class="advt"><span class="frm done"><svg viewBox="0 0 8 8" aria-hidden="true"><rect x="1" y="3" width="6" height="4" fill="#c9a227"/><rect x="2" y="1" width="1" height="2" fill="#aaa"/><rect x="5" y="1" width="1" height="2" fill="#aaa"/><rect x="2" y="1" width="4" height="1" fill="#aaa"/><rect x="3" y="4" width="2" height="2" fill="#2a2a2a"/></svg></span><b class="done">Gallery 2.0</b><p>Multi-floor museum, café, elevator, and Byte's library. Live now.</p></div>
+      <div class="advt"><span class="frm wip"><svg viewBox="0 0 8 8" aria-hidden="true"><rect x="1" y="2" width="6" height="4" fill="#6a6a72"/><rect x="2" y="3" width="2" height="2" fill="#55ffff"/><rect x="5" y="3" width="1" height="1" fill="#ff5555"/><rect x="5" y="4" width="1" height="1" fill="#55ff55"/></svg></span><b class="wip">R36S streaming</b><p>Waiting on a Wi-Fi adapter the handheld will recognize.</p></div>
+      <div class="advt"><span class="frm wip"><svg viewBox="0 0 8 8" aria-hidden="true"><rect x="1" y="1" width="6" height="6" fill="#3a3a5a"/><rect x="2" y="2" width="4" height="1" fill="#55ff55"/><rect x="2" y="4" width="3" height="1" fill="#aaa"/></svg></span><b class="wip">SecureDrop docs</b><p>Cleaning up the repo and writing full documentation.</p></div>
+      <div class="advt"><span class="frm plan"><svg viewBox="0 0 8 8" aria-hidden="true"><rect x="1" y="2" width="6" height="2" fill="#555"/><rect x="1" y="5" width="6" height="2" fill="#555"/><rect x="2" y="3" width="1" height="1" fill="#55ff55"/><rect x="2" y="6" width="1" height="1" fill="#ffaa00"/></svg></span><b class="plan">Home lab</b><p>Proxmox on an old laptop, with isolated VMs for attack practice.</p></div>
+      <div class="advt"><span class="frm plan"><svg viewBox="0 0 8 8" aria-hidden="true"><rect x="1" y="2" width="6" height="4" fill="#5865f2"/><rect x="2" y="3" width="1" height="1" fill="#fff"/><rect x="5" y="3" width="1" height="1" fill="#fff"/></svg></span><b class="plan">Discord soundboard bot</b><p>Personal and server-wide playback, with a per-user sound limit.</p></div>
     </div>
-    <h3>Leave a review</h3>
+    <h3 class="sec">Leave a review</h3>
     <form class="rv" id="rvform">
-      <label for="rvname">Name and role</label>
-      <input id="rvname" required maxlength="60" placeholder="e.g. Recruiter at Acme Security">
-      <label for="rvstars">Rating</label>
-      <select id="rvstars"><option>5</option><option>4</option><option>3</option><option>2</option><option>1</option></select>
-      <label for="rvtext">Your thoughts</label>
-      <textarea id="rvtext" required rows="3" maxlength="400"></textarea>
-      <button class="btn" type="submit" style="grid-column:auto">Post review</button>
-      <span class="note" id="rvthanks" hidden>Thanks for your review!</span>
+      <div><label for="rvname">Name and role</label><input id="rvname" required maxlength="60" placeholder="Recruiter at Acme Security"></div>
+      <div><label for="rvstars">Rating</label><select id="rvstars"><option value="5">5 stars</option><option value="4">4 stars</option><option value="3">3 stars</option><option value="2">2 stars</option><option value="1">1 star</option></select></div>
+      <div class="full"><label for="rvtext">Your thoughts</label><textarea id="rvtext" required rows="3" maxlength="400"></textarea></div>
+      <button class="btn" type="submit">Post review</button>
     </form>
-    <div id="rvlist" class="grid2"></div>
-  </div>
-</div></section>
+    <div class="reviews" id="rvlist"></div>
+  </div></div>
+  <footer class="sb"><button class="btn solo" data-close>Done</button></footer>
+</section>
 
-<!-- CONTACT -->
-<section class="panel" id="contact" hidden><div class="frame">
-  <header><h2>Contact</h2><button class="btn" data-close>Done</button></header>
-  <div class="body">
-    <div class="slot"><h3>LinkedIn</h3><p><a href="https://www.linkedin.com/in/ahmed-salah-cs2006" target="_blank" rel="noopener">linkedin.com/in/ahmed-salah-cs2006</a></p></div>
-    <div class="slot"><h3>GitHub</h3><p><a href="https://github.com/AZALAH" target="_blank" rel="noopener">github.com/AZALAH</a> · azalah.github.io</p></div>
-  </div>
-</div></section>
+<!-- CONTACT · server list -->
+<section class="screen" id="contact" role="dialog" aria-modal="true" aria-labelledby="ctT" hidden>
+  <header class="sh"><h2 id="ctT">Contact</h2><p>Pick a server and join. Double-click works too.</p></header>
+  <div class="band"><div class="inner">
+    <div class="servers" id="servers" role="list">
+      <button class="server" role="listitem" data-href="https://www.linkedin.com/in/ahmed-salah-cs2006"><canvas class="ic" data-icon="in" width="16" height="16" aria-hidden="true"></canvas><b>LinkedIn</b><span class="ping">1/1<span class="bars" aria-label="Excellent connection"><i></i><i></i><i></i><i></i><i></i></span></span><span class="motd">Ahmed Salah · <span style="color:var(--aqua)">open to Summer 2027 internships</span></span></button>
+      <button class="server" role="listitem" data-href="https://github.com/AZALAH"><canvas class="ic" data-icon="gh" width="16" height="16" aria-hidden="true"></canvas><b>GitHub</b><span class="ping">3 repos<span class="bars" aria-label="Excellent connection"><i></i><i></i><i></i><i></i><i></i></span></span><span class="motd">github.com/AZALAH · <span style="color:var(--green)">SecureDrop, Assembly Tokenizer, this site</span></span></button>
+      <button class="server" role="listitem" data-href="mailto:AhmedSalah32406@gmail.com"><canvas class="ic" data-icon="mail" width="16" height="16" aria-hidden="true"></canvas><b>Email</b><span class="ping">1/1<span class="bars" aria-label="Excellent connection"><i></i><i></i><i></i><i></i><i></i></span></span><span class="motd">AhmedSalah32406@gmail.com · <span style="color:var(--yellow)">replies within a day</span></span></button>
+      <button class="server" role="listitem" data-href="gallery.html" data-same><canvas class="ic" data-icon="cafe" width="16" height="16" aria-hidden="true"></canvas><b>The Gallery</b><span class="ping">busy<span class="bars" aria-label="Excellent connection"><i></i><i></i><i></i><i></i><i></i></span></span><span class="motd">Ask Mason for a tour · <span style="color:var(--gold)">fresh cold brew</span></span></button>
+    </div>
+  </div></div>
+  <footer class="sb"><button class="btn" id="joinBtn" aria-disabled="true">Join Server</button><button class="btn" data-close>Done</button></footer>
+</section>
+
+<!-- OPTIONS -->
+<section class="screen" id="options" role="dialog" aria-modal="true" aria-labelledby="opT" hidden>
+  <header class="sh"><h2 id="opT">Music &amp; Sounds</h2></header>
+  <div class="band"><div class="inner">
+    <div class="opts">
+      <button class="btn full" id="musicBtn" aria-pressed="false">Music: OFF</button>
+      <div class="slider"><input type="range" id="vol" min="0" max="100" value="40" aria-label="Music volume"><span id="volLbl">Music volume: 40%</span></div>
+      <button class="btn" id="clickBtn" aria-pressed="true">Button clicks: ON</button>
+      <p class="credit">Music: "Lofi Chill Vlog Beats" by alex-morgan (Pixabay)</p>
+    </div>
+  </div></div>
+  <footer class="sb"><button class="btn solo" data-close>Done</button></footer>
+</section>
 
 <script>
 (function(){
-  const takes={
-    uml:["UMass Lowell","I started in computer science aiming for software engineering. My first cybersecurity course changed my direction, and now I'm in the Cybersecurity concentration. Outside class I play on the Valorant Varsity team and coach the Academy team, which has taught me a lot about leading and teaching."],
-    cvssup:["Shift Supervisor, CVS Health","Within a month as an associate I was promoted to run shifts. Leading a team of 7 taught me to set clear priorities, train people patiently, and keep a store running when things get busy. Those are the same skills a SOC team needs during an incident."],
-    cvsassoc:["Store Associate, CVS Health","This is where I learned the basics: accuracy with every transaction, and staying calm and helpful when a customer has a problem. Doing it well is what earned me the supervisor role."],
-    bu:["Research Intern, BU School of Medicine","My first time writing code that real researchers depended on. I worked in Python on an ultrasound application alongside Ph.D. faculty and medical students, and learned how to test and debug carefully when the work supports medical research. It's a big reason I'm interested in healthcare IT."],
-    harvard:["Office Assistant Intern, Harvard Radcliffe Institute","I saw how an academic office runs day to day. Rebuilding their inventory tracking in Excel was my first taste of organizing data so other people could actually use it."],
-    site:["Personal Portfolio Website","You're looking at it! Minecraft is a big part of why I got into computer science, so I wanted my portfolio to feel like that world. Taking it from an idea to a live site on GitHub Pages taught me about deployment, version control, and optimizing media for the web."],
-    tok:["Assembly Tokenizer, MIPS","I love working close to the hardware. Building a full finite state machine in MIPS, managing the stack and pointers by hand, made me understand what compilers and assemblers really do under the hood."],
-    sd:["SecureDrop","My favorite project. Building authentication, salted hashing, session keys, and replay protection from scratch taught me how attacks actually work, and defending our design in a live demo is what made me sure about cybersecurity."]
-  };
-  const who=document.getElementById('twho'),txt=document.getElementById('ttext');
-  function show(k){who.textContent=takes[k][0];txt.textContent=takes[k][1];document.querySelectorAll('.rjob').forEach(e=>e.classList.toggle('on',e.dataset.k===k));}
-  document.querySelectorAll('.rjob').forEach(e=>{['mouseenter','focus','click'].forEach(ev=>e.addEventListener(ev,()=>show(e.dataset.k)));});
-  show('cvssup');
+'use strict';
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  let last=null;
-  document.querySelectorAll('[data-open]').forEach(b=>b.addEventListener('click',()=>{last=b;const p=document.getElementById(b.dataset.open);p.hidden=false;p.querySelector('[data-close]').focus();}));
-  function closeAll(){document.querySelectorAll('.panel').forEach(p=>p.hidden=true);if(last)last.focus();}
-  document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',closeAll));
-  document.querySelectorAll('.panel').forEach(p=>p.addEventListener('click',e=>{if(e.target===p)closeAll();}));
-  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAll();});
-  {const h=location.hash.slice(1),p=h&&document.getElementById(h);if(p&&p.classList.contains('panel')){p.hidden=false;const c=p.querySelector('[data-close]');if(c)c.focus();}}
+/* textures */
+function tex(w,fn){const c=document.createElement('canvas');c.width=c.height=w;const g=c.getContext('2d');fn(g,w);return 'url('+c.toDataURL()+')'}
+const root=document.documentElement.style;
+root.setProperty('--stonetex',tex(16,(g,w)=>{for(let i=0;i<w;i++)for(let j=0;j<w;j++){const v=104+Math.floor(Math.random()*30)-(Math.random()>.88?22:0);g.fillStyle=`rgb(${v},${v},${v})`;g.fillRect(i,j,1,1)}}));
+root.setProperty('--papertex',tex(24,(g,w)=>{for(let i=0;i<w;i++)for(let j=0;j<w;j++){const v=Math.random()*14-7;g.fillStyle=`rgb(${233+v},${220+v},${180+v})`;g.fillRect(i,j,1,1)}}));
+root.setProperty('--planktex',tex(16,(g,w)=>{for(let j=0;j<w;j++){const row=Math.floor(j/4);for(let i=0;i<w;i++){const v=Math.random()*14;g.fillStyle=`rgb(${150+v-row*6},${116+v-row*5},${68+v-row*3})`;g.fillRect(i,j,1,1)}}g.fillStyle='rgba(60,40,20,.55)';for(let r=3;r<w;r+=4)g.fillRect(0,r,w,1)}));
 
-  const KEY='ahmed-portfolio-reviews-v2';
-  const seed=[];
-  function load(){try{return JSON.parse(localStorage.getItem(KEY))||seed;}catch(e){return seed;}}
-  function save(v){try{localStorage.setItem(KEY,JSON.stringify(v));}catch(e){}}
-  const list=document.getElementById('rvlist');
-  function render(){list.textContent='';load().slice().reverse().forEach(r=>{const d=document.createElement('div');d.className='review slot';const s=document.createElement('span');s.className='stars';s.textContent='★'.repeat(r.s)+'☆'.repeat(5-r.s);const b=document.createElement('b');b.textContent=r.n;const p=document.createElement('p');p.textContent=r.t;d.append(s,b,p);list.append(d);});}
-  document.getElementById('rvform').addEventListener('submit',e=>{e.preventDefault();const v=load();v.push({n:rvname.value.trim(),s:+rvstars.value,t:rvtext.value.trim()});save(v);e.target.reset();render();const th=document.getElementById('rvthanks');if(th)th.hidden=false;});
-  render();
+/* splash */
+const splashes=["Block by block!","Now with encryption!","SOC analyst in training!","Salted, never plain!","Also try SecureDrop!","Made in a dorm!","Zero ports open!","Has a café!","Byte approves!","Now with an elevator!","Written in MIPS... partly!"];
+$('#splash').textContent=splashes[Math.floor(Math.random()*splashes.length)];
 
-  const t=document.createElement('canvas');t.width=t.height=16;const g=t.getContext('2d');
-  for(let i=0;i<16;i++)for(let j=0;j<16;j++){const v=110+Math.floor(Math.random()*40)-(Math.random()>.9?30:0);g.fillStyle='rgb('+v+','+v+','+(v+4)+')';g.fillRect(i,j,1,1);}
-  document.documentElement.style.setProperty('--stonetex','url('+t.toDataURL()+')');
-  const splashes=["Block by block!","Now with encryption!","SOC analyst in training!","Salted, never plain!","Also try SecureDrop!","Made in a dorm!","Zero ports open!"];
-  document.getElementById('splash').textContent=splashes[Math.floor(Math.random()*splashes.length)];
+/* sound */
+let AC=null,clicks=store.get('ahmed-clicks')!=='0';
+function ac(){if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)()}catch(e){return null}}if(AC.state==='suspended')AC.resume();return AC}
+function click(){if(!clicks)return;const a=ac();if(!a)return;const t=a.currentTime,o=a.createOscillator(),g=a.createGain(),f=a.createBiquadFilter();
+  o.type='square';o.frequency.setValueAtTime(1800,t);o.frequency.exponentialRampToValueAtTime(420,t+.05);f.type='lowpass';f.frequency.value=2600;
+  g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.09,t+.004);g.gain.exponentialRampToValueAtTime(.0001,t+.07);o.connect(f);f.connect(g);g.connect(a.destination);o.start(t);o.stop(t+.08)}
+function chime(){const a=ac();if(!a)return;[[1046,0],[1318,.09],[1568,.18]].forEach(([fq,d])=>{const t=a.currentTime+d,o=a.createOscillator(),g=a.createGain();o.type='triangle';o.frequency.value=fq;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.08,t+.01);g.gain.exponentialRampToValueAtTime(.0001,t+.5);o.connect(g);g.connect(a.destination);o.start(t);o.stop(t+.55)})}
+document.addEventListener('click',e=>{if(e.target.closest('.btn,.tab,.world,.server'))click()},true);
 
-  const mBtn=document.getElementById('musicBtn'),vol=document.getElementById('vol'),vp=document.getElementById('volpct');
-  const au=new Audio('assets/music.mp3');au.loop=true;au.preload='auto';let on=false;
-  function applyVol(){vp.textContent=vol.value+'%';au.volume=vol.value/100;}
-  function toggle(){on=!on;applyVol();if(on){const pr=au.play();if(pr&&pr.catch)pr.catch(()=>{on=false;ui();});}else au.pause();ui();try{localStorage.setItem('ahmed-music',on?'1':'0')}catch(e){}}
-  function ui(){mBtn.setAttribute('aria-pressed',on);document.getElementById('mlabel').textContent=on?'MUSIC ON':'MUSIC OFF';document.getElementById('mwave').style.display=on?'':'none';document.getElementById('mx').style.display=on?'none':'';}
-  mBtn.addEventListener('click',toggle);vol.addEventListener('input',()=>{applyVol();try{localStorage.setItem('ahmed-vol',vol.value)}catch(e){}});
-  try{const v=localStorage.getItem('ahmed-vol');if(v!==null){vol.value=v;}}catch(e){}applyVol();
+/* screens */
+let lastOpener=null,openId=null;
+function openScreen(id,opener){const s=document.getElementById(id);if(!s)return;$$('.screen').forEach(x=>x.hidden=true);lastOpener=opener||lastOpener;openId=id;
+  s.hidden=false;s.classList.remove('anim');void s.offsetWidth;s.classList.add('anim');document.body.classList.add('in-screen');$('#title').setAttribute('aria-hidden','true');
+  const f=s.querySelector('.world[aria-current="true"],.server[aria-current="true"]')||s.querySelector('.band button,.band a,.band [tabindex],.sb .btn');f&&f.focus({preventScroll:true});
+  history.replaceState(null,'','#'+id)}
+function closeScreen(){if(!openId)return;stopNarration();$$('.screen').forEach(x=>x.hidden=true);openId=null;document.body.classList.remove('in-screen');$('#title').removeAttribute('aria-hidden');history.replaceState(null,'',location.pathname);lastOpener&&lastOpener.focus({preventScroll:true})}
+$$('[data-open]').forEach(b=>b.addEventListener('click',()=>openScreen(b.dataset.open,b)));
+$$('[data-close]').forEach(b=>b.addEventListener('click',()=>{if(openId==='projects'&&!$('#worlds').hidden===false){}closeScreen()}));
+document.addEventListener('keydown',e=>{if(e.key!=='Escape'||!openId)return;if(openId==='projects'&&$('#worlds').hidden){showList();return}closeScreen()});
+$$('a[data-sound],a.btn').forEach(a=>a.addEventListener('click',()=>click()));
 
-  const slides=["assets/slides/slide-01.jpg", "assets/slides/slide-02.jpg", "assets/slides/slide-03.jpg", "assets/slides/slide-04.jpg", "assets/slides/slide-05.jpg", "assets/slides/slide-06.jpg", "assets/slides/slide-07.jpg", "assets/slides/slide-08.jpg", "assets/slides/slide-09.jpg", "assets/slides/slide-10.jpg", "assets/slides/slide-11.jpg", "assets/slides/slide-12.jpg"],narr=["This is SecureDrop, a peer-to-peer file-sharing tool designed around one question: what could an attacker do, and how do we stop it?", "It starts with registration. Passwords are never stored in plain text. Each one is salted and hashed, so even if the user database leaks, attackers can't simply read the passwords or use precomputed tables to crack them.", "Login reuses the exact same hashing code instead of a second implementation. One audited code path means fewer places for a security bug to hide, and credentials only live in memory while the program runs.", "Each user gets an isolated contact list stored separately by account, so one user can never read or modify another user's data.", "To find each other, users broadcast their presence over UDP and listen for others in background threads, so the app stays responsive. Only people already in your contacts appear, which limits who you interact with.", "Typing list shows which of your trusted contacts are online right now, tying contacts and presence together.", "File transfer is where security matters most. Every file is encrypted with a brand-new key before it leaves your machine, then sent over TCP, so anyone intercepting the traffic sees only scrambled data.", "Encryption alone isn't enough, because an attacker could capture an encrypted file and resend it later. So every transfer carries a sequence number, and the receiver rejects anything out of order. That blocks replay attacks.", "To test two users without two computers, a local test mode routes all traffic through 127.0.0.1 and simulates a second user, so every feature could be verified on one machine.", "Real bugs came up: mismatched ports caused refused connections, background threads froze the prompt, and online status needed a separate script. Each was traced to its root cause and fixed, which taught me as much as building the features did.", "The result is a complete secure communication tool: hashed credentials, isolated user data, encrypted transfers with a unique key per file, and replay protection, all working together.", "Thanks for watching. The full code is on my GitHub."],segs=[null, [1.9, 14.5], [15.1, 29.4], [30.0, 39.55], [40.15, 54.5], [55.2, 63.2], [63.85, 78.85], [79.5, 94.65], [95.3, 108.9], [109.6, 125.05], [125.75, 139.2], [139.95, 144.5]];let di=0,reading=false;
-  const dimg=document.getElementById('dimg'),dn=document.getElementById('dnarr'),dc=document.getElementById('dcount'),dr=document.getElementById('dread');
-  const na=new Audio('assets/narration.mp3');na.preload='auto';let segEnd=null,waitT=null;
-  na.addEventListener('timeupdate',()=>{if(segEnd!==null&&na.currentTime>=segEnd){na.pause();segEnd=null;next();}});
-  function next(){if(!reading)return;if(di<slides.length-1)go(di+1);else{reading=false;rui();hush();}}
-  function speak(){if(typeof au!=='undefined'&&!au.paused)au.volume=Math.min(au.volume,.12);clearTimeout(waitT);na.pause();const sg=segs[di];if(!sg){waitT=setTimeout(next,3000);return;}segEnd=sg[1];na.currentTime=sg[0];const pr=na.play();if(pr&&pr.catch)pr.catch(()=>{reading=false;rui();});}
-  function hush(){clearTimeout(waitT);segEnd=null;na.pause();if(typeof applyVol==='function')applyVol();}
-  function go(i){di=Math.max(0,Math.min(slides.length-1,i));dimg.src=slides[di];dimg.alt='SecureDrop presentation slide '+(di+1);dn.textContent=narr[di];dc.textContent=(di+1)+' / '+slides.length;if(reading)speak();}
-  function rui(){dr.setAttribute('aria-pressed',reading);dr.textContent=reading?'■ Stop':'▶ Play narration';}
-  document.getElementById('dprev').addEventListener('click',()=>go(di-1));
-  document.getElementById('dnext').addEventListener('click',()=>go(di+1));
-  dr.addEventListener('click',()=>{reading=!reading;rui();if(reading)speak();else hush();});
-  document.addEventListener('keydown',e=>{if(document.getElementById('projects').hidden)return;if(e.key==='ArrowRight')go(di+1);if(e.key==='ArrowLeft')go(di-1);});
-  document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>{reading=false;rui();hush();}));
-  go(0);
-  const vid=document.getElementById('world');vid.muted=true;const kick=()=>{const pr=vid.play();if(pr&&pr.catch)pr.catch(()=>{});};kick();vid.addEventListener('canplay',kick);['pointerdown','keydown','touchstart'].forEach(ev=>addEventListener(ev,kick,{once:true}));document.addEventListener('visibilitychange',()=>{if(!document.hidden)kick();});
+/* projects */
+const worlds=$('#worlds'),pjBack=$('#pjBack');
+function showList(){stopNarration();$$('[data-detail]').forEach(d=>d.hidden=true);worlds.hidden=false;pjBack.hidden=true;$('#pjT').textContent='Select a Project';const c=worlds.querySelector('[aria-current="true"]');c&&c.focus({preventScroll:true});$('#projects .band').scrollTop=0}
+function showDetail(k){$$('.world').forEach(w=>w.setAttribute('aria-current',w.dataset.proj===k));worlds.hidden=true;$$('[data-detail]').forEach(d=>d.hidden=d.dataset.detail!==k);pjBack.hidden=false;
+  const d=$(`[data-detail="${k}"]`);$('#pjT').textContent=d.querySelector('h3').textContent;$('#projects .band').scrollTop=0;pjBack.focus({preventScroll:true})}
+$$('.world').forEach(w=>w.addEventListener('click',()=>showDetail(w.dataset.proj)));
+pjBack.addEventListener('click',showList);
+$$('[data-jump]').forEach(b=>b.addEventListener('click',()=>{const [s,t]=b.dataset.jump.split(':');openScreen(s,lastOpener);selectTab(t)}));
+(function r36(){const g=$('#r36icon').getContext('2d'),P=(c,x,y,w,h)=>{g.fillStyle=c;g.fillRect(x,y,w,h)};P('#1a1c24',0,0,16,16);P('#c9353f',2,1,12,14);P('#e0525c',2,1,12,1);P('#111',4,3,8,5);P('#55ffff',5,4,3,2);P('#55ff55',8,5,2,2);P('#222',4,10,3,1);P('#222',5,9,1,3);P('#fff2c4',10,10,1,1);P('#fff2c4',12,10,1,1);P('#fff2c4',11,9,1,1);P('#fff2c4',11,11,1,1)})();
+
+/* SecureDrop deck */
+const slides=Array.from({length:12},(_,i)=>`assets/slides/slide-${String(i+1).padStart(2,'0')}.jpg`);
+const narr=["This is SecureDrop, a peer-to-peer file-sharing tool designed around one question: what could an attacker do, and how do we stop it?","It starts with registration. Passwords are never stored in plain text. Each one is salted and hashed, so even if the user database leaks, attackers can't simply read the passwords or use precomputed tables to crack them.","Login reuses the exact same hashing code instead of a second implementation. One audited code path means fewer places for a security bug to hide, and credentials only live in memory while the program runs.","Each user gets an isolated contact list stored separately by account, so one user can never read or modify another user's data.","To find each other, users broadcast their presence over UDP and listen for others in background threads, so the app stays responsive. Only people already in your contacts appear, which limits who you interact with.","Typing list shows which of your trusted contacts are online right now, tying contacts and presence together.","File transfer is where security matters most. Every file is encrypted with a brand-new key before it leaves your machine, then sent over TCP, so anyone intercepting the traffic sees only scrambled data.","Encryption alone isn't enough, because an attacker could capture an encrypted file and resend it later. So every transfer carries a sequence number, and the receiver rejects anything out of order. That blocks replay attacks.","To test two users without two computers, a local test mode routes all traffic through the local machine and simulates a second user, so every feature could be verified on one machine.","Real bugs came up: mismatched ports caused refused connections, background threads froze the prompt, and online status needed a separate script. Each was traced to its root cause and fixed, which taught me as much as building the features did.","The result is a complete secure communication tool: hashed credentials, isolated user data, encrypted transfers with a unique key per file, and replay protection, all working together.","Thanks for watching. The full code is on my GitHub."];
+const segs=[null,[1.9,14.5],[15.1,29.4],[30.0,39.55],[40.15,54.5],[55.2,63.2],[63.85,78.85],[79.5,94.65],[95.3,108.9],[109.6,125.05],[125.75,139.2],[139.95,144.5]];
+let di=0,reading=false,segEnd=null,waitT=null;const na=new Audio('assets/narration.mp3');na.preload='none';
+const dimg=$('#dimg'),dn=$('#dnarr'),dc=$('#dcount'),dr=$('#dread');
+na.addEventListener('timeupdate',()=>{if(segEnd!==null&&na.currentTime>=segEnd){na.pause();segEnd=null;nextSlide()}});
+function nextSlide(){if(!reading)return;if(di<slides.length-1)go(di+1);else{reading=false;rui();hush()}}
+function speak(){duck(true);clearTimeout(waitT);na.pause();const sg=segs[di];if(!sg){waitT=setTimeout(nextSlide,3000);return}segEnd=sg[1];na.currentTime=sg[0];na.play().catch(()=>{reading=false;rui()})}
+function hush(){clearTimeout(waitT);segEnd=null;na.pause();duck(false)}
+function stopNarration(){if(reading){reading=false;rui()}hush()}
+function go(i){di=Math.max(0,Math.min(slides.length-1,i));dimg.src=slides[di];dimg.alt='SecureDrop presentation slide '+(di+1);dn.textContent=narr[di];dc.textContent=(di+1)+' / '+slides.length;$('#dprev').disabled=di===0;$('#dnext').disabled=di===slides.length-1;if(reading)speak()}
+function rui(){dr.setAttribute('aria-pressed',reading);dr.textContent=reading?'Stop narration':'Play narration'}
+$('#dprev').addEventListener('click',()=>go(di-1));$('#dnext').addEventListener('click',()=>go(di+1));
+dr.addEventListener('click',()=>{reading=!reading;rui();reading?speak():hush()});
+document.addEventListener('keydown',e=>{if(openId!=='projects'||$('[data-detail="securedrop"]').hidden||e.target.matches('input,textarea'))return;if(e.key==='ArrowRight')go(di+1);if(e.key==='ArrowLeft')go(di-1)});
+go(0);
+
+/* tutorials tabs */
+function selectTab(t){$$('.tab').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===t));$$('[data-tabp]').forEach(p=>p.hidden=p.dataset.tabp!==t)}
+$$('.tab').forEach(b=>b.addEventListener('click',()=>selectTab(b.dataset.tab)));
+
+/* about book */
+const PAGES=[
+ ["Hey, I'm Ahmed","<p>I'm a Computer Science student at UMass Lowell in the Cybersecurity option, based in the Boston area.</p><p>I like understanding how systems work at the lowest level, and then figuring out how to protect them.</p>"],
+ ["Block by block","<p>Minecraft was one of my favorite games growing up. Watching DanTDM build huge worlds, block by block, is a big reason I got into computers.</p><p>That's why this site feels like that world. The Gallery is my version of those builds.</p>"],
+ ["The pivot","<p>I came into college planning to be a software engineer. Then I took my first cybersecurity course, and it clicked: I liked thinking about how things break as much as how they're built.</p><p>That course's final project became <b>SecureDrop</b>.</p>"],
+ ["Where I'm headed","<p>I want to work in a Security Operations Center: watching for threats, investigating alerts, and responding to incidents.</p><p>I'm also drawn to IT in healthcare, where keeping patient data safe really matters. I'm applying for Summer 2027 internships.</p>"],
+ ["Outside class","<p><b>Esports:</b> I play on the UML Valorant Varsity team and coach the Academy team. It taught me to communicate under pressure and review my own mistakes.</p><p><b>Security:</b> I'm in the UML Cyber Security Club.</p>"],
+ ["Also me","<p><b>Work:</b> I'm a Shift Supervisor at CVS, leading a team of 7 and keeping the store running when it gets busy.</p><p><b>Tinkering:</b> a Linux handheld, a homelab, and game streaming from my dorm.</p><p><b>Favorite languages:</b> C++, x86, and MIPS.</p>"]
+];
+let pg=0;const single=()=>matchMedia('(max-width:720px)').matches;
+function renderBook(){const step=single()?1:2;pg=Math.max(0,Math.min(PAGES.length-1,pg-(pg%step)));
+  const fill=(el,i)=>{if(i>=PAGES.length){el.innerHTML='';return}el.innerHTML=`<span class="pn">Page ${i+1} of ${PAGES.length}</span><h3>${PAGES[i][0]}</h3>${PAGES[i][1]}`};
+  fill($('#pgL'),pg);fill($('#pgR'),pg+1);
+  $('#bCount').textContent=step===2?`Pages ${pg+1}–${Math.min(pg+2,PAGES.length)} of ${PAGES.length}`:`Page ${pg+1} of ${PAGES.length}`;
+  $('#bPrev').disabled=pg===0;$('#bNext').disabled=pg+step>=PAGES.length}
+$('#bPrev').addEventListener('click',()=>{pg-=single()?1:2;renderBook()});$('#bNext').addEventListener('click',()=>{pg+=single()?1:2;renderBook()});
+document.addEventListener('keydown',e=>{if(openId!=='about')return;if(e.key==='ArrowRight'&&!$('#bNext').disabled)$('#bNext').click();if(e.key==='ArrowLeft'&&!$('#bPrev').disabled)$('#bPrev').click()});
+addEventListener('resize',renderBook);renderBook();
+
+/* resume takes */
+const takes={
+ uml:["UMass Lowell","I started in computer science aiming for software engineering. My first cybersecurity course changed my direction. Outside class I play on the Valorant Varsity team and coach the Academy team, which has taught me a lot about leading and teaching."],
+ cvssup:["Shift Supervisor, CVS Health","Within a month as an associate I was promoted to run shifts. Leading a team of 7 taught me to set clear priorities, train people patiently, and keep a store running when things get busy. Those are the same skills a SOC team needs during an incident."],
+ cvsassoc:["Store Associate, CVS Health","This is where I learned the basics: accuracy with every transaction, and staying calm and helpful when a customer has a problem. Doing it well is what earned me the supervisor role."],
+ bu:["Research Intern, BU School of Medicine","My first time writing code that real researchers depended on. I worked in Python on an ultrasound application alongside Ph.D. faculty and medical students, and learned to test and debug carefully when the work supports medical research. It's a big reason I'm interested in healthcare IT."],
+ harvard:["Office Assistant Intern, Harvard Radcliffe Institute","I saw how an academic office runs day to day. Rebuilding their inventory tracking in Excel was my first taste of organizing data so other people could actually use it."],
+ site:["Personal Portfolio Website","You're looking at it. Minecraft is a big part of why I got into computer science, so I wanted my portfolio to feel like that world. Building it taught me deployment, version control, and how to keep a canvas game fast on every screen."],
+ tok:["Assembly Tokenizer, MIPS","I love working close to the hardware. Building a full finite state machine in MIPS, managing the stack and pointers by hand, showed me what compilers and assemblers really do under the hood."],
+ sd:["SecureDrop","My favorite project. Building authentication, salted hashing, session keys, and replay protection from scratch taught me how attacks actually work, and defending my design in a live demo is what made me sure about cybersecurity."]
+};
+function showTake(k){$('#twho').textContent=takes[k][0];$('#ttext').textContent=takes[k][1];$$('.rjob').forEach(e=>e.classList.toggle('on',e.dataset.k===k))}
+$$('.rjob').forEach(e=>['mouseenter','focus','click'].forEach(ev=>e.addEventListener(ev,()=>showTake(e.dataset.k))));showTake('cvssup');
+
+/* reviews */
+const KEY='ahmed-portfolio-reviews-v2';
+const load=()=>{try{return JSON.parse(store.get(KEY))||[]}catch(e){return[]}};
+function renderReviews(){const l=$('#rvlist');l.textContent='';load().slice().reverse().forEach(r=>{const d=document.createElement('div');d.className='review';const s=document.createElement('span');s.className='stars';s.textContent='★'.repeat(r.s)+'☆'.repeat(5-r.s);const b=document.createElement('b');b.textContent=r.n;const p=document.createElement('p');p.textContent=r.t;d.append(s,b,p);l.append(d)})}
+$('#rvform').addEventListener('submit',e=>{e.preventDefault();const v=load();v.push({n:$('#rvname').value.trim(),s:+$('#rvstars').value,t:$('#rvtext').value.trim()});store.set(KEY,JSON.stringify(v));e.target.reset();renderReviews();toast('Advancement Made!','Leave a Review');chime()});
+renderReviews();
+let toastT=null;function toast(t,s){$('#toastT').textContent=t;$('#toastS').textContent=s;const el=$('#toast');el.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('on'),4200)}
+
+/* servers */
+const icons={in:(P)=>{P('#0a66c2',0,0,16,16);P('#fff',3,6,2,7);P('#fff',3,3,2,2);P('#fff',7,6,2,7);P('#fff',9,7,3,1);P('#fff',11,8,2,5)},
+ gh:(P)=>{P('#24292f',0,0,16,16);P('#fff',4,4,8,7);P('#fff',3,3,2,3);P('#fff',11,3,2,3);P('#24292f',6,6,1,2);P('#24292f',9,6,1,2);P('#fff',6,11,4,2);P('#fff',4,12,2,1)},
+ mail:(P)=>{P('#2a2a32',0,0,16,16);P('#e9e1cf',2,4,12,8);for(let i=0;i<6;i++){P('#c84a3a',2+i,4+i,1,1);P('#c84a3a',13-i,4+i,1,1)}},
+ cafe:(P)=>{P('#5c3026',0,0,16,16);P('#e9e1cf',4,6,7,7);P('#e9e1cf',11,8,2,3);P('#6b3a22',5,7,5,2);P('#ffb39a',5,2,1,3);P('#ffb39a',8,1,1,4)}};
+$$('canvas[data-icon]').forEach(c=>{const g=c.getContext('2d');icons[c.dataset.icon]((col,x,y,w,h)=>{g.fillStyle=col;g.fillRect(x,y,w,h)})});
+const joinBtn=$('#joinBtn');let sel=null;
+function join(s){if(!s)return;const h=s.dataset.href;if(s.hasAttribute('data-same')||h.startsWith('mailto:'))location.href=h;else window.open(h,'_blank','noopener')}
+$$('.server').forEach(s=>{s.addEventListener('click',()=>{$$('.server').forEach(x=>x.setAttribute('aria-current',x===s));sel=s;joinBtn.removeAttribute('aria-disabled')});s.addEventListener('dblclick',()=>join(s));s.addEventListener('keydown',e=>{if(e.key==='Enter'&&sel===s){e.preventDefault();join(s)}})});
+joinBtn.addEventListener('click',()=>{if(sel)join(sel)});
+
+/* options: music */
+const au=new Audio('assets/music.mp3');au.loop=true;au.preload='none';let on=false;const vol=$('#vol'),mb=$('#musicBtn'),cb=$('#clickBtn');
+const v0=store.get('ahmed-vol');if(v0!==null)vol.value=v0;
+function applyVol(){$('#volLbl').textContent='Music volume: '+vol.value+'%';au.volume=(vol.value/100)*(ducked?.25:1)}
+let ducked=false;function duck(d){ducked=d;applyVol()}
+function mui(){mb.textContent='Music: '+(on?'ON':'OFF');mb.setAttribute('aria-pressed',on);cb.textContent='Button clicks: '+(clicks?'ON':'OFF');cb.setAttribute('aria-pressed',clicks)}
+mb.addEventListener('click',()=>{on=!on;applyVol();if(on)au.play().catch(()=>{on=false;mui()});else au.pause();store.set('ahmed-music',on?'1':'0');mui()});
+cb.addEventListener('click',()=>{clicks=!clicks;store.set('ahmed-clicks',clicks?'1':'0');mui();if(clicks)click()});
+vol.addEventListener('input',()=>{applyVol();store.set('ahmed-vol',vol.value)});
+applyVol();mui();
+
+/* panorama: play + gentle parallax */
+const vid=$('#world');vid.muted=true;const kick=()=>vid.play().catch(()=>{});kick();vid.addEventListener('canplay',kick);['pointerdown','keydown','touchstart'].forEach(ev=>addEventListener(ev,kick,{once:true}));document.addEventListener('visibilitychange',()=>{if(!document.hidden)kick()});
+if(!reduce&&matchMedia('(pointer:fine)').matches){let tx=0,ty=0,cx=0,cy=0;addEventListener('pointermove',e=>{tx=(e.clientX/innerWidth-.5);ty=(e.clientY/innerHeight-.5)});
+  (function loop(){cx+=(tx-cx)*.05;cy+=(ty-cy)*.05;vid.style.transform=`scale(1.06) translate(${(-cx*14).toFixed(2)}px,${(-cy*9).toFixed(2)}px)`;requestAnimationFrame(loop)})()}
+
+/* deep link */
+const h=location.hash.slice(1);if(h&&document.getElementById(h)&&document.getElementById(h).classList.contains('screen'))openScreen(h);
 })();
 </script>
-
 </body>
 </html>
