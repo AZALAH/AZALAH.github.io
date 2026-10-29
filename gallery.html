@@ -81,6 +81,7 @@ body.touch #subtitle{bottom:calc(108px + env(safe-area-inset-bottom,0px))}
 #loading{position:fixed;inset:0;z-index:15;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px;text-align:center}
 #loading .lf{font-family:var(--f-ui);font-size:clamp(16px,3.4vw,26px);color:var(--gold);letter-spacing:.08em}
 #loading .ln .ea,#fname .ea{position:relative;display:inline-block}#loading .ln .ea::before,#fname .ea::before{content:'';position:absolute;left:38%;top:-.16em;width:.22em;height:.1em;background:currentColor;transform:skewY(-30deg)}
+#loading .ln .el::before,#fname .el::before{top:-.02em}
 #loading .ln{font-family:var(--f-ui);font-size:clamp(22px,6vw,44px);color:var(--ink);text-shadow:3px 3px 0 #000}
 #loading .bar{width:min(420px,80vw);height:16px;background:#1b1d2e;box-shadow:0 0 0 2px #000,inset 0 0 0 2px #3a3d5c;padding:3px}
 #loading .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#a8843a,#e0b469)}
@@ -167,6 +168,22 @@ body.touch #subtitle{bottom:calc(108px + env(safe-area-inset-bottom,0px))}
 .abtn{border-radius:0;background:var(--stone) var(--stonetex);background-size:64px;box-shadow:inset 0 2px 0 var(--stone-hi),inset 2px 0 0 var(--stone-hi),inset 0 -3px 0 var(--stone-lo),inset -2px 0 0 var(--stone-lo),0 0 0 2px #000;text-shadow:2px 2px 0 var(--shade)}
 .abtn.ready{background:#3f8a3a var(--stonetex);background-size:64px;background-blend-mode:multiply;color:var(--yellow);box-shadow:inset 0 2px 0 #7fd06a,inset 2px 0 0 #7fd06a,inset 0 -3px 0 #1f4a1c,inset -2px 0 0 #1f4a1c,0 0 0 2px #fff}
 @media (prefers-reduced-motion:reduce){#toast{animation:none}}
+
+/* ===== city loading screen ===== */
+#loading{background:#0b0e1a;display:block;padding:0;text-align:left;image-rendering:pixelated}
+#loading::before{content:'';position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(5,7,16,0) 35%,rgba(5,7,16,.55) 65%,rgba(5,7,16,.92) 100%);pointer-events:none}
+#lcv{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated}
+#loading .lbox{position:absolute;z-index:2;left:max(28px,env(safe-area-inset-left,0px));right:28px;bottom:calc(34px + env(safe-area-inset-bottom,0px));max-width:620px;display:flex;flex-direction:column;gap:10px}
+#loading .lf{font-family:var(--f-ui);font-size:clamp(13px,1.8vw,16px);color:#9fd0ff;text-shadow:2px 2px 0 #0b1830}
+#loading .ln{font-family:var(--f-ui);font-size:clamp(30px,6vw,58px);line-height:1;color:#fff;text-shadow:3px 3px 0 #10162c}
+#loading .bar{width:min(360px,70vw);height:6px;background:rgba(255,255,255,.16);box-shadow:none;margin:6px 0 4px}
+#loading .bar i{background:#ffd27a;box-shadow:0 0 10px rgba(255,210,122,.6)}
+#loading .tip{font-size:clamp(19px,2.2vw,23px);line-height:1.2;color:#dfe4f0;text-shadow:1px 1px 0 #000;max-width:56ch;margin:0}
+#loading .tip b{display:inline;font-family:var(--f-ui);font-size:13px;color:#ffd27a;text-shadow:1px 1px 0 #3f2f10;margin-right:10px}
+.lspin{position:absolute;z-index:2;right:max(28px,env(safe-area-inset-right,0px));bottom:calc(36px + env(safe-area-inset-bottom,0px));display:flex;gap:6px}
+.lspin i{width:10px;height:10px;background:#ffd27a;animation:lsp 1s steps(1) infinite}
+.lspin i:nth-child(2){animation-delay:.33s}.lspin i:nth-child(3){animation-delay:.66s}
+@keyframes lsp{0%{opacity:1}33%{opacity:.25}}
 </style>
 </head>
 <body>
@@ -213,7 +230,7 @@ body.touch #subtitle{bottom:calc(108px + env(safe-area-inset-bottom,0px))}
   </div>
 </div>
 
-<div id="loading" hidden><div class="lf" id="lf">FLOOR 2</div><div class="ln" id="ln">PROJECTS</div><div class="bar"><i id="lbar"></i></div><div class="tip" id="ltip"><b>FUN FACT</b><span></span></div></div>
+<div id="loading" hidden><canvas id="lcv" aria-hidden="true"></canvas><div class="lbox"><div class="lf" id="lf">Floor 2</div><div class="ln" id="ln">Projects</div><div class="bar"><i id="lbar"></i></div><div class="tip" id="ltip"><b>Fun fact</b><span></span></div></div><div class="lspin" aria-hidden="true"><i></i><i></i><i></i></div></div>
 
 <div id="touch">
   <div class="dpad"><button data-k="left" aria-label="Walk left">◀</button><button data-k="right" aria-label="Walk right">▶</button></div>
@@ -233,7 +250,7 @@ function R(c,x,y,w,h,col){c.fillStyle=col;c.fillRect(Math.round(x),Math.round(y)
 function disc(c,cx,cy,rx,ry,col){c.fillStyle=col;for(let dy=-ry;dy<=ry;dy++){const w=Math.round(rx*Math.sqrt(Math.max(0,1-(dy/(ry+.5))**2)));c.fillRect(Math.round(cx-w),Math.round(cy+dy),w*2,1)}}
 const FLOOR_SHORT=['G','1','2','3'];
 
-function pixE(t){return String(t).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])).replace(/É/g,'<span class="ea">E</span>')}
+function pixE(t){return String(t).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])).replace(/É/g,'<span class="ea">E</span>').replace(/é/g,'<span class="ea el">e</span>')}
 const EX=[
  {id:'securedrop',title:'SecureDrop',kind:'wall',x:22.5,w:44,img:'assets/slides/slide-01.jpg',meta:'Cybersecurity · Python · Fall 2025',featured:true,
   feat:'The centerpiece. This is the project that made me sure about cybersecurity.',
@@ -1594,7 +1611,7 @@ function drawRide(){
 const loadingEl=document.getElementById('loading');let tipOrder=[],tipI=0;
 function nextTip(){if(tipI>=tipOrder.length){tipOrder=TIPS.map((_,i)=>i).sort(()=>Math.random()-.5);tipI=0}return TIPS[tipOrder[tipI++]]}
 function showLoading(to,cb){
-  paused=true;const tip=nextTip();document.getElementById('lf').textContent=to===0?'Entering the ground floor':'Entering floor '+to;document.getElementById('ln').innerHTML=pixE(FLOOR_NAMES[to]);
+  paused=true;const tip=nextTip();loadTo=to;document.getElementById('lf').textContent=to===0?'Ground floor':'Floor '+to+' of 3';document.getElementById('ln').innerHTML=pixE(FLOOR_NAMES[to]);
   const tl=document.getElementById('ltip');tl.querySelector('b').textContent=tip[0];tl.querySelector('span').textContent=tip[1];
   const bar=document.getElementById('lbar');bar.style.transition='none';bar.style.width='0';loadingEl.hidden=false;loadingEl.style.opacity=1;
   requestAnimationFrame(()=>{bar.style.transition=`width ${reduce?.5:1.3}s linear`;bar.style.width='100%'});
@@ -1811,7 +1828,16 @@ if(location.hash==='#study'){scene='study';setScale();player.x=34}
 const hm=location.hash.match(/floor(\d)/);if(hm&&+hm[1]<=3){scene=+hm[1];setScale();player.x=ELEV[scene]+(scene===0?-40:40)}
 if(location.hash==='#list')openList();
 updateHUD();setTimeout(hideHint,6000);
-function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;update(dt);draw();requestAnimationFrame(loop)}
+const lcv=document.getElementById('lcv'),lctx=lcv.getContext('2d');let lt=0;
+function drawLoadCity(dt){lt+=dt;const w=Math.ceil(innerWidth/3),h=Math.ceil(innerHeight/3);if(lcv.width!==w||lcv.height!==h){lcv.width=w;lcv.height=h}
+  renderSky();lctx.imageSmoothingEnabled=false;const sc=Math.max(w/SKYW,h/(SKYH-10))*1.12,dw=SKYW*sc,dh=SKYH*sc,ox=-((lt*4)%(dw-w>0?dw-w:1)),oy=h-dh+h*.05;
+  lctx.fillStyle='#0b0e1a';lctx.fillRect(0,0,w,h);lctx.drawImage(sky,0,0,SKYW,SKYH,Math.round(Math.max(ox,w-dw)),Math.round(oy),Math.round(dw),Math.round(dh));
+  const bw=Math.min(w*(w<h?.5:.34),150),bx=w-bw-Math.max(10,w*.06),by=h*.18;lctx.fillStyle='#141a30';lctx.fillRect(bx,by,bw,h);lctx.fillStyle='#1c2440';lctx.fillRect(bx,by,bw,3);
+  lctx.fillStyle='#ffe2a8';lctx.font='8px MCPixel';lctx.textAlign='center';lctx.fillText('AHMED SALAH',bx+bw/2,by-4);
+  const dl=daylight();for(let r=0;r<12;r++)for(let c=0;c<5;c++){const lit=hash(r*7+c,3)>(.35+dl*.4);lctx.fillStyle=lit?(hash(c,r)>.8?'#9fd0ff':'#f2c86b'):'#222a46';lctx.fillRect(bx+8+c*(bw-16)/5,by+12+r*14,(bw-16)/5-6,8)}
+  const fy=by+12+(3-(loadTo||0))*0+0;lctx.fillStyle='rgba(255,210,122,.9)';const ey=by+12+(11-(loadTo||0)*3)*14;lctx.fillRect(bx+bw-6,ey,3,8)}
+let loadTo=0;
+function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;update(dt);draw();if(!loadingEl.hidden)drawLoadCity(dt);requestAnimationFrame(loop)}
 requestAnimationFrame(t=>{last=t;loop(t)});
 window.__G={get scene(){return scene},set scene(v){scene=v;setScale()},player,mason,WX,setTod:v=>tod=v,get ride(){return ride},CONVOS,lift,piano,SC,playerMateSeat,dl:()=>daylight(),pickWeather,npcs,interact,TOUR,get mode(){return mode},chooseFloor,ALL,NAMED,JOKES,LINES,MASON_EXTRA,MASON_BARKS};
 })();
