@@ -100,6 +100,73 @@ body.touch #subtitle{bottom:calc(108px + env(safe-area-inset-bottom,0px))}
 #fade.on{opacity:1}
 @media (max-width:560px){.hud-r .pix{font-size:10px;padding:6px 7px}.card .body{font-size:19px}#dtext{font-size:19px}#portrait{width:52px;height:52px}.hud-l span{font-size:15px}}
 @media (prefers-reduced-motion:reduce){#hint{transition:none}}
+
+/* ===== Minecraft UI pass (matches the title screen) ===== */
+:root{--yellow:#ffff55;--green:#55ff55;--aqua:#55ffff;--goldmc:#ffaa00;--gray:#aaaaaa;--shade:#3e3e3e;--stone:#727272;--stone-hi:#a9a9a9;--stone-lo:#404040;--ease-out:cubic-bezier(.23,1,.32,1)}
+.pix,.fbtn,.item,.dpad button{background:var(--stone) var(--stonetex);background-size:64px 64px;image-rendering:pixelated;color:var(--ink);text-shadow:2px 2px 0 var(--shade);
+  box-shadow:inset 0 2px 0 var(--stone-hi),inset 2px 0 0 var(--stone-hi),inset 0 -3px 0 var(--stone-lo),inset -2px 0 0 var(--stone-lo),0 0 0 2px #000}
+.pix{font-size:13px;padding:9px 12px 8px}
+.pix:hover,.pix:focus-visible,.fbtn:hover,.fbtn:focus-visible,.item:hover,.item:focus-visible{outline:none;color:var(--yellow);box-shadow:inset 0 2px 0 var(--stone-hi),inset 2px 0 0 var(--stone-hi),inset 0 -3px 0 var(--stone-lo),inset -2px 0 0 var(--stone-lo),0 0 0 2px #fff}
+.pix:active,.fbtn:active,.item:active,.dpad button:active{transform:translateY(1px)}
+.pix[disabled],.fbtn[disabled]{opacity:1;color:#a0a0a0;background:#3c3c3c;box-shadow:0 0 0 2px #000;text-shadow:none}
+.hud-l{background:none;box-shadow:none;padding:2px 4px;gap:1px}
+.hud-l b{font-size:14px;color:#fff;text-shadow:2px 2px 0 var(--shade);letter-spacing:0}
+.hud-l span{font-family:var(--f-ui);font-size:12px;color:#e0e0e0;text-shadow:1px 1px 0 #000;line-height:1.5}
+/* item-tooltip prompt */
+#prompt,#hint,#subtitle{background:rgba(16,0,16,.94);box-shadow:0 0 0 1px #100010,inset 0 0 0 2px #2b0a6a,inset 0 0 0 3px #4d1fb0;color:#fff;text-shadow:1px 1px 0 #3e3e3e;padding:5px 10px}
+#prompt{font-family:var(--f-ui);font-size:13px;padding:6px 10px 5px}
+#prompt kbd{background:none;color:var(--yellow);font-size:13px;padding:0;margin:0 6px 0 0;text-shadow:1px 1px 0 #3f3f15}
+#hint{font-family:var(--f-ui);font-size:13px}
+#subtitle{padding:10px 14px;font-size:21px}
+#subtitle b{font-size:12px;color:var(--yellow);text-shadow:1px 1px 0 #3f3f15}
+/* menu-screen overlays */
+.overlay{background:rgba(0,0,0,.55);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
+.card{background:rgba(0,0,0,.62);box-shadow:0 0 0 2px #000,inset 0 0 0 2px #5a5a5a}
+.card header{padding:16px 18px 12px;box-shadow:inset 0 -2px 0 rgba(0,0,0,.6),inset 0 -3px 0 rgba(255,255,255,.18)}
+.card h2{color:#fff;text-shadow:2px 2px 0 var(--shade)}
+.card .meta{color:var(--gray)}
+.card .body{padding-top:14px}
+.card img,.card canvas.ic{box-shadow:0 0 0 2px #000,0 0 0 4px #5a5a5a}
+.card h3{font-size:14px;color:var(--yellow);text-shadow:2px 2px 0 #3f3f15;letter-spacing:0}
+.feat{background:rgba(255,170,0,.1);box-shadow:inset 4px 0 0 var(--goldmc);color:#ffe9b0}
+.tag{font-family:var(--f-ui);font-size:12px;padding:5px 8px 4px;color:var(--ink);background:#2b2b2b;box-shadow:inset 0 0 0 2px #4a4a4a;text-shadow:1px 1px 0 #000}
+#zoom img{box-shadow:0 0 0 2px #000,0 0 0 4px #5a5a5a}
+.item{padding:12px}
+.item b{font-size:13px;color:#fff}
+.item span{color:#e8e8e8;text-shadow:1px 1px 0 #000}
+.item i{color:var(--green);text-shadow:1px 1px 0 #000}
+.grp{color:var(--yellow);text-shadow:2px 2px 0 #3f3f15;letter-spacing:0;font-size:13px}
+.fbtn{padding:10px 12px}
+.fbtn .num{border-radius:0;background:#1c1c1c;color:var(--yellow);box-shadow:inset 0 0 0 2px #555;text-shadow:2px 2px 0 #3f3f15}
+.fbtn i{color:var(--green);text-shadow:1px 1px 0 #000}
+.fbtn.next{box-shadow:inset 0 2px 0 var(--stone-hi),inset 2px 0 0 var(--stone-hi),inset 0 -3px 0 var(--stone-lo),inset -2px 0 0 var(--stone-lo),0 0 0 2px var(--green)}
+/* dialogue = chat box */
+#dialog{background:rgba(0,0,0,.72);box-shadow:0 0 0 2px #000,inset 0 0 0 2px #5a5a5a}
+#portrait{background:#2a2a2a;box-shadow:0 0 0 2px #000,inset 0 0 0 2px #777}
+.dlg b{color:var(--yellow);text-shadow:2px 2px 0 #3f3f15}
+#dtext{color:#fff;text-shadow:1px 1px 0 #000}
+#choices button{color:#cfcfcf;text-shadow:1px 1px 0 #000}
+#choices button:hover,#choices button:focus-visible,#choices button.sel{color:var(--yellow)}
+/* loading = dirt "Loading terrain" */
+#loading{background:#3b2a1d var(--dirttex);background-size:64px 64px;image-rendering:pixelated;gap:14px}
+#loading::before{content:'';position:absolute;inset:0;background:rgba(0,0,0,.45);pointer-events:none}
+#loading>*{position:relative}
+#loading .lf{color:#d0d0d0;font-size:clamp(14px,2.6vw,18px);text-shadow:2px 2px 0 var(--shade);letter-spacing:0}
+#loading .ln{font-size:clamp(20px,4.6vw,32px);text-shadow:2px 2px 0 var(--shade)}
+#loading .bar{width:min(400px,80vw);height:10px;padding:0;background:#000;box-shadow:0 0 0 2px #fff}
+#loading .bar i{background:#80ff20}
+#loading .tip{color:#e0e0e0;text-shadow:1px 1px 0 #000;margin-top:6px}
+#loading .tip b{color:var(--yellow);text-shadow:2px 2px 0 #3f3f15;letter-spacing:0;font-size:13px}
+/* advancement toast */
+#toast{display:grid;grid-template-columns:36px 1fr;gap:2px 12px;align-items:center;background:#212121;box-shadow:0 0 0 2px #000,inset 0 0 0 2px #555,inset 0 0 0 4px #212121,inset 0 0 0 6px #3a3a3a;padding:10px 14px;animation:tIn .4s var(--ease-out)}
+#toast::before{content:'';grid-row:1/3;width:36px;height:36px;background:#2a2a2a;box-shadow:inset 0 0 0 3px #c9a227,inset 0 0 0 5px #6b5410}
+#toast b{font-size:13px;color:var(--yellow);text-shadow:1px 1px 0 #3f3f15}
+#toast span{font-family:var(--f-ui);font-size:13px;color:#fff;text-shadow:1px 1px 0 #3e3e3e}
+@keyframes tIn{from{transform:translateX(110%)}}
+.dpad button{width:64px;height:64px}
+.abtn{border-radius:0;background:var(--stone) var(--stonetex);background-size:64px;box-shadow:inset 0 2px 0 var(--stone-hi),inset 2px 0 0 var(--stone-hi),inset 0 -3px 0 var(--stone-lo),inset -2px 0 0 var(--stone-lo),0 0 0 2px #000;text-shadow:2px 2px 0 var(--shade)}
+.abtn.ready{background:#3f8a3a var(--stonetex);background-size:64px;background-blend-mode:multiply;color:var(--yellow);box-shadow:inset 0 2px 0 #7fd06a,inset 2px 0 0 #7fd06a,inset 0 -3px 0 #1f4a1c,inset -2px 0 0 #1f4a1c,0 0 0 2px #fff}
+@media (prefers-reduced-motion:reduce){#toast{animation:none}}
 </style>
 </head>
 <body>
@@ -252,7 +319,7 @@ const LINES={
 };
 
 const FLOOR_NAMES=['Lobby & Café','About Me','Projects','Photography'];
-const FLOOR_TAGS=['LOBBY','FLOOR 1','FLOOR 2','FLOOR 3'];
+const FLOOR_TAGS=['Lobby','Floor 1','Floor 2','Floor 3'];
 const ELEV=[1060,80,80,80];
 
 const P2={portfolio:[320,84,104,68,'This Portfolio'],securedrop:[478,86,152,84,'SecureDrop'],tokenizer:[636,84,104,68,'Assembly Tokenizer'],ps7:[978,84,100,84,'Kronos Log Parser'],
@@ -374,23 +441,23 @@ const PERSONAS={
 const STREET_LINES=["Is that a museum or a café?","Both, I think.","I heard there's a barista who gives tours.","Brr, cold one tonight."];
 
 const TIPS=[
- ['FUN FACT',"Ahmed started college aiming for software engineering. One cybersecurity course changed everything."],
- ['FUN FACT',"Ahmed plays on the UMass Lowell Valorant Varsity team and coaches the Academy team."],
- ['FUN FACT',"Ahmed was promoted to Shift Supervisor at CVS within a month."],
- ['FUN FACT',"Minecraft, and DanTDM's builds, are a big reason Ahmed got into computers."],
- ['FUN FACT',"As a kid, Ahmed took apart old desktops just to see what was inside."],
- ['FUN FACT',"Ahmed's favorite languages are MIPS, x86 assembly, and C++. Yes, on purpose."],
- ['FUN FACT',"SecureDrop hashes every password with scrypt and a unique salt. No plain text, ever."],
- ['FUN FACT',"Ahmed streams games from his dorm PC to his phone using Tailscale and Moonlight."],
- ['FUN FACT',"Ahmed interned at Boston University School of Medicine, writing Python for an ultrasound application."],
- ['FUN FACT',"This whole building is drawn in code. No game engine, just HTML, CSS, and JavaScript."],
- ['FUN FACT',"Every photo on the third floor was taken by Ahmed."],
- ['JOKE',"Why do programmers prefer dark mode? Because light attracts bugs."],
- ['JOKE',"Why did the hacker break up with the firewall? Too many trust issues."],
- ['JOKE',"My code doesn't have bugs. It has undocumented features."],
- ['JOKE',"I'd tell you a joke about 2FA, but you'd have to confirm it on another device first."],
- ['JOKE',"Why was the elevator so good at networking? It always took things to the next level."],
- ['JOKE',"A SQL query walks into a bar, walks up to two tables, and asks: mind if I join you?"]
+ ['Fun fact',"Ahmed started college aiming for software engineering. One cybersecurity course changed everything."],
+ ['Fun fact',"Ahmed plays on the UMass Lowell Valorant Varsity team and coaches the Academy team."],
+ ['Fun fact',"Ahmed was promoted to Shift Supervisor at CVS within a month."],
+ ['Fun fact',"Minecraft, and DanTDM's builds, are a big reason Ahmed got into computers."],
+ ['Fun fact',"As a kid, Ahmed took apart old desktops just to see what was inside."],
+ ['Fun fact',"Ahmed's favorite languages are MIPS, x86 assembly, and C++. Yes, on purpose."],
+ ['Fun fact',"SecureDrop hashes every password with scrypt and a unique salt. No plain text, ever."],
+ ['Fun fact',"Ahmed streams games from his dorm PC to his phone using Tailscale and Moonlight."],
+ ['Fun fact',"Ahmed interned at Boston University School of Medicine, writing Python for an ultrasound application."],
+ ['Fun fact',"This whole building is drawn in code. No game engine, just HTML, CSS, and JavaScript."],
+ ['Fun fact',"Every photo on the third floor was taken by Ahmed."],
+ ['Joke',"Why do programmers prefer dark mode? Because light attracts bugs."],
+ ['Joke',"Why did the hacker break up with the firewall? Too many trust issues."],
+ ['Joke',"My code doesn't have bugs. It has undocumented features."],
+ ['Joke',"I'd tell you a joke about 2FA, but you'd have to confirm it on another device first."],
+ ['Joke',"Why was the elevator so good at networking? It always took things to the next level."],
+ ['Joke',"A SQL query walks into a bar, walks up to two tables, and asks: mind if I join you?"]
 ];
 const JOKES=[
  "Why do Java developers wear glasses? Because they can't C sharp.",
@@ -1008,7 +1075,7 @@ function updateStreet(dt){
 
 /* ---------- Mason's tour ---------- */
 const sub=document.getElementById('subtitle');let subUntil=0,curVoice=null;
-function subtitle(name,text,secs,vid){document.getElementById('subName').textContent=name;document.getElementById('subText').textContent=text;sub.hidden=false;subUntil=time+secs;if(curVoice)curVoice.pause();curVoice=voice(vid)}
+function subtitle(name,text,secs,vid){document.getElementById('subName').textContent=niceTitle(name);document.getElementById('subText').textContent=text;sub.hidden=false;subUntil=time+secs;if(curVoice)curVoice.pause();curVoice=voice(vid)}
 function startTour(){endTalk();mason.mode='tour';mason.stop=0;mason.spoke=false;mason.floor=0;mason.x=560;mason.y=FEET;mason.alpha=1;guide=null}
 function endTour(){mason.mode='return';mason.fade=-1;toast('Tour complete','Mason headed back to the café.')}
 function cancelTour(){endTalk();subtitle('MASON',MASON_EXTRA.tour_cancel,3,'mason/tour_cancel');mason.mode='return';mason.fade=-1}
@@ -1527,7 +1594,7 @@ function drawRide(){
 const loadingEl=document.getElementById('loading');let tipOrder=[],tipI=0;
 function nextTip(){if(tipI>=tipOrder.length){tipOrder=TIPS.map((_,i)=>i).sort(()=>Math.random()-.5);tipI=0}return TIPS[tipOrder[tipI++]]}
 function showLoading(to,cb){
-  paused=true;const tip=nextTip();document.getElementById('lf').textContent=to===0?'GROUND FLOOR':FLOOR_TAGS[to];document.getElementById('ln').innerHTML=pixE(FLOOR_NAMES[to].toUpperCase());
+  paused=true;const tip=nextTip();document.getElementById('lf').textContent=to===0?'Entering the ground floor':'Entering floor '+to;document.getElementById('ln').innerHTML=pixE(FLOOR_NAMES[to]);
   const tl=document.getElementById('ltip');tl.querySelector('b').textContent=tip[0];tl.querySelector('span').textContent=tip[1];
   const bar=document.getElementById('lbar');bar.style.transition='none';bar.style.width='0';loadingEl.hidden=false;loadingEl.style.opacity=1;
   requestAnimationFrame(()=>{bar.style.transition=`width ${reduce?.5:1.3}s linear`;bar.style.width='100%'});
@@ -1560,7 +1627,7 @@ mb.onclick=()=>{if(!music){music=new Audio('assets/music.mp3');music.loop=true;m
 
 /* ---------- HUD ---------- */
 function updateHUD(){
-  document.getElementById('fname').innerHTML=pixE(scene==='street'?'OUTSIDE · THE GALLERY':scene==='study'?"FLOOR 3 · BYTE'S LIBRARY":FLOOR_TAGS[scene]+' · '+FLOOR_NAMES[scene].toUpperCase());
+  document.getElementById('fname').innerHTML=pixE(scene==='street'?'Outside the Gallery':scene==='study'?"Floor 3: Byte's Library":(scene===0?FLOOR_NAMES[0]:FLOOR_TAGS[scene]+': '+FLOOR_NAMES[scene]));
   const dl=daylight();document.getElementById('clock').textContent=(dl>.5?'☀ ':'☾ ')+clockText()+' · '+WNAME[WX.kind];
   const fl=typeof scene!=='number'||scene===0?null:COUNTED.filter(e=>e.floor===scene);
   document.getElementById('visited').textContent=fl?'Seen here: '+fl.filter(e=>visited.has(e.id)).length+' / '+fl.length+' · Total: '+COUNTED.filter(e=>visited.has(e.id)).length+' / '+COUNTED.length:'Exhibits seen: '+COUNTED.filter(e=>visited.has(e.id)).length+' / '+COUNTED.length;
@@ -1615,10 +1682,11 @@ document.getElementById('listBtn').onclick=openList;document.getElementById('lCl
 const dlg=document.getElementById('dialog'),dtext=document.getElementById('dtext'),choicesEl=document.getElementById('choices'),portrait=document.getElementById('portrait');
 let typing=null,sel=0;
 function drawPortrait(P,cat){const p=portrait.getContext('2d');p.clearRect(0,0,32,32);p.fillStyle='#2a1a14';p.fillRect(0,0,32,32);if(cat)drawCat(p,14,26,'right','sit',0);else drawPerson(p,16,46,'down',0,false,Object.assign({},P,{noShadow:1}))}
-function talk(title,P,text,choices,vid,cat){if(curVoice)curVoice.pause();curVoice=voice(vid);document.getElementById('dname').textContent=title;
+function niceTitle(t){if(!t)return t;t=String(t).replace(/ · /g,', ');if(t!==t.toUpperCase())return t;const small=['a','an','the','of','to','in','on','and','with','for','at'];return t.toLowerCase().split(' ').map((w,i)=>i&&small.includes(w)?w:w.replace(/^[a-z'*"]+/,m=>{const k=m.search(/[a-z]/);return k<0?m:m.slice(0,k)+m[k].toUpperCase()+m.slice(k+1)})).join(' ').replace(/\bSoc\b/,'SOC').replace(/\bCs\b/,'CS').replace(/\bMips\b/,'MIPS')}
+function talk(title,P,text,choices,vid,cat){title=niceTitle(title);if(curVoice)curVoice.pause();curVoice=voice(vid);document.getElementById('dname').textContent=title;
   if(P||cat){portrait.hidden=false;drawPortrait(P,cat)}else portrait.hidden=true;typeText(text,choices)}
 function sys(title,text,choices){talk(title,null,text,choices)}
-function typeText(text,choices){
+function typeText(text,choices){const hn=document.getElementById('hint');if(hn){hn.hidden=true;hintHidden=true}
   dlg.hidden=false;paused=true;choicesEl.textContent='';dtext.textContent='';let i=0;clearInterval(typing);
   const finish=()=>{clearInterval(typing);typing=null;dtext.textContent=text;showChoices(choices)};
   if(reduce)finish();else typing=setInterval(()=>{i+=2;dtext.textContent=text.slice(0,i);if(i>=text.length)finish()},22);
@@ -1727,6 +1795,14 @@ addEventListener('touchstart',enableTouch,{once:true,passive:true});
 document.querySelectorAll('.dpad button').forEach(b=>{const k=b.dataset.k;b.addEventListener('pointerdown',e=>{e.preventDefault();keys[k]=true;b.setPointerCapture(e.pointerId)});['pointerup','pointercancel','lostpointercapture'].forEach(t=>b.addEventListener(t,()=>keys[k]=false))});
 document.getElementById('aBtn').addEventListener('click',interact);
 
+
+/* ---------- textures + click sound ---------- */
+(function(){function tex(w,fn){const c=document.createElement('canvas');c.width=c.height=w;const g=c.getContext('2d');fn(g,w);return 'url('+c.toDataURL()+')'}
+  const st=document.documentElement.style;
+  st.setProperty('--stonetex',tex(16,(g,w)=>{for(let i=0;i<w;i++)for(let j=0;j<w;j++){const v=104+Math.floor(Math.random()*30)-(Math.random()>.88?22:0);g.fillStyle=`rgb(${v},${v},${v})`;g.fillRect(i,j,1,1)}}));
+  st.setProperty('--dirttex',tex(16,(g,w)=>{const C=[[134,96,67],[121,85,58],[150,108,74],[105,75,50],[89,64,44]];for(let i=0;i<w;i++)for(let j=0;j<w;j++){const c=C[Math.floor(Math.random()*C.length)];g.fillStyle=`rgb(${c})`;g.fillRect(i,j,1,1)}}))})();
+const clicksOn=()=>store.get('ahmed-clicks')!=='0';
+document.addEventListener('click',e=>{if(!e.target.closest('.pix,.fbtn,.item,#choices button,.abtn'))return;if(!clicksOn())return;try{const a=ac(),t=a.currentTime,o=a.createOscillator(),g=a.createGain(),f=a.createBiquadFilter();o.type='square';o.frequency.setValueAtTime(1800,t);o.frequency.exponentialRampToValueAtTime(420,t+.05);f.type='lowpass';f.frequency.value=2600;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.08,t+.004);g.gain.exponentialRampToValueAtTime(.0001,t+.07);o.connect(f);f.connect(g);g.connect(a.destination);o.start(t);o.stop(t+.08)}catch(err){}},true);
 /* ---------- init ---------- */
 ['street',0,1,2,3,'study'].forEach(buildStatic);
 (document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(()=>{ICONS.intro=null;delete ICONS.intro});
