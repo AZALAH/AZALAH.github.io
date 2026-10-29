@@ -223,7 +223,7 @@ form.rv .btn{grid-column:1/-1;justify-self:start;width:220px}
   .corner.r{font-size:10px}
 }
 @media (max-width:520px){.menu{grid-template-columns:42px 1fr 1fr 42px;gap:8px}.btn{font-size:14px}.logo{margin-bottom:26px}.splash{right:-2%}}
-@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition:none!important}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-property:opacity,filter,color,background-color!important;transition-duration:.15s!important}.toast{transform:none;opacity:0}.toast.on{opacity:1}}
 </style>
 </head>
 <body>
