@@ -2051,6 +2051,8 @@ const SONGS=[
  song({title:'Symphony No. 40',by:'Wolfgang Amadeus Mozart',bpm:210,
   rh:'Eb5:.5 D5:.5 D5:1 Eb5:.5 D5:.5 D5:1 Eb5:.5 D5:.5 D5:1 Bb5:2 Bb5:.5 A5:.5 G5:1 G5:.5 F5:.5 Eb5:1 Eb5:.5 D5:.5 C5:1 C5:2  D5:.5 C5:.5 C5:1 D5:.5 C5:.5 C5:1 D5:.5 C5:.5 C5:1 A5:2 A5:.5 G5:.5 F#5:1 F#5:.5 Eb5:.5 D5:1 D5:.5 C5:.5 Bb4:1 Bb4:2',
   lh:[['G2+D3+Bb3',16],['C3+Eb3+G3',8],['D3+F#3+A3',8],['D3+F#3+C4',16],['G2+D3+Bb3',16]].map(([c,n])=>Array(n).fill(c+':.5').join(' ')).join(' '),lv:.05,rv:.11}),
+ song({title:'Eine kleine Nachtmusik',by:'Wolfgang Amadeus Mozart',bpm:120,rh:'r:1',lh:'r:1'}),
+ song({title:'Piano Sonata No. 16',by:'Wolfgang Amadeus Mozart',bpm:120,rh:'r:1',lh:'r:1'}),
  song({title:'Rondo alla Turca',by:'Wolfgang Amadeus Mozart',bpm:470,
   rh:'C5:2 r:2 D5 C5 B4 C5  E5:2 r:2 F5 E5 D#5 E5  B5 A5 G#5 A5 B5 A5 G#5 A5  C6:4 A5:2 B5:2  C6:2 B5:2 A5:2 G#5:2  A5:2 E5:2 F5:2 D5:2  C5:4 B4:3 A4  A4:4 B4 A4 G#4 A4',
   lh:'A2:2 C4+E4:2 C4+E4:2 C4+E4:2  A2:2 C4+E4:2 C4+E4:2 C4+E4:2  A2:2 C4+E4:2 A2:2 C4+E4:2  A2:2 C4+E4:2 C4+E4:2 C4+E4:2  A2:2 C4+E4:2 E2:2 B3+E4:2  D3:2 F3+A3:2 D3:2 F3+A3:2  E2:2 G#3+B3:2 E2:2 G#3+D4:2  A2:2 C3+E3:2 r:4',lv:.07}),
@@ -2058,7 +2060,7 @@ const SONGS=[
   rh:'E5 E5 F5 G5  G5 F5 E5 D5  C5 C5 D5 E5  E5:1.5 D5:.5 D5:2  E5 E5 F5 G5  G5 F5 E5 D5  C5 C5 D5 E5  D5:1.5 C5:.5 C5:2',
   lh:'C3+G3:2 C3+G3:2  G2+D3:2 G2+D3:2  C3+G3:2 C3+G3:2  G2+D3:2 G2+D3:2  C3+G3:2 C3+G3:2  G2+D3:2 G2+D3:2  C3+G3:2 C3+G3:2  G2+D3:2 C3+G3:2',lv:.08})
 ];
-const FULL={'Für Elise':['elise','public domain'],'Gymnopédie No. 1':['gymno','public domain'],'The Entertainer':['ent','public domain'],'Canon in D':['canon','score by M. Fischer v. Mollard, Mutopia Project, CC BY 4.0'],'Rondo alla Turca':['turca','public domain'],'Ode to Joy':['ode','public domain']};
+const FULL={'Für Elise':['elise','public domain'],'Gymnopédie No. 1':['gymno','public domain'],'The Entertainer':['ent','public domain'],'Canon in D':['canon','score by M. Fischer v. Mollard, Mutopia Project, CC BY 4.0'],'Rondo alla Turca':['turca','public domain'],'Ode to Joy':['ode','public domain'],'Eine kleine Nachtmusik':['nacht','1st movement · public domain'],'Piano Sonata No. 16':['k545','1st mvt · score by A. Sierra, Mutopia Project, CC BY-SA 3.0']};
 SONGS.forEach(S=>{const f=FULL[S.title];if(f){S.src='assets/songs/'+f[0]+'.json';S.lic=f[1]}else S.lic=S.title==='Lobby Waltz'?'':'public domain · theme'});
 function gapOf(S){return S.loaded?1800:2}
 function loadSong(S){if(S.loaded||!S.src)return Promise.resolve();if(S.loading)return S.loading;
