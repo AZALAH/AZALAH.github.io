@@ -234,14 +234,6 @@ body.touch #subtitle{bottom:calc(108px + env(safe-area-inset-bottom,0px))}
 #nowPlaying .np-b:active{transform:translateY(1px)}#nowPlaying .np-b:focus-visible{outline:2px solid #fff}
 @media (hover:hover){#nowPlaying .np-b:hover{color:#ffff55}}
 
-.juke{display:flex;flex-direction:column;gap:10px}
-.juke .song{display:grid;grid-template-columns:40px 1fr;gap:4px 12px;align-items:center;padding:10px 12px;background:#1c1c1c;box-shadow:inset 0 0 0 2px #555}
-.juke .disc{grid-row:1/3;width:40px;height:40px;border-radius:50%;background:radial-gradient(circle,#c9a24e 0 5px,#141414 5px 7px,#2a2a2a 7px 9px,#141414 9px 12px,#262626 12px 15px,#141414 15px);animation:spin 3s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.juke b{font-family:var(--f-ui);font-weight:400;font-size:14px;color:var(--yellow);text-shadow:2px 2px 0 #3f3f15}
-.juke .by{font-size:18px;color:#ddd}
-.juke .links{grid-column:2;display:flex;gap:8px;margin-top:4px;flex-wrap:wrap}
-.juke .links a{font-family:var(--f-ui);font-size:11px;text-decoration:none;padding:7px 10px}
 </style>
 </head>
 <body>
@@ -273,13 +265,6 @@ body.touch #subtitle{bottom:calc(108px + env(safe-area-inset-bottom,0px))}
   </div>
 </div>
 <div id="zoom" hidden><img alt=""></div>
-<div class="overlay" id="jukeWrap" hidden>
-  <div class="card" role="dialog" aria-labelledby="jTitle">
-    <header><div><h2 id="jTitle">Ahmed's favorites</h2><div class="meta">Two songs I love. Each one opens the official recording in a new tab.</div></div><button class="pix" id="jClose">Close</button></header>
-    <div class="body"><div class="juke" id="jList"></div></div>
-  </div>
-</div>
-
 <div class="overlay" id="listWrap" hidden>
   <div class="card" role="dialog" aria-labelledby="lTitle">
     <header><div><h2 id="lTitle">Every Exhibit</h2><div class="meta">Short on time? Open anything from here.</div></div><button class="pix" id="lClose">Close</button></header>
@@ -1452,7 +1437,7 @@ function interactables(){
     (npcs.study||[]).forEach(n=>L.push({kind:'npc',n,x:n.x,half:14,label:'Pet Byte',pr:2}));return L}
   if(scene===3)L.push({kind:'study',x:1925,half:22,label:"Enter Byte's library"});
   L.push({kind:'elev',x:ELEV[scene],half:24,label:(lift.floor===scene&&LIFT_STATES_OPEN.includes(lift.state))?'Get in the elevator':'Call the elevator'});
-  if(scene===0){L.push({kind:'door',x:50,half:22,label:'Step outside'},{kind:'piano',x:630,half:24,label:'Sit and play the piano'},{kind:'jukebox',x:JX,half:10,label:"Ahmed's favorites"});
+  if(scene===0){L.push({kind:'door',x:50,half:22,label:'Step outside'},{kind:'piano',x:630,half:24,label:'Sit and play the piano'});
     if(mason.mode==='counter')L.push({kind:'mason',x:430,half:36,label:'Talk to Mason',pr:1});
     SC[0].seats.forEach(s=>{if(!s.taken)L.push({kind:'seat',s,x:s.x,half:11,label:'Sit down',pr:2})});
     L.push({kind:'staff',n:staff.theo,x:316,half:14,label:'Talk to Theo',pr:1},{kind:'staff',n:staff.priya,x:staff.priya.x,half:14,label:'Talk to Priya',pr:1})}
@@ -1479,7 +1464,6 @@ function interact(){
     case 'enter':showLoading(0,()=>{scene=0;setScale();player.x=60;player.dir='right';updateHUD();if(mason.mode==='counter')setTimeout(()=>{say2(mason,'Welcome in! Come say hi.',3);voice('mason/greet')},700)});break;
     case 'menu':sys('BACK TO THE MENU','Head back to the main menu?',[['Yes, take me back',()=>{endTalk();fadeThen(()=>location.href='index.html')}],['Stay a while',endTalk]]);break;
     case 'piano':sitDown();break;
-    case 'jukebox':openJuke();break;
     case 'seat':sitChair(n.s);break;
     case 'mason':openMason();break;
     case 'staff':talkNamed(n.n);break;
@@ -1555,7 +1539,7 @@ function backProps(c){
     R(c,590,124,80,46,'#741c26');R(c,590,124,80,3,'#8e2a36');R(c,594,130,72,14,'#86283a');R(c,592,144,76,6,'#eee8da');for(let i=0;i<19;i++)if(i%7!==2&&i%7!==6)R(c,594+i*4,144,2,4,'#14101a');
     R(c,590,150,80,3,'#4a0f16');R(c,594,153,4,17,'#4a0f16');R(c,662,153,4,17,'#4a0f16');R(c,606,116,10,8,'#2a2a2a');R(c,650,118,8,6,'#e9e1cf');
     if(!player.sitting){R(c,608,156,44,6,'#4a1a20');R(c,608,156,44,1,'#6a2a32');R(c,610,162,3,10,'#2a0e12');R(c,647,162,3,10,'#2a0e12')}
-    drawJukebox(c);SC[0].seats.forEach(s=>chair(c,s.x,s.dir));plant(c,724,172,1);plant(c,1150,172,1);plant(c,990,172,.9);
+    SC[0].seats.forEach(s=>chair(c,s.x,s.dir));plant(c,724,172,1);plant(c,1150,172,1);plant(c,990,172,.9);
   }else if(f===1){
     R(c,1124,140,8,32,'#5a3a22');R(c,1116,170,24,3,'#3a2214');disc(c,1128,128,13,13,'#2c5a8a');disc(c,1124,124,6,5,'#4a8a4a');disc(c,1134,132,5,4,'#4a8a4a');R(c,1113,127,30,2,'#c9a24e');
     bench(c,1440);bench(c,1900);plant(c,1020,172,1);plant(c,2130,172,1);plant(c,196,172,.9);
@@ -1660,7 +1644,7 @@ function lighting(sc,isSt){
   else{(sc.lights||[]).forEach(l=>L.push(Object.assign({},l,{i:l.i*lampK})));(sc.pendants||[]).forEach(([x,y])=>L.push({x,y:y+16,r:64,i:.9*lampK}));(sc.chand||[]).forEach(x=>L.push({x,y:30,r:100,i:.55*lampK}));
     ART.filter(e=>e.floor===scene).forEach(e=>{const r=artRect(e);L.push({x:e.cx,y:e.cy,r:Math.max(r.w,r.h)*.72+14,i:.95})});
     sc.windows.forEach(w=>L.push({x:w.x+w.w/2,y:w.y+w.h/2+20,r:w.w*1.3,i:.18+.6*dl}));
-    if(typeof scene==='number')L.push({x:ELEV[scene],y:100,r:60,i:.5});L.push({x:player.x,y:FEET-22,r:60,i:.55});if(scene===0)jukeGlow(L);if(scene===0)L.push({x:430,y:120,r:60,i:.8});if(mason.mode!=='counter'&&mason.floor===scene)L.push({x:mason.x,y:FEET-24,r:50,i:.5})}
+    if(typeof scene==='number')L.push({x:ELEV[scene],y:100,r:60,i:.5});L.push({x:player.x,y:FEET-22,r:60,i:.55});if(scene===0)L.push({x:430,y:120,r:60,i:.8});if(mason.mode!=='counter'&&mason.floor===scene)L.push({x:mason.x,y:FEET-24,r:50,i:.5})}
   L.forEach((l,n)=>{const f=reduce?1:1+Math.sin(time*2.3+n)*.02,sx=(l.x-ox)*k,sy=(l.y-oy)*k,sr=l.r*k*f;if(!isFinite(sx+sy+sr))return;if(sx<-sr||sx>lm.width+sr||l.i<=0)return;
     const g=lx.createRadialGradient(sx,sy,0,sx,sy,sr);g.addColorStop(0,`rgba(0,0,0,${l.i})`);g.addColorStop(.5,`rgba(0,0,0,${l.i*.7})`);g.addColorStop(1,'rgba(0,0,0,0)');lx.fillStyle=g;lx.fillRect(sx-sr,sy-sr,sr*2,sr*2);
     if(!isSt&&l.y<140&&l.i>.4){const fy=(178-oy)*k,fr=l.r*k*.8;lx.save();lx.translate(sx,fy);lx.scale(1,.18);const g2=lx.createRadialGradient(0,0,0,0,0,fr);g2.addColorStop(0,`rgba(0,0,0,${l.i*.5})`);g2.addColorStop(1,'rgba(0,0,0,0)');lx.fillStyle=g2;lx.fillRect(-fr,-fr,fr*2,fr*2);lx.restore()}});
@@ -2061,6 +2045,9 @@ const SONGS=[
  song({title:'Canon in D',by:'Johann Pachelbel',bpm:76,
   rh:'F#5:2 E5:2 D5:2 C#5:2 B4:2 A4:2 B4:2 C#5:2  D5:2 C#5:2 B4:2 A4:2 G4:2 F#4:2 G4:2 E4:2  D4:.5 F#4:.5 A4:.5 G4:.5 F#4:.5 D4:.5 F#4:.5 E4:.5 D4:.5 B3:.5 D4:.5 A4:.5 G4:.5 B4:.5 A4:.5 G4:.5 F#4:2 E4:2 D4:2 E4:2',
   lh:'D3:2 A2:2 B2:2 F#2:2 G2:2 D2:2 G2:2 A2:2  D3:2 A2:2 B2:2 F#2:2 G2:2 D2:2 G2:2 A2:2  D3:2 A2:2 B2:2 F#2:2 G2:2 D2:2 G2:2 A2:2',lv:.09}),
+ song({title:'Hungarian Dance No. 5',by:'Johannes Brahms',bpm:126,
+  rh:'C#4:1.5 F#4:.5  A4:1.5 F#4:.5  E#4:1.5 F#4:.25 G#4:.25  A4:2  B3+D4:1.5 C#4+E#4:.25 D4+F#4:.25  A3+C#4:1 r:1  B3:.25 A3:.25 G#3:.25 A3:.25 A3:.75 C#4:.25  F#3:2  C#4+C#5:1.5 F#4+F#5:.25 A4+A5:.25  C#5+C#6:1.5 A4+A5:.5  B4+E#5+G#5:1.5 A4+A5:.25 B4+B5:.25  F#5+A5+C#6:2  F#4+A4+C#5:2',
+  lh:'F#2:.5 A3+C#4:.5 C#3:.5 A3+C#4:.5 F#2:.5 A3+C#4:.5 C#3:.5 A3+C#4:.5 C#2:.5 E#3+G#3+B3:.5 G#2:.5 E#3+G#3+B3:.5 F#2:.5 A3+C#4:.5 C#3:.5 A3+C#4:.5 B1:.5 B3+D4+F#4:.5 F#2:.5 B3+D4+F#4:.5 F#2:.5 A3+C#4:.5 C#3:.5 A3+C#4:.5 C#2:.5 E#3+G#3+B3:.5 G#2:.5 E#3+G#3+B3:.5 F#2:.5 A3+C#4:.5 C#3:.5 A3+C#4:.5 F#2:.5 A3+C#4:.5 C#3:.5 A3+C#4:.5 F#2:.5 A3+C#4:.5 C#3:.5 A3+C#4:.5 C#2:.5 E#3+G#3+B3:.5 G#2:.5 E#3+G#3+B3:.5 F#2:.5 A3+C#4:.5 C#3:.5 A3+C#4:.5 F#2:.5 A3+C#4:.5 C#3:.5 A3+C#4:.5',lv:.06,rv:.11}),
  song({title:'Symphony No. 40',by:'Wolfgang Amadeus Mozart',bpm:210,
   rh:'Eb5:.5 D5:.5 D5:1 Eb5:.5 D5:.5 D5:1 Eb5:.5 D5:.5 D5:1 Bb5:2 Bb5:.5 A5:.5 G5:1 G5:.5 F5:.5 Eb5:1 Eb5:.5 D5:.5 C5:1 C5:2  D5:.5 C5:.5 C5:1 D5:.5 C5:.5 C5:1 D5:.5 C5:.5 C5:1 A5:2 A5:.5 G5:.5 F#5:1 F#5:.5 Eb5:.5 D5:1 D5:.5 C5:.5 Bb4:1 Bb4:2',
   lh:[['G2+D3+Bb3',16],['C3+Eb3+G3',8],['D3+F#3+A3',8],['D3+F#3+C4',16],['G2+D3+Bb3',16]].map(([c,n])=>Array(n).fill(c+':.5').join(' ')).join(' '),lv:.05,rv:.11}),
@@ -2114,25 +2101,6 @@ function showNowPlaying(){const el=document.getElementById('nowPlaying');if(!el)
 function hideNowPlaying(){const el=document.getElementById('nowPlaying');if(el)el.hidden=true}
 document.getElementById('npPrev').onclick=()=>switchSong(-1);document.getElementById('npNext').onclick=()=>switchSong(1);
 
-/* jukebox: links out to the official recordings */
-const FAVS=[{t:'I Will Survive',by:'Gloria Gaynor · 1978',q:'Gloria Gaynor I Will Survive'},{t:'Snowman',by:'Sia · 2017',q:'Sia Snowman'}];
-const jukeWrap=document.getElementById('jukeWrap');
-(function(){const L=document.getElementById('jList');FAVS.forEach(f=>{const d=document.createElement('div');d.className='song';const q=encodeURIComponent(f.q);
-  d.innerHTML='<span class="disc" aria-hidden="true"></span><b></b><span class="by"></span><span class="links"><a class="pix" target="_blank" rel="noopener" href="https://www.youtube.com/results?search_query='+q+'+official">YouTube</a><a class="pix" target="_blank" rel="noopener" href="https://open.spotify.com/search/'+q+'">Spotify</a></span>';
-  d.querySelector('b').textContent=f.t;d.querySelector('.by').textContent=f.by;L.append(d)})})();
-function openJuke(){paused=true;jukeWrap.hidden=false;const a=jukeWrap.querySelector('a');a&&a.focus()}
-function closeJuke(){jukeWrap.hidden=true;paused=false}
-document.getElementById('jClose').onclick=closeJuke;jukeWrap.addEventListener('click',ev=>{if(ev.target===jukeWrap)closeJuke()});
-const JX=704;
-function drawJukebox(c){const x=JX-8,y=140,t=reduce?0:time,hue=(t*60)%360;
-  R(c,x,y+4,16,28,'#5a2a1a');R(c,x+1,y+5,14,26,'#7a3a22');c.fillStyle='#7a3a22';c.beginPath();c.arc(x+8,y+6,8,Math.PI,0);c.fill();
-  c.fillStyle='hsl('+hue+',85%,62%)';c.beginPath();c.arc(x+8,y+6,6,Math.PI,0);c.fill();c.fillStyle='#2a1410';c.beginPath();c.arc(x+8,y+6,4,Math.PI,0);c.fill();
-  R(c,x+4,y+2,8,4,'#1a1210');disc(c,x+8,y+4,2.4,1,'#141414');R(c,x+7.5,y+3.6,1,1,'#c9a24e');
-  R(c,x+3,y+9,10,4,'#e9e1cf');R(c,x+4,y+10,8,1,'#9a948a');R(c,x+4,y+12,6,1,'#9a948a');
-  for(let i=0;i<4;i++)R(c,x+3,y+15+i*3,10,1,'#3a1a10');R(c,x+2,y+14,1,13,'hsl('+((hue+120)%360)+',85%,60%)');R(c,x+13,y+14,1,13,'hsl('+((hue+240)%360)+',85%,60%)');
-  R(c,x,y+31,16,1,'#2a1410');R(c,x+1,y+29,14,2,'#c9a24e');
-  if(!reduce&&player.x>JX-60&&player.x<JX+40&&Math.sin(time*2)>0)c.fillStyle='#ffe2a8',c.font='8px VT323',c.textAlign='center',c.fillText('♪',x+8+Math.sin(time*3)*3,y-6-((time*8)%8)),c.textAlign='left'}
-function jukeGlow(L){L.push({x:JX,y:146,r:28,i:.35})}
 
 /* ---------- HUD ---------- */
 function updateHUD(){
@@ -2281,7 +2249,6 @@ const KM={ArrowLeft:'left',KeyA:'left',ArrowRight:'right',KeyD:'right'};
 addEventListener('keydown',ev=>{
   if(!loadingEl.hidden)return;
   if(!zoom.hidden){if(ev.key==='Escape')zoom.hidden=true;return}
-  if(!jukeWrap.hidden){if(ev.key==='Escape')closeJuke();return}
   if(!dlg.hidden){
     if(ev.key==='ArrowDown'||ev.key==='s'){setSel(sel+1);ev.preventDefault()}else if(ev.key==='ArrowUp'||ev.key==='w'){setSel(sel-1);ev.preventDefault()}
     else if(ev.key==='Escape')endTalk();else if((ev.key==='e'||ev.key==='E')&&typing)dtext.onclick();return}
