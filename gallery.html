@@ -2058,11 +2058,17 @@ const SONGS=[
   rh:'E5 E5 F5 G5  G5 F5 E5 D5  C5 C5 D5 E5  E5:1.5 D5:.5 D5:2  E5 E5 F5 G5  G5 F5 E5 D5  C5 C5 D5 E5  D5:1.5 C5:.5 C5:2',
   lh:'C3+G3:2 C3+G3:2  G2+D3:2 G2+D3:2  C3+G3:2 C3+G3:2  G2+D3:2 G2+D3:2  C3+G3:2 C3+G3:2  G2+D3:2 G2+D3:2  C3+G3:2 C3+G3:2  G2+D3:2 C3+G3:2',lv:.08})
 ];
+const FULL={'Für Elise':['elise','public domain'],'Gymnopédie No. 1':['gymno','public domain'],'The Entertainer':['ent','public domain'],'Canon in D':['canon','score by M. Fischer v. Mollard, Mutopia Project, CC BY 4.0'],'Rondo alla Turca':['turca','public domain'],'Ode to Joy':['ode','public domain']};
+SONGS.forEach(S=>{const f=FULL[S.title];if(f){S.src='assets/songs/'+f[0]+'.json';S.lic=f[1]}else S.lic=S.title==='Lobby Waltz'?'':'public domain · theme'});
+function gapOf(S){return S.loaded?1800:2}
+function loadSong(S){if(S.loaded||!S.src)return Promise.resolve();if(S.loading)return S.loading;
+  S.loading=fetch(S.src).then(r=>r.json()).then(d=>{S.ev=d.ev.map(([t,m,du,h,v])=>({b:t,d:du,m:[m],h,v:(.035+v/127*.075)*(h?1:.8)}));S.len=d.len;S.bpm=60000;S.loaded=true}).catch(()=>{S.src=null});return S.loading}
 const PIANO={i:0,t0:0,next:0,timer:null,gapBeats:2,hands:[{x:-6,y:-19,p:0},{x:6,y:-19,p:0}],lit:new Map(),sway:0};
 function songSec(S){return 60/S.bpm}
-function startSong(i){const a=ac();PIANO.i=(i+SONGS.length)%SONGS.length;PIANO.t0=a.currentTime+.25;PIANO.next=0;PIANO.loop=0;showNowPlaying();
-  if(PIANO.timer)clearInterval(PIANO.timer);PIANO.timer=setInterval(schedSong,50);schedSong()}
-function schedSong(){if(!player.sitting)return;const a=ac(),S=SONGS[PIANO.i],sp=songSec(S),L=(S.len+PIANO.gapBeats)*sp;
+function startSong(i){const a=ac();PIANO.i=(i+SONGS.length)%SONGS.length;const S=SONGS[PIANO.i],tok=PIANO.tok=(PIANO.tok||0)+1;if(PIANO.timer)clearInterval(PIANO.timer);PIANO.timer=null;
+  const go=()=>{if(tok!==PIANO.tok||!player.sitting)return;PIANO.t0=a.currentTime+.25;PIANO.next=0;showNowPlaying();PIANO.timer=setInterval(schedSong,50);schedSong()};
+  if(S.src&&!S.loaded){showNowPlaying(true);loadSong(S).then(go)}else go()}
+function schedSong(){if(!player.sitting)return;const a=ac(),S=SONGS[PIANO.i],sp=songSec(S),L=(S.len+gapOf(S))*sp;
   while(true){const e=S.ev[PIANO.next];if(!e){PIANO.next=0;PIANO.t0+=L;continue}const at=PIANO.t0+e.b*sp;if(at>a.currentTime+.3)break;
     if(at>=a.currentTime-.05){const d=Math.max(.35,e.d*sp*1.6);e.m.forEach(m=>{try{tone(m,at-a.currentTime,d+.4,e.v/(e.m.length>1?1.4:1))}catch(x){}});if(e.h===1&&Math.random()<.35)spawnNote(Math.max(0,at-a.currentTime))}
     PIANO.next++}}
@@ -2075,7 +2081,7 @@ const KEYX0=592,WHITE_OF=[0,0,1,1,2,3,3,4,4,5,5,6],IS_BLACK=[0,1,0,1,0,0,1,0,1,0
 function keyIndex(m){const c=630,raw=(()=>{let k=m;while(k<48)k+=12;while(k>84)k-=12;const o=Math.floor((k-48)/12),pc=(k-48)%12;return{w:o*7+WHITE_OF[pc],black:IS_BLACK[pc]}})();
   let x=KEYX0+raw.w*4+(raw.black?3:1.5);x=c+(x-(KEYX0+21*2))*.45;let w=Math.round((x-KEYX0-1.5)/4);if(raw.black){w=Math.round((x-KEYX0-3)/4);if([2,6].includes(((w%7)+7)%7))w+=1}return{w:clamp(w,0,18),black:raw.black}}
 function pianoFrame(){const a=AC,S=SONGS[PIANO.i];PIANO.lit.clear();if(!a||!player.sitting)return null;
-  const sp=songSec(S),L=S.len+PIANO.gapBeats;let beat=(a.currentTime-PIANO.t0)/sp;if(beat<0)beat=-1;beat=beat%L;
+  const sp=songSec(S),L=S.len+gapOf(S);let beat=(a.currentTime-PIANO.t0)/sp;if(beat<0)beat=-1;beat=beat%L;
   const last=[null,null],nextE=[null,null];
   for(const e of S.ev){if(e.b<=beat&&beat<e.b+Math.max(e.d,.35)){e.m.forEach(m=>{const k=keyIndex(m);PIANO.lit.set((k.black?'b':'w')+k.w,clamp(1-(beat-e.b)/Math.max(.6,e.d),0,1))});}
     if(e.b<=beat)last[e.h]=e;else if(!nextE[e.h])nextE[e.h]=e}
@@ -2095,8 +2101,8 @@ function drawPianist(c){const pf=pianoFrame(),P=PAL.player;
   P.__hands=PIANO.hands.map(h=>[h.x,h.y,h.p]);P.__sway=PIANO.sway;P.__beat=pf&&pf.onBeat&&!reduce?1:0;P.__noFid=1;
   c.save();c.beginPath();c.rect(570,0,120,157);c.clip();drawSprite(c,630,173,'up',0,false,P);c.restore();
   P.__hands=null;P.__noFid=0}
-function showNowPlaying(){const el=document.getElementById('nowPlaying');if(!el)return;const S=SONGS[PIANO.i];
-  document.getElementById('npT').textContent=S.title;document.getElementById('npB').textContent=S.by+(PIANO.i===0?'':' · public domain');document.getElementById('npN').textContent=(PIANO.i+1)+' / '+SONGS.length;el.hidden=false;
+function showNowPlaying(loading){const el=document.getElementById('nowPlaying');if(!el)return;const S=SONGS[PIANO.i];
+  document.getElementById('npT').textContent=S.title+(loading?' · loading…':'');document.getElementById('npB').textContent=S.by+(S.lic?' · '+S.lic:'');document.getElementById('npN').textContent=(PIANO.i+1)+' / '+SONGS.length;el.hidden=false;
   el.classList.remove('flip');void el.offsetWidth;el.classList.add('flip')}
 function hideNowPlaying(){const el=document.getElementById('nowPlaying');if(el)el.hidden=true}
 document.getElementById('npPrev').onclick=()=>switchSong(-1);document.getElementById('npNext').onclick=()=>switchSong(1);
