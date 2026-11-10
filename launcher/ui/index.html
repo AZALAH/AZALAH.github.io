@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'">
+<title>AZALAH Launcher</title>
+<link rel="stylesheet" href="launcher.css">
+</head>
+<body>
+<div class="hero" aria-hidden="true"></div>
+<header class="bar">
+  <img src="icon.png" alt="" width="20" height="20"><span>AZALAH Launcher</span>
+  <div class="win"><button id="min" aria-label="Minimize">_</button><button id="close" aria-label="Close">x</button></div>
+</header>
+
+<aside class="side">
+  <section>
+    <h2>Your save</h2>
+    <div id="saveNone" class="none">No save yet. Press Play and walk in.</div>
+    <div id="saveBox" hidden>
+      <div class="pct"><b id="pct">0%</b><span id="where"></span></div>
+      <div class="meter"><i id="meter"></i></div>
+      <dl>
+        <div><dt>Exhibits</dt><dd id="sEx"></dd></div>
+        <div><dt>People met</dt><dd id="sPpl"></dd></div>
+        <div><dt>Achievements</dt><dd id="sAch"></dd></div>
+        <div><dt>Time played</dt><dd id="sTime"></dd></div>
+      </dl>
+    </div>
+  </section>
+  <section>
+    <h2>What's new</h2>
+    <ul id="notes"></ul>
+  </section>
+  <section class="opts">
+    <button class="tog" id="optFull" role="switch" aria-checked="true"><span>Fullscreen</span><i></i></button>
+    <button class="tog" id="optSkip" role="switch" aria-checked="false"><span>Skip the title screen</span><i></i></button>
+  </section>
+  <footer><button id="site" class="link">azalah.github.io</button><span id="ver"></span></footer>
+</aside>
+
+<main class="dock">
+  <div class="status"><span id="status">Checking for updates</span><div class="prog" id="prog" hidden><i id="progBar"></i></div></div>
+  <button id="play" class="play" disabled>Play</button>
+  <div class="gamever"><b>The Gallery</b><span id="gver"></span></div>
+</main>
+<script src="launcher.js"></script>
+</body>
+</html>

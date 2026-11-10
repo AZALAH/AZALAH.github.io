@@ -1,0 +1,56 @@
+{
+  "name": "azalah-launcher",
+  "productName": "AZALAH Launcher",
+  "version": "1.0.0",
+  "description": "Desktop launcher for Ahmed Salah's portfolio game, The Gallery.",
+  "author": "Ahmed Salah",
+  "license": "MIT",
+  "private": true,
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win dir --x64 && node build/make-installer.js"
+  },
+  "devDependencies": {
+    "electron": "45.2.3",
+    "electron-builder": "26.18.0",
+    "resedit": "^2.0.3"
+  },
+  "build": {
+    "appId": "io.github.azalah.launcher",
+    "productName": "AZALAH Launcher",
+    "copyright": "Copyright Ahmed Salah",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "preload-game.js",
+      "ui/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "game",
+        "to": "game"
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "dir",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.ico",
+      "signAndEditExecutable": false
+    },
+    "afterPack": "build/after-pack.js",
+    "electronLanguages": [
+      "en-US"
+    ]
+  }
+}
