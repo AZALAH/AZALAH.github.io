@@ -49,6 +49,9 @@ Section "Install"
   WriteRegStr HKCU "${REG}" "URLInfoAbout" "https://azalah.github.io"
   WriteRegDWORD HKCU "${REG}" "NoModify" 1
   WriteRegDWORD HKCU "${REG}" "NoRepair" 1
+  ; a silent run is the launcher updating itself, so reopen it when done
+  IfSilent 0 +2
+  Exec '"$INSTDIR\${EXE}"'
 SectionEnd
 
 Section "Uninstall"

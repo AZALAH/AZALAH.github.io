@@ -38,6 +38,13 @@
   const segs = [...document.querySelectorAll('.seg button')], showDisplay = d => segs.forEach(b => b.setAttribute('aria-checked', String(b.dataset.display === d)));
   segs.forEach(b => b.addEventListener('click', () => { showDisplay(b.dataset.display); api.set('display', b.dataset.display); }));
   toggle($('optSkip'), 'skipTitle');
+  if (api.onLauncherUpdate && api.selfUpdate) { const su = $('selfUp'); let ver = '';
+    api.onLauncherUpdate(d => { ver = d.version; su.hidden = false; su.disabled = false; su.textContent = 'Launcher ' + d.version + ' is out. Click to update (' + mb(d.size) + ')'; });
+    su.onclick = () => { su.disabled = true; api.selfUpdate(); };
+    api.onSelfUpdate(d => { if (d.phase === 'downloading') { su.disabled = true; su.textContent = 'Downloading launcher ' + ver + '  ' + Math.round(100 * d.done / d.total) + '%'; setReady(false); }
+      else if (d.phase === 'installing') su.textContent = 'Installing. The launcher will reopen by itself.';
+      else if (d.phase === 'verified') { su.textContent = 'Downloaded and checked.'; setReady(true); }
+      else if (d.phase === 'failed') { su.disabled = false; su.textContent = 'Launcher update failed. ' + (d.message || '') + ' Click to try again.'; setReady(true); } }); }
   api.onUpdate(onUpdate);
   api.onGameClosed(() => { showSave(); $('status').textContent = 'Welcome back. Ready to play.'; api.check(); });
   addEventListener('keydown', e => { if (e.key === 'Enter' && document.activeElement === document.body && ready) $('play').click(); });
