@@ -1,6 +1,6 @@
 'use strict';
 // AZALAH Launcher: installs, updates and runs The Gallery in its own window.
-const { app, BrowserWindow, protocol, ipcMain, shell, net, Menu } = require('electron');
+const { app, BrowserWindow, protocol, ipcMain, shell, net, Menu, screen } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const fsp = fs.promises;
@@ -22,7 +22,8 @@ app.setAppUserModelId('io.github.azalah.launcher');
 const bundledDir = app.isPackaged ? path.join(process.resourcesPath, 'game') : path.join(__dirname, 'game');
 const uiDir = path.join(__dirname, 'ui');
 let userDir, overlayDir, settingsFile;
-let settings = { fullscreen: true, skipTitle: false };
+const DISPLAYS = ['fullscreen', 'borderless', 'windowed'];
+let settings = { display: 'fullscreen', skipTitle: false };
 let overlay = null;        // manifest of downloaded updates, or null when the bundled copy is current
 let bundled = null;        // manifest shipped with the launcher
 let launcherWin = null, gameWin = null, updating = false;
@@ -43,7 +44,7 @@ function validManifest(m) {
 function activeManifest() { return overlay || bundled; }
 function loadState() {
   userDir = app.getPath('userData'); overlayDir = path.join(userDir, 'game'); settingsFile = path.join(userDir, 'settings.json');
-  const s = readJson(settingsFile); if (s && typeof s === 'object') { settings.fullscreen = s.fullscreen !== false; settings.skipTitle = s.skipTitle === true; }
+  const s = readJson(settingsFile); if (s && typeof s === 'object') { settings.display = DISPLAYS.includes(s.display) ? s.display : (s.fullscreen === false ? 'windowed' : 'fullscreen'); settings.skipTitle = s.skipTitle === true; }
   bundled = readJson(path.join(bundledDir, MANIFEST)); if (!validManifest(bundled)) bundled = { version: 'dev', built: 0, files: [], notes: [] };
   const o = readJson(path.join(overlayDir, MANIFEST));
   if (validManifest(o) && o.built > bundled.built) overlay = o;
@@ -146,7 +147,11 @@ function openLauncher() {
 }
 function openGame() {
   if (gameWin && !gameWin.isDestroyed()) { gameWin.show(); gameWin.focus(); return; }
-  gameWin = new BrowserWindow({ width: 1280, height: 720, minWidth: 640, minHeight: 400, fullscreen: settings.fullscreen, show: false, backgroundColor: '#000000', title: 'The Gallery', autoHideMenuBar: true,
+  // fullscreen: takes over the screen. borderless: a frameless window the size of the screen, which stays put when you tab out. windowed: a normal resizable window.
+  const mode = settings.display, area = screen.getDisplayNearestPoint(screen.getCursorScreenPoint()).bounds;
+  const shape = mode === 'borderless' ? { x: area.x, y: area.y, width: area.width, height: area.height, frame: false, resizable: false, movable: false }
+    : { width: Math.min(1280, area.width), height: Math.min(720, area.height), fullscreen: mode === 'fullscreen' };
+  gameWin = new BrowserWindow({ ...shape, minWidth: 640, minHeight: 400, show: false, backgroundColor: '#000000', title: 'The Gallery', autoHideMenuBar: true,
     icon: path.join(__dirname, 'ui', 'icon.png'),
     webPreferences: { preload: path.join(__dirname, 'preload-game.js'), contextIsolation: true, sandbox: true, nodeIntegration: false, spellcheck: false, backgroundThrottling: false, autoplayPolicy: 'no-user-gesture-required' } });
   lockDown(gameWin);
@@ -159,7 +164,7 @@ const fromGame = ev => gameWin && !gameWin.isDestroyed() && ev.sender === gameWi
 ipcMain.handle('launcher:state', ev => fromLauncher(ev) ? { launcher: app.getVersion(), game: activeManifest().version, notes: activeManifest().notes || [], settings } : null);
 ipcMain.on('launcher:check', ev => { if (fromLauncher(ev)) checkUpdate(); });
 ipcMain.on('launcher:play', ev => { if (fromLauncher(ev) && !updating) openGame(); });
-ipcMain.on('launcher:set', (ev, key, value) => { if (!fromLauncher(ev) || !['fullscreen', 'skipTitle'].includes(key)) return; settings[key] = value === true; try { writeAtomic(settingsFile, JSON.stringify(settings)); } catch (e) {} });
+ipcMain.on('launcher:set', (ev, key, value) => { if (!fromLauncher(ev)) return; if (key === 'display' && DISPLAYS.includes(value)) settings.display = value; else if (key === 'skipTitle') settings.skipTitle = value === true; else return; try { writeAtomic(settingsFile, JSON.stringify(settings)); } catch (e) {} });
 ipcMain.on('launcher:minimize', ev => { if (fromLauncher(ev)) launcherWin.minimize(); });
 ipcMain.on('launcher:close', ev => { if (fromLauncher(ev)) launcherWin.close(); });
 ipcMain.on('launcher:site', ev => { if (fromLauncher(ev)) shell.openExternal(SITE); });

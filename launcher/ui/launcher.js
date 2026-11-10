@@ -35,7 +35,9 @@
 
   $('min').onclick = () => api.minimize(); $('close').onclick = () => api.close(); $('site').onclick = () => api.site();
   $('play').onclick = () => { if (ready) { $('status').textContent = 'Starting the game'; api.play(); } };
-  toggle($('optFull'), 'fullscreen'); toggle($('optSkip'), 'skipTitle');
+  const segs = [...document.querySelectorAll('.seg button')], showDisplay = d => segs.forEach(b => b.setAttribute('aria-checked', String(b.dataset.display === d)));
+  segs.forEach(b => b.addEventListener('click', () => { showDisplay(b.dataset.display); api.set('display', b.dataset.display); }));
+  toggle($('optSkip'), 'skipTitle');
   api.onUpdate(onUpdate);
   api.onGameClosed(() => { showSave(); $('status').textContent = 'Welcome back. Ready to play.'; api.check(); });
   addEventListener('keydown', e => { if (e.key === 'Enter' && document.activeElement === document.body && ready) $('play').click(); });
@@ -46,5 +48,5 @@
   if (window.AZScenes) { const c = $('scene'); c.hidden = false; window.AZScenes.start(c); $('logo').hidden = false; }
   showSave();
   api.state().then(s => { if (!s) return; $('ver').textContent = 'Launcher ' + s.launcher; $('gver').textContent = 'Version ' + s.game; showNotes(s.notes);
-    $('optFull').setAttribute('aria-checked', String(!!s.settings.fullscreen)); $('optSkip').setAttribute('aria-checked', String(!!s.settings.skipTitle)); api.check(); });
+    showDisplay(s.settings.display); $('optSkip').setAttribute('aria-checked', String(!!s.settings.skipTitle)); api.check(); });
 })();

@@ -34,6 +34,9 @@ ul{margin:0;padding:0;list-style:none;display:grid;gap:7px;max-height:200px;over
 li{line-height:1.08;padding-left:14px;position:relative;color:#e6e6ee}
 li::before{content:'';position:absolute;left:0;top:7px;width:6px;height:6px;background:var(--yellow)}
 .opts{display:grid;gap:8px;margin-top:auto}
+.seg{display:grid;gap:6px}.seg div{display:grid;grid-template-columns:repeat(3,1fr);gap:0;box-shadow:0 0 0 2px #000}
+.seg button{padding:5px 0 4px;background:#23253a;color:var(--dim);font-size:17px}.seg button+button{box-shadow:-2px 0 0 #000}
+.seg button:hover{color:#fff}.seg button[aria-checked=true]{background:#2c6a1e;color:#fff}
 .tog{display:flex;justify-content:space-between;align-items:center;width:100%;text-align:left}
 .tog i{width:34px;height:16px;background:#23253a;box-shadow:0 0 0 2px #000;position:relative}
 .tog i::after{content:'';position:absolute;top:0;left:0;width:16px;height:16px;background:#8b8b8b;box-shadow:inset 2px 2px 0 #c6c6c6,inset -2px -2px 0 #555;transition:left .12s}
