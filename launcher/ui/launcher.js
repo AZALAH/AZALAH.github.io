@@ -43,6 +43,7 @@
   (function pad() { let on = false; try { for (const g of navigator.getGamepads()) if (g && g.connected && ((g.buttons[0] && g.buttons[0].pressed) || (g.buttons[9] && g.buttons[9].pressed))) on = true; } catch (e) {}
     if (on && !padPrev && ready && document.hasFocus()) $('play').click(); padPrev = on; requestAnimationFrame(pad); })();
 
+  if (window.AZScenes) { const c = $('scene'); c.hidden = false; window.AZScenes.start(c); $('logo').hidden = false; }
   showSave();
   api.state().then(s => { if (!s) return; $('ver').textContent = 'Launcher ' + s.launcher; $('gver').textContent = 'Version ' + s.game; showNotes(s.notes);
     $('optFull').setAttribute('aria-checked', String(!!s.settings.fullscreen)); $('optSkip').setAttribute('aria-checked', String(!!s.settings.skipTitle)); api.check(); });

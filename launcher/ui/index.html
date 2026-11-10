@@ -7,7 +7,8 @@
 <link rel="stylesheet" href="launcher.css">
 </head>
 <body>
-<div class="hero" aria-hidden="true"></div>
+<div class="hero" aria-hidden="true"><canvas id="scene" width="384" height="216" hidden></canvas></div>
+<div class="logo" id="logo" hidden><b>AHMED SALAH</b><span>THE GALLERY</span></div>
 <header class="bar">
   <img src="icon.png" alt="" width="20" height="20"><span>AZALAH Launcher</span>
   <div class="win"><button id="min" aria-label="Minimize">_</button><button id="close" aria-label="Close">x</button></div>
@@ -44,6 +45,7 @@
   <button id="play" class="play" disabled>Play</button>
   <div class="gamever"><b>The Gallery</b><span id="gver"></span></div>
 </main>
+<script src="../assets/scenes.js"></script>
 <script src="launcher.js"></script>
 </body>
 </html>

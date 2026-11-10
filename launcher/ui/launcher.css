@@ -7,6 +7,11 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;paddin
 button:focus-visible{outline:2px solid #fff;outline-offset:2px}
 .hero{position:fixed;inset:0 var(--side) var(--dock) 0;background:#1a1830 url(hero.png) -240px 0/auto 100% no-repeat;image-rendering:pixelated;animation:drift 50s ease-in-out infinite alternate}
 .hero::after{content:'';position:absolute;inset:0;background:linear-gradient(rgba(8,8,16,.55),transparent 16%,transparent 70%,rgba(8,8,16,.75))}
+.hero canvas{display:block;width:100%;height:100%;object-fit:cover;image-rendering:pixelated}
+.hero canvas[hidden],.logo[hidden]{display:none}
+.logo{position:fixed;left:0;right:var(--side);top:74px;display:grid;justify-items:center;gap:10px;pointer-events:none;font-family:'MCPixel'}
+.logo b{font-weight:400;font-size:44px;letter-spacing:2px;color:#f4f1ea;text-shadow:0 4px 0 #6f6a62,4px 8px 0 rgba(0,0,0,.45)}
+.logo span{font-size:18px;letter-spacing:8px;color:#fff;text-shadow:3px 3px 0 rgba(0,0,0,.6)}
 @keyframes drift{from{background-position:-222px 0}to{background-position:-258px 0}}
 .bar{position:fixed;inset:0 0 auto 0;height:36px;display:flex;align-items:center;gap:8px;padding:0 0 0 10px;-webkit-app-region:drag;z-index:5;font-family:'MCPixel';font-size:11px;text-shadow:1px 1px 0 #000}
 .bar img{image-rendering:pixelated}
