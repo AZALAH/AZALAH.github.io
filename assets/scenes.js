@@ -185,45 +185,83 @@ const SCENES = {
     } };
   },
 
-  /* 7. cherry blossom garden */
+  /* 7. cherry blossom river */
   cherry(rand) {
-    const g = layer(); sky(g, ['#7fb0e0', '#b8c8ee', '#f0c8dc', '#ffe0d0', '#fff0e0'], 0, 140);
-    const cl = clouds(rand, 4, 10, 56, '#ffffff', '#f6d8e4', 40, 90);
-    // far mountain with a snow cap
-    for (let x = 60; x < 250; x++) { const d = Math.abs(x - 155), y = Math.round(58 + Math.pow(d, 1.25) * .32 + hash(x, 3) * 1.5); R(g, x, y, 1, 140 - y, '#8f9fd0'); if (y < 82) R(g, x, y, 1, Math.max(1, (82 - y) * (.5 + .4 * hash(x, 8))), '#ffffff'); }
-    ridge(g, rand, 126, 8, '#a8c8b0', { jag: 1 }); const hill = ridge(g, rand, 142, 7, '#7fb87a', { lit: '#a8d890' });
-    const blossom = (cx, cy, rx, ry, n, cols) => { for (let i = 0; i < n; i++) { const a = rand() * 6.28, d = Math.sqrt(rand()); ell(g, cx + Math.cos(a) * d * rx, cy + Math.sin(a) * d * ry, 4 + rand() * 6, 3 + rand() * 4, cols[i < n * .35 ? 0 : i < n * .75 ? 1 : 2]); } for (let i = 0; i < n * 1.5; i++) { const a = rand() * 6.28, d = Math.sqrt(rand()); R(g, cx + Math.cos(a) * d * rx, cy + Math.sin(a) * d * ry - 2, 2, 1, cols[3]); } };
-    const PINK = ['#d86a9a', '#f29ac0', '#ffc4dc', '#ffeaf2'];
-    for (let i = 0; i < 9; i++) { const x = 10 + i * 44 + rand() * 20, y = hill[Math.floor(Math.min(W - 1, x))] + 2; R(g, x, y - 12, 2, 12, '#5a3a40'); blossom(x, y - 16, 12, 7, 10, PINK); }
-    // lawn and pond
-    sky(g, ['#7fb87a', '#6aa868', '#4f8f56'], 150, H); for (let i = 0; i < 260; i++) R(g, rand() * W, 152 + rand() * 62, 1, 1, rand() > .5 ? '#8fc888' : '#3f7f4a');
-    const pond = (y) => { const k = (y - 172) / 30; return [Math.round(96 - Math.sin(k * 3.1) * 20 - k * 26), Math.round(292 + Math.sin(k * 3.1) * 16 + k * 30)]; };
-    for (let y = 172; y < 204; y++) { const [a, b] = pond(y); R(g, a - 2, y, b - a + 4, 1, '#c8b890'); R(g, a, y, b - a, 1, y < 178 ? '#8fc0d8' : y < 190 ? '#78aecc' : '#6a9ec0'); }
-    for (let i = 0; i < 16; i++) { const y = 172 + Math.floor(rand() * 30), [a, b] = pond(y), x = rand() > .5 ? a - 4 : b + 1; ell(g, x + 1, y, 3, 2, rand() > .5 ? '#8a8a90' : '#a0a0a6'); }
-    // arched bridge
-    for (let x = 150; x <= 236; x++) { const k = (x - 193) / 43, y = Math.round(180 - (1 - k * k) * 14); R(g, x, y, 1, 4, '#c0343c'); R(g, x, y, 1, 1, '#e85a5a'); R(g, x, y - 7, 1, 1, '#a82830'); if ((x - 150) % 9 === 0) R(g, x, y - 7, 1, 7, '#a82830'); R(g, x, y + 4, 1, 1, '#7a2028'); }
-    R(g, 150, 170, 2, 14, '#8a2028'); R(g, 235, 170, 2, 14, '#8a2028');
-    // stone lantern
-    const lx = 62, ly = 186; R(g, lx - 4, ly, 9, 2, '#8a8a90'); R(g, lx - 1, ly - 9, 3, 9, '#9a9aa0'); R(g, lx - 4, ly - 15, 9, 6, '#8a8a90'); R(g, lx - 2, ly - 13, 5, 3, '#ffd98a'); for (let i = 0; i < 4; i++) R(g, lx - 6 + i, ly - 16 - i, 13 - i * 2, 1, '#6f6f76'); R(g, lx, ly - 21, 1, 2, '#6f6f76');
-    // foreground trees
-    const fg = layer(), trunk = (x, y, h, lean) => { for (let i = 0; i < h; i++) { const w = 3 + (h - i) * .09, xx = x + Math.sin(i * .05) * lean - w / 2 + i * lean * .02; R(g, xx, y - i, w, 1, i % 7 < 2 ? '#4a2a34' : '#3a2028'); R(g, xx, y - i, 1, 1, '#6a4048'); } };
-    const big = [[40, 212, 78, 6], [338, 214, 84, -7], [262, 168, 34, 3]]; for (const [x, y, h, l] of big) { trunk(x, y, h, l); const tx = x + Math.sin(h * .05) * l + h * l * .02; R(g, tx - 14, y - h + 8, 16, 2, '#3a2028'); R(g, tx + 2, y - h + 14, 18, 2, '#3a2028'); blossom(tx, y - h - 2, h * .62, h * .3, Math.round(h * .9), PINK); blossom(tx - h * .4, y - h + 12, h * .3, h * .16, Math.round(h * .3), PINK); blossom(tx + h * .45, y - h + 16, h * .3, h * .16, Math.round(h * .3), PINK); }
-    const floaters = []; for (let i = 0; i < 26; i++) { const y = 174 + Math.floor(rand() * 28), [a, b] = pond(y); floaters.push([a + 4 + rand() * (b - a - 8), y, rand() * 6]); }
-    return { bg: g.canvas, draw(c, t) {
-      drawClouds(c, cl, t * .8);
-      birds(c, t, 3, 40, '#5a5a80', 31);
-      for (let y = 172; y < 204; y += 1) { const [a, b] = pond(y); shimmer(c, t, a + 2, b - 2, y, y + 1, '#ffffff', .03, .45); }
-      for (const f of floaters) R(c, f[0] + Math.sin(t * .4 + f[2]) * 2, f[1], 2, 1, '#ffc4dc');
-      for (let i = 0; i < 2; i++) { const ph = (t * .08 + i * .5) % 1, kx = 130 + i * 90 + Math.sin(t * .3 + i * 2) * 26, ky = 190 + Math.cos(t * .23 + i) * 6; R(c, kx, ky, 5, 2, i ? '#f08a3a' : '#f2f2f2'); R(c, kx + (Math.cos(t * .3 + i * 2) > 0 ? -2 : 5), ky, 2, 1 + Math.floor(t * 3 + i) % 2, i ? '#c86a2a' : '#e85a4a'); }
-      glow(c, 62, 174, 12, 'rgba(255,217,138,1)', .3 + .05 * Math.sin(t * 3));
-      for (let i = 0; i < 90; i++) { const sp = 9 + hash(i, 2) * 12, y = (hash(i, 1) * (H + 20) + t * sp) % (H + 20) - 10, x = ((hash(i, 3) * (W + 40) + Math.sin(t * .9 + i * 1.3) * 12 + t * (6 + hash(i, 5) * 8)) % (W + 40)) - 20, fl = Math.floor(t * 3 + i) % 3;
+    let g = layer(); const hz = 102; sky(g, ['#2b86b4', '#3f9cc4', '#6fb8d4', '#a8d6e2', '#f2e4de'], 0, hz + 8);
+    const cl = clouds(rand, 5, 4, 44, '#f8e6e0', '#e8c4cc', 44, 96), sk = g; g = layer();
+    const PINK = ['#a3244f', '#cf3d74', '#ee6497', '#ff9bbf'], FL = ['#b89ae6', '#d9bdf5', '#f08ab8', '#ffffff', '#c9a6ee'];
+    const far = ridge(g, rand, hz, 4, '#7fa86a', {}), hill = ridge(g, rand, hz + 5, 5, '#5f9a4c', {});
+    // river: narrow at the horizon, wide in the foreground
+    const riv = y => { const k = (y - hz - 4) / (H - hz - 4), cx = 214 - Math.sin(k * 2.9) * 46 - k * 96, w = 5 + Math.pow(k, 1.5) * 330; return [Math.round(cx - w / 2), Math.round(cx + w / 2)]; };
+    const fgY = x => 214 - (x / W) * 74 + Math.sin(x * .03) * 4;
+    // meadows
+    for (let y = hz + 6; y < H; y++) for (let x = 0; x < W; x++) { const k = (y - hz) / (H - hz), v = hash(x, y); R(g, x, y, 1, 1, v > .5 ? '#5f9a4c' : '#4f8a42'); const patch = hash(x >> 4, (y >> 3) + 50), dens = .5 + .34 * Math.sin(x * .05 + y * .09) * Math.sin(y * .07 + 1); if (hash(x >> (k > .5 ? 1 : 0), (y >> (k > .5 ? 1 : 0)) + 99) > 1 - dens * .62) R(g, x, y, 1, 1, patch > .6 ? (hash(x, y + 9) > .4 ? '#f08ab8' : '#ffb8d6') : (hash(x, y + 9) > .5 ? '#b89ae6' : hash(x, y + 9) > .15 ? '#d9bdf5' : '#ffffff')); }
+    // water with the trees' reflection
+    for (let y = hz + 4; y < H; y++) { const [a, b] = riv(y), k = (y - hz) / (H - hz); for (let x = Math.max(0, a); x < Math.min(W, b); x++) { const pink = Math.max(0, 1.5 - k * 2.6) + (x > 200 ? .25 * (1 - k) : 0), d = (BAYER[(y & 3) * 4 + (x & 3)] + .5) / 16; R(g, x, y, 1, 1, d < pink ? (d < pink * .5 ? '#d8497c' : '#f07aa6') : d < .25 + k * .5 ? '#9fd8ea' : '#6fbcdc'); }
+      if (a > 0) R(g, a - 1, y, 2, 1, '#3f7a36'); if (b < W) R(g, b - 1, y, 2, 1, '#3f7a36'); }
+    // trees along the far bank, bigger toward the right
+    const tree = (x, y, h) => { const lean = (rand() - .5) * 4; for (let i = 0; i < h * .55; i++) { const w = Math.max(1, h * .07 * (1 - i / h)); R(g, x + lean * i / h - w / 2, y - i, w + 1, 1, '#3a2028'); }
+      for (const d of [-1, 1]) for (let i = 0; i < h * .3; i++) R(g, x + d * i * .8, y - h * .35 - i * .7, 1, 1, '#3a2028');
+      const n = Math.round(h * 1.6); for (let i = 0; i < n; i++) { const a2 = rand() * 6.28, dd = Math.sqrt(rand()), cx = x + Math.cos(a2) * dd * h * .62, cy = y - h * .78 + Math.sin(a2) * dd * h * .36; ell(g, cx, cy, 2 + rand() * h * .12, 2 + rand() * h * .08, PINK[i < n * .3 ? 0 : i < n * .65 ? 1 : 2]); }
+      for (let i = 0; i < n * 1.4; i++) { const a2 = rand() * 6.28, dd = Math.sqrt(rand()); R(g, x + Math.cos(a2) * dd * h * .6, y - h * .86 + Math.sin(a2) * dd * h * .3, 2, 1, PINK[3]); } };
+    [[22, 24], [70, 30], [118, 22], [150, 18], [182, 16], [226, 20], [258, 26]].forEach(([x, h]) => tree(x, hill[x] + 3, h));
+    tree(338, hz + 22, 74); tree(296, hz + 12, 40);
+    // foreground bank
+    for (let x = 0; x < W; x++) { const y0 = Math.round(fgY(x)); for (let y = y0; y < H; y++) R(g, x, y, 1, 1, hash(x, y) > .55 ? '#3f8f34' : hash(x, y + 5) > .5 ? '#2f7a2c' : '#4fa03c'); R(g, x, y0 - 1 - Math.floor(hash(x, 4) * 3), 1, 3, '#5fb044'); }
+    const blooms = []; for (let i = 0; i < 70; i++) { const x = 30 + rand() * (W - 30), y = fgY(x) + 2 + rand() * (H - fgY(x)); blooms.push([x, y, 3 + rand() * 6, rand() > .45 ? (rand() > .5 ? '#f0509a' : '#ff8fc0') : (rand() > .5 ? '#c9a6ee' : '#e6d0fa'), rand() * 6]); }
+    return { bg: sk.canvas, mid: g.canvas, back(c, t) { drawClouds(c, cl, t * .8); birds(c, t, 3, 20, '#2a4a60', 31); }, draw(c, t) {
+      for (let y = hz + 6; y < H; y++) { const [a, b] = riv(y), k = (y - hz) / (H - hz), x0 = Math.max(0, a + 2), x1 = Math.min(W, b - 2); if (x1 - x0 < 4) continue; shimmer(c, t, x0, x1, y, y + 1, k < .45 ? '#b8306a' : '#ffffff', k < .45 ? .07 : .035, k < .45 ? .6 : .55); if (k > .2 && k < .7) shimmer(c, t + 9, x0, x1, y, y + 1, '#ff9bbf', .03, .6); }
+      for (const f of blooms) { const sw = Math.sin(t * 1.4 + f[4]) * 1.2; R(c, f[0], f[1] - f[2], 1, f[2], '#2f6a2a'); R(c, f[0] + sw - 1, f[1] - f[2] - 2, 3, 2, f[3]); R(c, f[0] + sw, f[1] - f[2] - 3, 1, 1, '#ffffff'); }
+      for (let i = 0; i < 70; i++) { const sp = 9 + hash(i, 2) * 12, y = (hash(i, 1) * (H + 20) + t * sp) % (H + 20) - 10, x = ((hash(i, 3) * (W + 40) - Math.sin(t * .9 + i * 1.3) * 12 - t * (6 + hash(i, 5) * 8)) % (W + 40) + W + 40) % (W + 40) - 20, fl = Math.floor(t * 3 + i) % 3;
         c.fillStyle = PINK[1 + i % 3]; c.globalAlpha = .9; if (fl === 0) c.fillRect(Math.round(x), Math.round(y), 2, 1); else if (fl === 1) c.fillRect(Math.round(x), Math.round(y), 1, 2); else { c.fillRect(Math.round(x), Math.round(y), 1, 1); c.fillRect(Math.round(x + 1), Math.round(y + 1), 1, 1); } } c.globalAlpha = 1;
+    } };
+  },
+
+  /* 8. alpine lake */
+  lake(rand) {
+    let g = layer(); const hz = 112; sky(g, ['#2470c4', '#3f8cd8', '#6aaeea', '#a8d2f2'], 0, hz);
+    const cl = clouds(rand, 3, 6, 34, '#ffffff', '#d8e8f8', 26, 60), sk = g; g = layer();
+    const rock = (x, y0, lit) => { for (let y = y0; y < hz; y++) { const v = hash(x >> 1, y >> 2), s = hash((x + y * .6) >> 2, 11); R(g, x, y, 1, 1, s > (lit ? .62 : .4) ? '#8a8690' : v > .7 ? '#e2dacb' : v < .2 ? '#a69f9c' : '#c4bcae'); } };
+    // far massif
+    const far = []; for (let x = 0; x < W; x++) { const peak = (cx, top, wd) => top + Math.pow(Math.abs(x - cx) / wd, 1.3) * 60; far.push(Math.round(Math.min(peak(262, 30, 62), peak(206, 58, 40), peak(318, 46, 50), 104) + hash(x, 2) * 3 + Math.sin(x * .4) * 1.5)); }
+    for (let x = 120; x < W; x++) rock(x, far[x], x % 23 < 13);
+    for (let x = 150; x < 300; x++) { const y = 96 + Math.sin(x * .07) * 3; R(g, x, y, 1, hz - y, '#2f5a3a'); if (x % 3 === 0) R(g, x, y - 2, 1, 2, '#2f5a3a'); }
+    // left cliff
+    const lc = []; for (let x = 0; x < 190; x++) lc.push(Math.round(-10 + Math.pow(x / 190, 1.6) * 118 + Math.sin(x * .12) * 4 + hash(x, 5) * 3));
+    for (let x = 0; x < 190; x++) { for (let y = Math.max(0, lc[x]); y < hz; y++) { const v = hash(x >> 1, y >> 2), s = hash((x - y * .5) >> 3, 4); R(g, x, y, 1, 1, s > .6 ? '#b09a78' : v > .72 ? '#f0dfbe' : v < .18 ? '#a8946f' : '#d6c29a'); } }
+    const wood = (x0, x1, top, cols) => { for (let i = 0; i < (x1 - x0) * 1.3; i++) { const x = x0 + rand() * (x1 - x0), t0 = top(x), y = t0 + rand() * rand() * (hz - t0) + 6; if (y > hz) continue; pine(g, x, Math.min(hz, y), 5 + rand() * 6, cols[Math.floor(rand() * cols.length)]); } };
+    wood(0, 150, x => lc[Math.floor(x)] + 26 + Math.sin(x * .08) * 10, ['#234a2c', '#2f5a34', '#1c3f26']);
+    for (let x = 0; x < 196; x++) if (x % 2) pine(g, x, hz, 7 + hash(x, 9) * 5, '#1c3f26');
+    // right forested slope
+    const rs = x => 26 + Math.pow((W - x) / 96, 1.2) * 86 + Math.sin(x * .09) * 3;
+    for (let x = 286; x < W; x++) { const y0 = Math.round(rs(x)); if (y0 < hz) R(g, x, y0, 1, hz - y0, '#234a2c'); }
+    wood(288, W, rs, ['#2f6a3a', '#1c3f26', '#285a32', '#3a7a42']);
+    for (let x = 296; x < W; x++) R(g, x, hz - 1, 1, 2, '#e2dcc4');
+    // water
+    const w = layer(); sky(w, ['#1f9c9a', '#2bb4a8', '#3ccab6', '#62dcc4', '#8fead2'], hz, H);
+    for (let y = hz; y < hz + 22; y++) for (let x = 0; x < W; x++) { const d = (BAYER[(y & 3) * 4 + (x & 3)] + .5) / 16, k = 1 - (y - hz) / 22; if (d < k * (x < 190 || x > 290 ? .8 : .45)) R(w, x, y, 1, 1, x < 190 ? '#3f8a70' : x > 290 ? '#1f6a5a' : '#6aa8a8'); }
+    for (let i = 0; i < 90; i++) { const y = 170 + rand() * 46, x = rand() * W; ell(w, x, y, 4 + rand() * 9, 1 + rand() * 2, rand() > .5 ? '#a8f2dc' : '#4fd0b8'); }
+    g.drawImage(w.canvas, 0, 0);
+    const boat = (c, x, y, s, t) => { // s: 1 near, 0 far
+      if (!s) { R(c, x - 3, y, 7, 2, '#5a3420'); R(c, x - 1, y - 2, 1, 2, '#f2f2f2'); R(c, x + 1, y - 2, 1, 2, '#2a3a5a'); return; }
+      const row = Math.sin(t * 1.6), ox = Math.round(row * 5);
+      c.globalAlpha = .25; ell(c, x + 2, y + 6, 18, 2, '#0f5a58'); c.globalAlpha = 1;
+      R(c, x - 14, y, 28, 4, '#b06a34'); R(c, x - 16, y - 1, 4, 3, '#b06a34'); R(c, x + 12, y - 2, 4, 4, '#b06a34'); R(c, x - 15, y - 1, 30, 1, '#e0a058'); R(c, x - 12, y + 4, 24, 1, '#6a3a20'); R(c, x - 13, y + 2, 26, 1, '#8a4f28');
+      R(c, x - 6, y - 6, 4, 6, '#f4f4f4'); R(c, x - 5, y - 9, 3, 3, '#d8a078'); R(c, x - 5, y - 10, 3, 1, '#3a2a20');
+      R(c, x + 5, y - 5, 4, 5, '#3a4a6a'); R(c, x + 6, y - 8, 3, 3, '#d8a078'); R(c, x + 6, y - 9, 3, 1, '#c8a04a');
+      c.strokeStyle = '#7a4a28'; c.lineWidth = 1; c.beginPath(); c.moveTo(x - 4, y - 2); c.lineTo(x - 20 + ox, y + 5 - Math.abs(row) * 2); c.moveTo(x - 2, y - 1); c.lineTo(x + 2 + ox, y + 8); c.stroke(); R(c, x - 22 + ox, y + 4 - Math.abs(row) * 2, 3, 2, '#9a6a3a'); };
+    return { bg: sk.canvas, mid: g.canvas, back(c, t) { drawClouds(c, cl, t * .7); birds(c, t, 3, 22, '#e8f0ff', 41); }, draw(c, t) {
+      shimmer(c, t, 0, W, hz + 2, H, '#c8fff0', .03, .5); shimmer(c, t + 5, 0, W, hz + 2, 150, '#17807e', .03, .35);
+      const bx = 142 + Math.sin(t * .05) * 26, by = 158 + Math.round(Math.sin(t * 1.2) * .6);
+      c.fillStyle = '#0f6f6c'; for (let i = 2; i < 54; i += 1) { const fade = 1 - i / 54; c.globalAlpha = fade * .5; const wob = Math.round(Math.sin(t * 2 + i * .4)); c.fillRect(Math.round(bx + 8 + i * .45) + wob, by + 5 + i, 2, 1); c.fillRect(Math.round(bx - 4 + i * .18) - wob, by + 5 + i, 2, 1); } c.globalAlpha = 1;
+      boat(c, 250 + Math.sin(t * .03) * 30, 128, 0, t); boat(c, 60 + Math.sin(t * .04 + 2) * 20, 122, 0, t); boat(c, 318 - Math.sin(t * .035) * 16, 134, 0, t);
+      boat(c, Math.round(bx), by, 1, t);
     } };
   }
 };
 
 const NAMES = Object.keys(SCENES);
-const TITLES = { waterfall: 'Waterfall valley', city: 'City rain', desert: 'Desert sunset', snow: 'Snowy mountains', ocean: 'Lighthouse', forest: 'Firefly forest', cherry: 'Cherry blossom garden' };
+const TITLES = { waterfall: 'Waterfall valley', city: 'City rain', desert: 'Desert sunset', snow: 'Snowy mountains', ocean: 'Lighthouse', forest: 'Firefly forest', cherry: 'Cherry blossom river', lake: 'Alpine lake' };
 function pick(want) {
   if (want && SCENES[want]) return want;
   let last = null; try { last = localStorage.getItem('azalah-scene'); } catch (e) {}
