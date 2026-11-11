@@ -272,7 +272,7 @@ function pick(want) {
 function start(canvas, opts) {
   opts = opts || {}; canvas.width = W; canvas.height = H;
   const g = canvas.getContext('2d'); g.imageSmoothingEnabled = false;
-  const still = opts.still || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+  let still = opts.still != null ? !!opts.still : !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
   let name = pick(opts.scene), sc = SCENES[name](rng(NAMES.indexOf(name) * 977 + 13)), raf = 0, last = 0, t0 = performance.now(), stopped = false;
   function frame(now) {
     if (stopped) return; raf = requestAnimationFrame(frame);
@@ -282,7 +282,14 @@ function start(canvas, opts) {
   paint(still ? 7 : 0); if (!still) raf = requestAnimationFrame(frame);
   return { get name() { return name; }, get title() { return TITLES[name]; },
     set(n) { if (!SCENES[n]) return; name = n; sc = SCENES[n](rng(NAMES.indexOf(n) * 977 + 13)); paint(still ? 7 : (performance.now() - t0) / 1000); },
+    get still() { return still; },
+    setStill(v) { v = !!v; if (v === still) return; still = v; cancelAnimationFrame(raf); if (still) paint(7); else { t0 = performance.now(); raf = requestAnimationFrame(frame); } },
     stop() { stopped = true; cancelAnimationFrame(raf); } };
 }
-window.AZScenes = { names: NAMES, titles: TITLES, start };
+/* an off-screen copy of one scene, painted on request (the gallery's doors and walk-in rooms use this) */
+function make(name) {
+  const g = layer(), sc = SCENES[name](rng(NAMES.indexOf(name) * 977 + 13));
+  return { name, canvas: g.canvas, paint(t) { g.globalAlpha = 1; g.globalCompositeOperation = 'source-over'; g.drawImage(sc.bg, 0, 0); if (sc.back) sc.back(g, t); if (sc.mid) g.drawImage(sc.mid, 0, 0); sc.draw(g, t); if (sc.fg) g.drawImage(sc.fg, 0, 0); } };
+}
+window.AZScenes = { names: NAMES, titles: TITLES, start, make };
 })();

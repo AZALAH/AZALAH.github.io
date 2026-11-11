@@ -466,6 +466,7 @@ form.rv .btn{grid-column:1/-1;justify-self:start;width:220px}
       <div class="slider"><input type="range" id="vol" min="0" max="100" value="40" aria-label="Music volume"><span id="volLbl">Music volume: 40%</span></div>
       <button class="btn" id="clickBtn" aria-pressed="true">Button clicks: ON</button>
       <button class="btn full" id="sceneBtn">Backdrop</button>
+      <button class="btn full" id="motionBtn" aria-pressed="true">Backdrop motion: ON</button>
       <p class="credit">Music: "Lofi Chill Vlog Beats" by alex-morgan (Pixabay)</p>
     </div>
   </div></div>
@@ -608,9 +609,11 @@ vol.addEventListener('input',()=>{applyVol();store.set('ahmed-vol',vol.value)});
 applyVol();mui();
 
 /* backdrop: a different animated pixel scene on every visit */
-const backdrop=window.AZScenes?AZScenes.start($('#world'),{scene:new URLSearchParams(location.search).get('scene')}):null;
+const backdrop=window.AZScenes?AZScenes.start($('#world'),{scene:new URLSearchParams(location.search).get('scene'),still:store.get('azalah-still')==='1'}):null;
 (function(){const b=$('#sceneBtn');if(!b)return;if(!backdrop){b.hidden=true;return}const show=()=>b.textContent='Backdrop: '+backdrop.title;show();
-  b.addEventListener('click',()=>{const n=AZScenes.names;backdrop.set(n[(n.indexOf(backdrop.name)+1)%n.length]);store.set('azalah-scene',backdrop.name);show()})})();
+  b.addEventListener('click',()=>{const n=AZScenes.names;backdrop.set(n[(n.indexOf(backdrop.name)+1)%n.length]);store.set('azalah-scene',backdrop.name);show()});
+  const m=$('#motionBtn'),ms=()=>{m.textContent='Backdrop motion: '+(backdrop.still?'OFF':'ON');m.setAttribute('aria-pressed',String(!backdrop.still))};ms();
+  m.addEventListener('click',()=>{backdrop.setStill(!backdrop.still);store.set('azalah-still',backdrop.still?'1':'0');ms()})})();
 document.querySelectorAll('.logo h1,.logo .sub').forEach(el=>{const t=el.textContent;el.setAttribute('aria-label',t);el.textContent='';[...t].forEach((ch,i)=>{const s=document.createElement('span');s.setAttribute('aria-hidden','true');if(ch===' ')s.className='sp';else{s.className='ch';s.textContent=ch;s.style.setProperty('--i',i);
   s.addEventListener('pointerenter',()=>{if(reduce||s.classList.contains('hop'))return;s.classList.add('hop');s.addEventListener('animationend',function f(e){if(e.animationName==='hop'){s.classList.remove('hop');s.removeEventListener('animationend',f)}})})}el.append(s)})});setTimeout(()=>$('.logo').classList.add('in'),1800);
 
