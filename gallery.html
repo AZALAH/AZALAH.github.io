@@ -1532,6 +1532,7 @@ function update(dt){
   if(player.auto){const a=player.auto;if(walkTo(player,a.tx,dt,70)){player.auto=null;a.cb&&a.cb()}return}
   let dx=0;if(keys.left||keys.pl)dx-=1;if(keys.right||keys.pr)dx+=1;
   if(player.sitting){if(perfOn())dx=0;if(dx&&dx!==player.lastD)switchSong(dx);player.lastD=dx;dx=0}else player.lastD=0;
+  if(LOUNGE.free){if(dx&&dx!==player.lastF)freeSong(dx);player.lastF=dx;dx=0}else player.lastF=0;
   if(player.chair){if(dx)leaveChair();dx=0}
   if(player.waitLift&&Math.abs(player.x-ELEV[scene])>70)cancelLiftCall();
   player.moving=!!dx;
@@ -1565,7 +1566,7 @@ function interactables(){
 function nearest(){let best=null,bd=1e9;for(const it of interactables()){const d=Math.abs(player.x-it.x)-(it.pr||0)*4;if(Math.abs(player.x-it.x)<it.half&&d<bd){bd=d;best=it}}return best}
 function interact(){
   if(mode==='ride'){stepOut();return}
-  if(paused||player.auto||player.inElev||perfOn())return;if(player.sitting)return standUp();if(player.armchair){player.armchair=false;return}if(player.chair)return tableChat();
+  if(paused||player.auto||player.inElev||perfOn())return;if(LOUNGE.free)return freeStop();if(player.sitting)return standUp();if(player.armchair){player.armchair=false;return}if(player.chair)return tableChat();
   const n=nearest();if(!n)return;
   switch(n.kind){
     case 'ex':openCard(n.e.id);break;
@@ -1832,6 +1833,7 @@ function drawPrompt(){
   if(player.waitLift&&!paused){pr.hidden=false;const lf=lift.floor===0?'G':lift.floor;pr.innerHTML='Waiting for the elevator · '+(lift.dir>0?'▲ ':lift.dir<0?'▼ ':'')+lf+(lift.queue.length>1?' · '+(lift.queue.length-1)+' stop'+(lift.queue.length>2?'s':'')+' first':'');place();ab.classList.remove('ready');return}
   if(paused||player.auto||player.inElev){pr.hidden=true;ab.classList.remove('ready');return}
   if(perfOn()){pr.hidden=true;ab.classList.remove('ready');return}
+  if(LOUNGE.free){pr.hidden=false;pr.innerHTML='<kbd>◀ ▶</kbd>Change piece · <kbd>'+K+'</kbd>Stand up';place();ab.classList.add('ready');return}
   if(player.sitting){pr.hidden=false;pr.innerHTML=padMode?'<kbd>X</kbd>Perform · <kbd>LB RB</kbd>Change song · <kbd>B</kbd>Stand up':touchMode?'◀ ▶ Song · <kbd>A</kbd>Stand up':'<kbd>P</kbd>Perform · <kbd>◀ ▶</kbd>Change song · <kbd>E</kbd>Stand up';place();ab.classList.add('ready');return}
   const n=nearest();if(n){pr.hidden=false;pr.innerHTML='<kbd>'+K+'</kbd>'+esc(n.label);place();ab.classList.add('ready')}else{pr.hidden=true;ab.classList.remove('ready')}
 }
@@ -2186,9 +2188,10 @@ const SONGS=[
   rh:'E5 E5 F5 G5  G5 F5 E5 D5  C5 C5 D5 E5  E5:1.5 D5:.5 D5:2  E5 E5 F5 G5  G5 F5 E5 D5  C5 C5 D5 E5  D5:1.5 C5:.5 C5:2',
   lh:'C3+G3:2 C3+G3:2  G2+D3:2 G2+D3:2  C3+G3:2 C3+G3:2  G2+D3:2 G2+D3:2  C3+G3:2 C3+G3:2  G2+D3:2 G2+D3:2  C3+G3:2 C3+G3:2  G2+D3:2 C3+G3:2',lv:.08}),
  song({title:'In the Hall of the Mountain King',by:'Edvard Grieg',bpm:120,rh:'r:1',lh:'r:1'}),
- song({title:'The Blue Danube',by:'Johann Strauss II',bpm:120,rh:'r:1',lh:'r:1'})
+ song({title:'The Blue Danube',by:'Johann Strauss II',bpm:120,rh:'r:1',lh:'r:1'}),
+ song({title:'Waltz of the Flowers',by:'Pyotr Ilyich Tchaikovsky',bpm:120,rh:'r:1',lh:'r:1'})
 ];
-const FULL={'Für Elise':['elise','public domain'],'Gymnopédie No. 1':['gymno','public domain'],'The Entertainer':['ent','public domain'],'Hungarian Dance No. 5':['hungarian','public domain'],'Symphony No. 40':['sym40','1st movement · piano reduction · public domain'],'In the Hall of the Mountain King':['king','Grieg\'s own piano version · public domain'],'The Blue Danube':['danube','piano reduction · score encoding by Signature Sound Vienna, mdw, CC BY 4.0'],'Rondo alla Turca':['turca','public domain'],'Ode to Joy':['ode','public domain'],'Eine kleine Nachtmusik':['nacht','1st movement · public domain'],'Piano Sonata No. 16':['k545','1st mvt · score by A. Sierra, Mutopia Project, CC BY-SA 3.0']};
+const FULL={'Waltz of the Flowers':['flowers','from The Nutcracker · easy piano version · public domain'],'Für Elise':['elise','public domain'],'Gymnopédie No. 1':['gymno','public domain'],'The Entertainer':['ent','public domain'],'Hungarian Dance No. 5':['hungarian','public domain'],'Symphony No. 40':['sym40','1st movement · piano reduction · public domain'],'In the Hall of the Mountain King':['king','Grieg\'s own piano version · public domain'],'The Blue Danube':['danube','piano reduction · score encoding by Signature Sound Vienna, mdw, CC BY 4.0'],'Rondo alla Turca':['turca','public domain'],'Ode to Joy':['ode','public domain'],'Eine kleine Nachtmusik':['nacht','1st movement · public domain'],'Piano Sonata No. 16':['k545','1st mvt · score by A. Sierra, Mutopia Project, CC BY-SA 3.0']};
 SONGS.forEach(S=>{const f=FULL[S.title];if(f){S.src='assets/songs/'+f[0]+'.json';S.lic=f[1]}else S.lic=S.title==='Lobby Waltz'?'':'public domain · theme'});
 function gapOf(S){return S.loaded?1800:2}
 function loadSong(S){if(S.loaded||!S.src)return Promise.resolve();if(S.loading)return S.loading;
@@ -2516,7 +2519,7 @@ ROOM_BUILD.lounge=function(c,sc){const w=sc.w;
   R(c,684,36,160,3,'#8a6a2a');R(c,852,50,36,110,'#c8ccd2');R(c,854,52,32,108,'#aeb4bc');disc(c,870,84,8,8,'#2a3440');disc(c,870,84,6,6,'#5a7088');R(c,856,120,28,3,'#8a9098');R(c,850,48,40,3,'#6a7078');
   for(const x of [110,250,420,520,600,700,780]){R(c,x,24,1,10,'#1a120c');disc(c,x,38,4,4,'#fff1c9');disc(c,x-1,37,2,2,'#ffffff')}
 };
-const LOUNGE={house:null,loading:false,t0:0,next:0,ovation:0,confetti:0,guests:[],crew:{},cheerT:4};
+const LOUNGE={free:false,fi:0,hit:[-9,-9],crowd:[],house:null,loading:false,t0:0,next:0,ovation:0,confetti:0,guests:[],crew:{},cheerT:4};
 (function(){const mkc=(k,o)=>LOUNGE.crew[k]=mk(Object.assign({key:k,pal:CREW[k].fp,named:1},o));
   mkc('celeste',{x:336,dir:'left'});mkc('elio',{x:123,dir:'right'});mkc('nathan',{x:760,y:BEHIND,dir:'down'});mkc('ronak',{x:700,dir:'left',runner:1,base:700,timer:3,speed:44});mkc('nick',{x:716,dir:'left',runner:1,base:716,timer:7,speed:40});
   L_SEATS.forEach((s,i)=>{const g=GUESTS[i];LOUNGE.guests.push(mk({x:s.x,y:FEET,dir:s.dir,seat:s,state:'sit',gname:g[0],skill:g[1],rp:g[2],pal:palette({style:pick(['blazer','cardigan','blazer']),top:pick([['#2a2a2e','#1a1a1e'],['#7a3a3a','#5a2a2a'],['#3a5f9a','#2c4a7a'],['#5a4078','#42305a']])})}))})})();
@@ -2528,11 +2531,11 @@ function runnerTick(n,dt,tables,lines,hold){if(n===talkingNPC){n.moving=false;re
   else{n.moving=false;n.timer-=dt;if(n.timer<=0&&tables.length){n.rs='go';n.tx=pick(tables)+rnd(-6,6)}}}
 const SERVE_LINES=['Here you are.','Careful, the plate is hot.','Enjoy!','One for you, and one for you.','Anything else for the table?','Compliments of the chef.'];
 function trayOn(c,n){if(!n.tray)return;const f=n.dir==='left'?-1:1;R(c,n.x+f*7-5,n.y-34,10,2,'#c8ccd2');R(c,n.x+f*7-3,n.y-38,3,4,'#f4efe2');R(c,n.x+f*7+1,n.y-37,3,3,'#c98a4a')}
-function houseTick(){if(perfOn()||player.stage){LOUNGE.house=null;return}let a;try{a=ac()}catch(e){return}if(a.state!=='running')return;
-  if(!LOUNGE.house){if(LOUNGE.loading)return;LOUNGE.loading=true;const S=pick(SONGS.filter(s=>s.src));loadSong(S).then(()=>{LOUNGE.loading=false;if(scene!=='lounge'||perfOn()||player.stage)return;LOUNGE.house=S;LOUNGE.t0=ac().currentTime+.8;LOUNGE.next=0;
-      const e=document.getElementById('nowPlaying');e.classList.add('house');e.hidden=false;document.getElementById('npN').textContent='· Elio at the piano';document.getElementById('npT').textContent=S.title;document.getElementById('npB').textContent=S.by}).catch(()=>{LOUNGE.loading=false});return}
-  const S=LOUNGE.house,sp=songSec(S),now=a.currentTime;for(;;){const e=S.ev[LOUNGE.next];if(!e){LOUNGE.house=null;return}const at=LOUNGE.t0+e.b*sp;if(at>now+.3)break;
-    if(at>=now-.05){const d=Math.max(.35,e.d*sp*1.6);e.m.forEach(m=>{try{tone(m,at-now,d+.4,e.v*.5/(e.m.length>1?1.4:1))}catch(x){}})}LOUNGE.next++}}
+function houseTick(){if(perfOn()||(player.stage&&!LOUNGE.free)){LOUNGE.house=null;return}let a;try{a=ac()}catch(e){return}if(a.state!=='running')return;
+  if(!LOUNGE.house){if(LOUNGE.loading)return;LOUNGE.loading=true;const S=LOUNGE.free?SONGS[LOUNGE.fi]:pick(SONGS.filter(s=>s.src)),fr=LOUNGE.free;loadSong(S).then(()=>{LOUNGE.loading=false;if(scene!=='lounge'||perfOn()||(player.stage&&!LOUNGE.free)||fr!==LOUNGE.free||(fr&&S!==SONGS[LOUNGE.fi]))return;LOUNGE.house=S;LOUNGE.t0=ac().currentTime+.8;LOUNGE.next=0;
+      const e=document.getElementById('nowPlaying');e.classList.add('house');e.hidden=false;document.getElementById('npN').textContent=LOUNGE.free?'· You at the piano':'· Elio at the piano';document.getElementById('npT').textContent=S.title;document.getElementById('npB').textContent=S.by}).catch(()=>{LOUNGE.loading=false});return}
+  const S=LOUNGE.house,sp=songSec(S),now=a.currentTime;for(;;){const e=S.ev[LOUNGE.next];if(!e){LOUNGE.house=null;if(LOUNGE.free){ovation(false);LOUNGE.fi=freeNext(1)}return}const at=LOUNGE.t0+e.b*sp;if(at>now+.3)break;
+    if(at>=now-.05){const d=Math.max(.35,e.d*sp*1.6);e.m.forEach(m=>{try{tone(m,at-now,d+.4,e.v*(LOUNGE.free?1:.5)/(e.m.length>1?1.4:1))}catch(x){}});LOUNGE.hit[e.h?1:0]=time+Math.max(0,at-now)}LOUNGE.next++}}
 function houseStop(){LOUNGE.house=null;const e=document.getElementById('nowPlaying');e.classList.remove('house');e.hidden=true}
 function enterRoom(id,x,dir){fadeThen(()=>{const was=scene;scene=id;setScale();player.x=x;player.dir=dir||'right';player.moving=false;updateHUD();if(music)music.volume=id==='lounge'?.05:.2;if(was==='lounge'&&id!=='lounge')houseStop();
   if(id==='lounge'&&!G.stats.lounge){G.stats.lounge=1;gMark();setTimeout(()=>say2(LOUNGE.crew.celeste,'Welcome to the Encore Room!',3.4),700)}})}
@@ -2543,7 +2546,12 @@ function ovation(big){LOUNGE.ovation=time+(big?6:4.2);clapSfx(big?5:3.6);if(big)
   say2(LOUNGE.crew.nathan,big?'Now THAT is a set!':'*claps*',2.8);say2(LOUNGE.crew.elio,big?'Magnifico!':'Bravo.',2.8)}
 function hostTalk(){const n=LOUNGE.crew.celeste;gMet('celeste');const first=!n.talked;n.talked=1;
   crewSay(n,first?"Welcome to the Encore Room. I'm Celeste, and I run the stage. Elio has the piano until somebody brave asks for it. A solo set, or the piano roulette?":"The stage is yours whenever you like. A solo set, or the piano roulette?",
-    [['Play a solo set',soloPick],['Spin the piano roulette',roulette],['How does the roulette work?',()=>crewSay(n,"I spin the wheel and it picks your opponent: staff, guests, even me. You both play the same piece for 75 seconds. You only hear your own piano. Highest score wins, and winners climb the ranks from Do all the way up to High Do.",[['Spin it',roulette],['Maybe a solo set first',soloPick],['Not tonight',endTalk]])],['Just listening tonight',endTalk]])}
+    [['Play a solo set (scored)',soloPick],['Just play for the room',freePick],['Spin the piano roulette',roulette],['How does the roulette work?',()=>crewSay(n,"I spin the wheel and it picks your opponent: staff, guests, even me. You both play the same piece for 75 seconds. You only hear your own piano. Highest score wins, and winners climb the ranks from Do all the way up to High Do.",[['Spin it',roulette],['Maybe a solo set first',soloPick],['Not tonight',endTalk]])],['Just listening tonight',endTalk]])}
+function freeNext(d){const n=SONGS.length;let i=LOUNGE.fi;for(let k=0;k<n;k++){i=(i+d+n)%n;if(SONGS[i].src)return i}return LOUNGE.fi}
+function freeSong(d){LOUNGE.fi=freeNext(d);houseStop();LOUNGE.loading=false;try{tone(96,0,.08,.03,'square')}catch(e){}}
+function freePick(){endTalk();uiOpen('Play for the room',b=>{b.append(el('p','pm-note','No scoring. You play, the room listens. Left and right change the piece.'));SONGS.forEach((S,i)=>{if(S.src)b.append(pmBtn(S.title,()=>{uiClose();fadeThen(()=>freeStart(i))}))});b.append(pmBtn('Never mind',uiClose))})}
+function freeStart(i){LOUNGE.fi=i;stageOn();LOUNGE.free=true;LOUNGE.loading=false;G.stats.piano++;gMark();LOUNGE.crowd=[0,1,2,3,4].map(k=>mk({x:360+k*26,y:FEET,dir:'left',tx:196+k*24,speed:46,pal:palette({style:pick(['blazer','cardigan','casual'])})}))}
+function freeStop(){if(!LOUNGE.free)return;LOUNGE.free=false;houseStop();LOUNGE.loading=false;stageOff();player.x=260;player.bowT=time;paused=true;ovation(false);LOUNGE.crowd.forEach((n,k)=>{n.tx=420+k*30;n.leave=1;setTimeout(()=>say2(n,pick(['Bravo!','That was lovely.','Encore!','*claps*']),2.4),k*260)});setTimeout(()=>{paused=false;player.bowT=-1;gCheck();saveNow(false)},2600)}
 function soloPick(){endTalk();uiOpen('Choose your piece',b=>{SONGS.forEach((S,i)=>{const q=[0,1,2].map(d=>G.best[(S.title+'|'+d).slice(0,60)]).filter(Boolean).sort((a,c)=>c.s-a.s)[0];b.append(pmBtn(S.title+(q?'   ★ '+q.s.toLocaleString():''),()=>{uiClose();PIANO.i=i;stageOn();fadeThen(()=>openPerf({onClose:soloDone}))}))});b.append(pmBtn('Never mind',uiClose))})}
 function soloDone(res){stageOff();if(!res||!res.finished)return;G.stats.piano++;if(!G.songs.includes(res.title))G.songs.push(res.title);gMark();const big=res.rank==='S'||res.rank==='A';player.bowT=time;paused=true;ovation(big);
   setTimeout(()=>{paused=false;player.bowT=-1;gCheck();const l=lbSolo();if(l.length<10||res.score>l[l.length-1].s)askName('New high score!',n=>{G.lb.push({n,s:res.score,r:res.rank,t:res.title});G.lb.sort((a,b)=>b.s-a.s);G.lb.length=Math.min(G.lb.length,20);gMark();saveNow(true);gCheck();showBoard()});else saveNow(true)},big?4200:3000)}
@@ -2572,6 +2580,7 @@ VENUES.lounge={name:'The Encore Room',hud:()=>tierOf(G.duel.rp)[1]+' rank  ·  '
     [C.ronak,C.nick].forEach(n=>L.push({kind:'fn',x:n.x,half:13,label:'Talk to '+CREW[n.key].name,pr:2,fn:()=>crewTalk(n)}));
     LOUNGE.guests.forEach(g=>L.push({kind:'fn',x:g.x,half:9,label:'Chat with '+g.gname,fn:()=>{talk(g.gname.toUpperCase()+' · GUEST',g.pal,pick(["We come every Friday for Elio. Don't tell him, he'll get a big head.","Have you tried the roulette? I lost to the juice bar guy. Twice.","The cherry tart here is criminal. Order two.","Shh. This part is my favorite.","They say whoever tops the board becomes a legend. A High Do."]),[['Enjoy your night',endTalk]]);talkingNPC=g}}));return L},
   update(dt){const C=LOUNGE.crew,busy=perfOn()||player.stage||time<LOUNGE.ovation;houseTick();
+    LOUNGE.crowd.forEach(n=>{if(n.tx!==undefined&&walkTo(n,n.tx,dt)){n.tx=undefined;n.moving=false;n.dir='left';if(n.leave)n.gone=1}});if(LOUNGE.crowd.some(n=>n.gone))LOUNGE.crowd=LOUNGE.crowd.filter(n=>!n.gone);
     [C.ronak,C.nick].forEach(n=>runnerTick(n,dt,L_TABLES,SERVE_LINES,busy));
     if(!busy){LOUNGE.cheerT-=dt;if(LOUNGE.cheerT<=0){LOUNGE.cheerT=rnd(5,10);if(LOUNGE.house&&Math.random()<.6)say2(pick(LOUNGE.guests),pick(['Beautiful.','*hums along*','I love this one.','He never misses.','*sips*']),2.6)}}
     else if(perfOn()&&PERF.state==='play'){LOUNGE.cheerT-=dt;if(LOUNGE.cheerT<=0){LOUNGE.cheerT=rnd(6,11);const w=['nathan','ronak','nick'].filter(k=>relTier(k)!=='n');if(w.length){const k=pick(w);say2(C[k],relTier(k)==='w'?pick(['You got this!','Go go go!','Beautiful!']):pick(['Missed one.','Hm.','Is that all?']),2.2)}}}},
@@ -2579,11 +2588,14 @@ VENUES.lounge={name:'The Encore Room',hud:()=>tierOf(G.duel.rp)[1]+' rank  ·  '
     /* leaderboard, live */
     c.font='4px MCPixel';c.textAlign='left';lbSolo().slice(0,7).forEach((e,i)=>{c.fillStyle=e.me?'#ffe36b':i?'#d8ccb4':'#fff';c.fillText((i+1)+' '+e.n.toUpperCase().slice(0,6),634,68+i*7.2);c.textAlign='right';c.fillText(Math.round(e.s/1000)+'K',667,68+i*7.2);c.textAlign='left'});
     /* at the piano */
-    if(player.stage){const P=PAL.player,pr=perfOn()&&PERF.press?PERF.press:[0,0,0,0],playing=perfOn()&&PERF.state==='play',lh=Math.max(pr[0],pr[1]),rh=Math.max(pr[2],pr[3]),lean=playing&&!reduce?Math.round(Math.sin(time*3.1)*1+(lh+rh)*.8):0;
-      drawSeated(c,123+lean,152,'right',P);drawSprite(c,C.elio.x,166,'right',0,false,C.elio.pal);
+    const hit=k=>clamp(1-(time-LOUNGE.hit[k])*6,0,1),seat=(P,lh,rh,playing)=>{const lean=playing&&!reduce?Math.round(Math.sin(time*3.1)+(lh+rh)*.8):0;drawSeated(c,123+lean,152,'right',P);
       const hx1=139+(playing&&!reduce?Math.round(Math.sin(time*2.3)*2):0),hx2=145+(playing&&!reduce?Math.round(Math.sin(time*1.7+1)*2):0),sl=P.sleeve||P.coat||'#1b1b22';
       R(c,128+lean,125,hx1-128-lean,2,sl);R(c,hx1,125+Math.round(lh*2),3,3,P.skin);R(c,130+lean,127,hx2-130-lean,2,P.coatLo||sl);R(c,hx2,126+Math.round(rh*2),3,3,P.skin);
-      if(playing){if(lh>.3)R(c,139,130,5,2,'#ffe9a8');if(rh>.3)R(c,145,130,5,2,'#ffe9a8')}}else{const pl=!!LOUNGE.house;drawSeated(c,123,152+(pl&&!reduce?Math.round(Math.sin(time*5)*.6):0),'right',C.elio.pal)}
+      if(playing){if(lh>.3)R(c,139,130,5,2,'#ffe9a8');if(rh>.3)R(c,145,130,5,2,'#ffe9a8')}};
+    if(player.stage){const pr=perfOn()&&PERF.press?PERF.press:[0,0,0,0],fr=LOUNGE.free&&!!LOUNGE.house,playing=fr||(perfOn()&&PERF.state==='play');
+      seat(PAL.player,fr?hit(0):Math.max(pr[0],pr[1]),fr?hit(1):Math.max(pr[2],pr[3]),playing);drawSprite(c,C.elio.x,166,'right',0,false,C.elio.pal)}
+    else seat(C.elio.pal,hit(0),hit(1),!!LOUNGE.house);
+    LOUNGE.crowd.forEach((n,i)=>drawSprite(c,n.x,FEET-(n.tx===undefined&&LOUNGE.house&&!reduce?Math.round(Math.abs(Math.sin(time*3+i*1.7))*1.2):0),n.dir,n.frame,n.moving,n.pal));
     if((LOUNGE.house||(perfOn()&&PERF.state==='play'))&&!reduce){c.font='8px VT323';for(let i=0;i<3;i++){const ph=(time*.45+i/3)%1;c.globalAlpha=1-ph;c.fillStyle='#ffe2a8';c.fillText(i%2?'♪':'♫',176+i*14+Math.sin(time*2+i)*4,118-ph*30)}c.globalAlpha=1}
     drawSprite(c,C.celeste.x,FEET,talkingNPC===C.celeste?(player.x<C.celeste.x?'left':'right'):'left',0,false,C.celeste.pal);
     drawSprite(c,C.nathan.x,BEHIND,'down',0,false,C.nathan.pal);if(!reduce&&(time%9)<2.2){const sy=Math.round(Math.sin(time*22)*2);R(c,C.nathan.x+7,BEHIND-27+sy,4,8,'#c8ccd2');R(c,C.nathan.x+7,BEHIND-28+sy,4,2,'#8a9098')}

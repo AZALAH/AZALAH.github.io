@@ -35,4 +35,5 @@ After changing the site, run `node tools/make-manifest.js "What changed"` so ins
 - Piano pieces are public-domain compositions. Scores from the Mutopia Project (Für Elise, Gymnopédie No. 1, The Entertainer, Rondo alla Turca, Ode to Joy, Eine kleine Nachtmusik, In the Hall of the Mountain King; Piano Sonata No. 16 by A. Sierra, CC BY-SA 3.0).
 - The Blue Danube is a piano reduction of the MEI score encoding by the Signature Sound Vienna project (mdw – University of Music and Performing Arts Vienna), CC BY 4.0.
 - Symphony No. 40 is a piano reduction built from the note table in DanChitwood/MozartPCA.
+- Waltz of the Flowers (Tchaikovsky, public domain) is a short easy-piano version of the main themes.
 - Not an official Minecraft product. Not affiliated with Mojang or Microsoft.
