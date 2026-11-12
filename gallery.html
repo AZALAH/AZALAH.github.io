@@ -648,7 +648,7 @@ const JOKES=[
  "I'd make a joke about recursion, but first I'd have to make a joke about recursion.",
  "Debugging is like being the detective in a crime movie where you're also the murderer."
 ];
-const MASON_EXTRA={elevator:"Going up! Hold on to the rail.",arrive:"Here we are. After you.",welcome_back:"Welcome back!",over_here:"Over here!",tour_cancel:"No problem. I'll be at the bar if you need me.",elev_hint:"Elevator's in the back, past the tables."};
+const MASON_EXTRA={elevator:"Going up! Hold on to the rail.",arrive:"Here we are. After you.",welcome_back:"Welcome back!",over_here:"Over here!",tour_cancel:"No problem. I'll be at the counter if you need me.",elev_hint:"Elevator's in the back, past the tables."};
 
 const LAND_DOORS=(window.AZScenes?AZScenes.names:[]).map((n,i)=>({name:n,id:'land-'+n,title:AZScenes.titles[n],cx:250+i*140}));
 
@@ -992,6 +992,7 @@ function sidePerson(c,x,y,f,moving,P,s,G){
   if(P.beard)hd(-1,hy+7,6,3,P.hair);
   hd(3,hy+8,2,talkOpen?2:1,talkOpen?'#3a1a14':P.mouth);
   if(P.headset){hd(-3,hy-1,6,1,'#d04040');hd(-2,hy+3,3,4,'#d04040')}
+  if(P.toque){hd(-5,hy-3,10,2,'#d2d2d6');hd(-5,hy-9,10,6,'#f4f4f4');hd(-6,hy-12,12,5,'#ffffff');hd(-6,hy-8,12,1,'#e4e4e8')}
   if(P.hat){hd(-6,hy-4,12,5,P.hat);hd(-6,hy,12,1,'rgba(0,0,0,.3)');hd(-1,hy-6,2,2,P.hat)}
   /* near arm */
   s.hand=null;
@@ -1066,6 +1067,7 @@ function frontPerson(c,x,y,back,moving,P,s,G){
     if(hs==='bun')h(-2,hy-5,4,3,P.hair);
   }
   if(P.headset){h(-6,hy-1,12,1,'#d04040');h(-7,hy+3,2,4,'#d04040');h(5,hy+3,2,4,'#d04040')}
+  if(P.toque){h(-5,hy-3,10,2,'#d2d2d6');h(-5,hy-9,10,6,'#f4f4f4');h(-6,hy-12,12,5,'#ffffff');h(-6,hy-8,12,1,'#e4e4e8')}
   if(P.hat){h(-6,hy-4,12,5,P.hat);h(-6,hy,12,1,'rgba(0,0,0,.3)');h(-1,hy-6,2,2,P.hat)}
 }
 function drawSprite(c,x,y,dir,frame,moving,P,alpha){
@@ -1278,7 +1280,7 @@ function buildStatic(id){
   if(id===0){
     R(c,316,50,228,72,'#1a0e09');[66,86,106].forEach(sy=>R(c,312,sy,236,3,'#4a2c1b'));R(c,312,48,236,3,'#4a2c1b');
     [[51,66],[69,86],[89,106]].forEach(([t,b],row)=>{let x=320;while(x<540){const h=hash(x,row),kind=Math.floor(h*4),hh=7+Math.floor(hash(row,x)*7);
-      if(kind===0){R(c,x,b-hh,6,hh,'#c9b98a');R(c,x,b-hh,6,2,'#6a4a2a');x+=9}else if(kind===1){R(c,x+1,b-hh-4,4,hh+4,'#2f5a3a');R(c,x+2,b-hh-6,2,2,'#a8843a');x+=8}
+      if(kind===0){R(c,x,b-hh,6,hh,'#c9b98a');R(c,x,b-hh,6,2,'#6a4a2a');x+=9}else if(kind===1){const tc=['#c0563a','#3a6a8a','#d9a23a','#5a8a5a'][Math.floor(hash(row+3,x)*4)];R(c,x,b-9,7,9,tc);R(c,x,b-10,7,2,'#e9e1cf');R(c,x+2,b-6,3,3,'#f4efe2');x+=10}
       else if(kind===2){R(c,x,b-7,7,7,'#e9e1cf');R(c,x+7,b-6,2,4,'#e9e1cf');x+=11}else{R(c,x,b-hh,9,hh,'#7a5a3a');R(c,x+2,b-hh+3,5,4,'#e9e1cf');x+=11}}});
     R(c,24,50,52,110,'#3a2214');R(c,72,96,3,12,'#c9a24e');R(c,22,162,58,6,'#3a2c22');
   }
@@ -2396,7 +2398,7 @@ PERF.head=0;
 /* ---------- ground floor rooms: the Encore Room (piano lounge) and the kitchen ---------- */
 const VENUES={},ROOM_BUILD={};
 const CREW={
- nathan:{name:'Nathan',role:'Bartender',skill:.78,rp:1240,skin:'#c68a5e',hair:'#16110f',hs:'short',tie:'#8e2232'},
+ nathan:{name:'Nathan',role:'Juice bar',skill:.78,rp:1240,skin:'#f1c9a5',hair:'#d9b26a',hs:'curly',tie:'#c9a24e',top:['#24504a','#183a35']},
  ronak:{name:'Ronak',role:'Server',skill:.7,rp:1110,skin:'#a8714c',hair:'#16110f',hs:'curly',tie:'#2c4a7a'},
  nick:{name:'Nick',role:'Server',skill:.62,rp:990,skin:'#f1c9a5',hair:'#c0602a',hs:'short',tie:'#3e6a4a'},
  celeste:{name:'Celeste',role:'Host',skill:.74,rp:1180,skin:'#8a5a3a',hair:'#2a1a12',hs:'bun',tie:'#c9a24e'},
@@ -2405,13 +2407,13 @@ const CREW={
 const GUESTS=[['Imani',.72,1130],['Tobias',.58,930],['Leila',.8,1290],['Wes',.5,860],['Odette',.67,1050],['Kofi',.76,1200]];
 const TIERS=[[0,'Do','Novice'],[900,'Re','Apprentice'],[1000,'Mi','Performer'],[1100,'Fa','Soloist'],[1200,'Sol','Headliner'],[1300,'La','Virtuoso'],[1400,'Ti','Maestro'],[1500,'High Do','Legend']];
 function tierOf(rp){let t=TIERS[0];for(const x of TIERS)if(rp>=x[0])t=x;return t}
-function formalPal(c){return palette({skin:c.skin,hair:c.hair,hairStyle:c.hs,style:'suit',top:['#1b1b22','#101016'],shirt:'#f4f4f4',tie:c.tie,knot:c.tie,pants:'#14141a',shoe:'#0a0a0c',shine:'#565a66'})}
+function formalPal(c){return palette({skin:c.skin,hair:c.hair,hairStyle:c.hs,style:'suit',top:c.top||['#1b1b22','#101016'],shirt:'#f4f4f4',tie:c.tie,knot:c.tie,pants:'#14141a',shoe:'#0a0a0c',shine:'#565a66'})}
 function apronPal(c){return Object.assign({},PAL.mason,{skin:c.skin,skinLo:rgb(mixA(hx(c.skin),[60,30,20],.18)),hair:c.hair,hairStyle:c.hs,beard:false})}
-function chefPal(c){return palette({skin:c.skin,hair:c.hair,hairStyle:c.hs,style:'casual',top:['#f4f4f4','#d8d8d8'],pants:'#2a2a33',shoe:'#141414'})}
+function chefPal(c){return Object.assign(palette({skin:c.skin,hair:c.hair,hairStyle:c.hs==='long'||c.hs==='curly'?'short':c.hs,style:'casual',top:['#f4f4f4','#d8d8d8'],pants:'#2a2a33',shoe:'#141414'}),{toque:1})}
 for(const k in CREW){const c=CREW[k];c.key=k;c.fp=formalPal(c);c.ap=k==='amara'?chefPal(c):apronPal(c);
   NAMED[k]={name:c.name,role:c.role,lines:['...']}}
 const CREW_TALK={
- nathan:{hi:["Evening. I'm Nathan. I pour the drinks and I keep the top of that board warm.","Back again. What'll it be?"],cold:"Oh. It's you.",warm:"There's my favorite regular. The usual?",
+ nathan:{hi:["Evening. I'm Nathan. I run the juice bar and I keep the top of that board warm.","Back again. What'll it be?"],cold:"Oh. It's you.",warm:"There's my favorite regular. The usual?",
   q:[["Mason says you built this whole place. That true?",[["Every pixel of it.",1,"Then the first one's on the house. Respect."],["I had help from a lot of coffee.",0,"Ha. Didn't we all."],["Obviously. Try to keep up.",-1,"Big talk. We'll see how it holds up at the piano."]]],
      ["I haven't lost a roulette to a guest this month, you know.",[["Any tips for a beginner?",1,"Watch the line, not the notes. That one's free."],["Maybe I'll try it later.",0,"The piano's not going anywhere."],["That streak ends tonight.",-1,"Put it on the board, then."]]]],
   pre:{c:"No mercy tonight.",n:"Good luck. You'll need a little.",w:"Don't you dare go easy on me."},win:{c:"...Fine. You earned that one.",n:"Clean playing. Well done.",w:"Ha! I taught you too well."},lose:{c:"Told you. The board doesn't lie.",n:"Close one. Come back for a rematch.",w:"You made me work for it. Next one's yours."}},
@@ -2421,7 +2423,7 @@ const CREW_TALK={
   pre:{c:"I've been waiting for this.",n:"Let's keep it friendly.",w:"Whatever happens, we're still cool, right?"},win:{c:"Beginner's luck.",n:"Okay, you can play. Respect.",w:"That was beautiful. I'm not even mad."},lose:{c:"That's for the soup comment.",n:"Good game. Really.",w:"Don't worry, you'll get me next time."}},
  nick:{hi:["Nick. New here, so if I walk into a wall, no you didn't see that.","Oh hey! I remembered your face this time."],cold:"Um. Hi.",warm:"Hey hey! You came back!",
   q:[["First week. Mason keeps saying 'you'll get it'. Do I look like I'm getting it?",[["You're doing great, Nick.",1,"Seriously? That made my whole shift."],["Everyone starts somewhere.",0,"Yeah. True."],["Not even a little.",-1,"...Cool. Cool cool cool."]]],
-     ["They say whoever tops the board drinks free. Is that a real rule?",[["Let's both go for it.",1,"Deal. Race you there."],["No idea. Ask Nathan.",0,"He just laughs when I ask."],["It's real, and it's mine.",-1,"Guess I'm paying forever, then."]]]],
+     ["They say whoever tops the board gets free smoothies for life. Is that a real rule?",[["Let's both go for it.",1,"Deal. Race you there."],["No idea. Ask Nathan.",0,"He just laughs when I ask."],["It's real, and it's mine.",-1,"Guess I'm paying forever, then."]]]],
   pre:{c:"I'm not scared of you. Much.",n:"Go easy, it's my first week!",w:"This is gonna be fun either way."},win:{c:"Yeah. Figures.",n:"Whoa. You're really good.",w:"That was awesome! Teach me that last part?"},lose:{c:"Ha! In your face! ...Sorry.",n:"Wait, I won? I WON?",w:"I can't believe it. Still friends?"}},
  elio:{hi:["Elio. I have played this room for thirty years. The piano and I have an understanding.","Ah. The one who listens."],cold:"Hm.",warm:"My friend. Sit close tonight, the acoustics are kinder there.",
   q:[["Tell me. What do you hear when I play?",[["Somebody who loves it.",1,"...Yes. That is the right answer."],["Honestly? Mostly the notes.",0,"A beginning. The rest comes with time."],["A few wrong ones.",-1,"There are no wrong notes. Only brave ones. Mostly."]]],
@@ -2482,7 +2484,7 @@ function announce(lines,done){const box=document.getElementById('announce'),tx=d
 /* ---------- the Encore Room ---------- */
 SC.lounge={w:900,name:'The Encore Room',windows:[],pendants:[],chand:[],seats:[],
   lights:[{x:160,y:118,r:110,i:1.1},{x:110,y:60,r:60,i:.6},{x:250,y:60,r:60,i:.6},{x:340,y:100,r:50,i:.7},{x:420,y:70,r:66,i:.75},{x:520,y:70,r:66,i:.75},{x:600,y:70,r:66,i:.75},{x:440,y:146,r:26,i:.6,c:2},{x:520,y:146,r:26,i:.6,c:2},{x:600,y:146,r:26,i:.6,c:2},{x:760,y:90,r:100,i:.95},{x:650,y:80,r:44,i:.7},{x:872,y:90,r:44,i:.6}],
-  signs:[{x:185,y:35,t:'THE ENCORE ROOM',sz:8,col:'#ffe2a8',glow:1},{x:650,y:50,t:'TOP OF THE BILL',sz:4.5,col:'#ffe2a8'},{x:870,y:46,t:'KITCHEN',sz:5,col:'#e9e4d0'}]};
+  signs:[{x:185,y:35,t:'THE ENCORE ROOM',sz:8,col:'#ffe2a8',glow:1},{x:650,y:50,t:'TOP OF THE BILL',sz:4.5,col:'#ffe2a8'},{x:870,y:46,t:'KITCHEN',sz:5,col:'#e9e4d0'},{x:764,y:55,t:'FRESH JUICE · MOCKTAILS',sz:5,col:'#ffe2a8',glow:1}]};
 const L_TABLES=[440,520,600],L_SEATS=[];L_TABLES.forEach(t=>{L_SEATS.push({x:t-19,dir:'right',t},{x:t+19,dir:'left',t})});
 function tinCeiling(c,w){R(c,0,0,w,24,'#15100c');for(let x=0;x<w;x+=12){R(c,x,2,10,9,'#241a12');R(c,x+2,4,6,5,'#30231a');R(c,x+4,6,2,1,'#5a4630');R(c,x,13,10,8,'#241a12');R(c,x+2,15,6,4,'#2a1f16')}R(c,0,22,w,2,'#8a6a2a')}
 function roomDoor(c,x){R(c,x-18,50,36,110,'#2a1810');R(c,x-16,52,32,108,'#5a3420');R(c,x-13,56,12,42,'#4a2c1b');R(c,x+1,56,12,42,'#4a2c1b');R(c,x-13,104,12,50,'#4a2c1b');R(c,x+1,104,12,50,'#4a2c1b');R(c,x+9,106,3,8,'#c9a24e')}
@@ -2505,7 +2507,12 @@ ROOM_BUILD.lounge=function(c,sc){const w=sc.w;
   /* board, back bar, kitchen door */
   R(c,628,56,44,64,'#8a6a2a');R(c,630,58,40,60,'#c9a24e');R(c,632,60,36,56,'#15100c');
   R(c,686,38,156,98,'#1a0e09');R(c,690,42,148,40,'#3a4a5a');R(c,690,42,148,1,'#8aa0b8');for(const sy of [84,104,124]){R(c,684,sy,160,3,'#4a2c1b')}
-  [[66,84],[88,104],[108,124]].forEach(([t,b],row)=>{let x=692;while(x<836){const h=hash(x,row+40),hh=8+Math.floor(hash(row,x)*8);R(c,x+1,b-hh,4,hh,['#2f5a3a','#7a2e2e','#c9a24e','#3a4a7a','#e9e1cf'][Math.floor(h*5)]);R(c,x+2,b-hh-3,2,3,'#a8843a');R(c,x+1,b-hh+3,4,1,'rgba(255,255,255,.3)');x+=7+Math.floor(h*3)}});
+  const JUICE=['#f39a2e','#e8456a','#8fc93a','#f2d23c','#b05ad0','#e0563a','#f7b7c8','#6ac8d8'];
+  [[66,84],[88,104],[108,124]].forEach(([t,b],row)=>{let x=693;while(x<832){const h=hash(x,row+40),col=JUICE[Math.floor(hash(row+7,x)*JUICE.length)],kind=Math.floor(h*4);
+    if(kind===0){R(c,x,b-13,9,13,'rgba(220,235,240,.35)');R(c,x+1,b-10,7,9,col);R(c,x+1,b-10,7,1,'rgba(255,255,255,.5)');R(c,x-1,b-15,11,2,'#c8ccd2');R(c,x+3,b-3,3,2,'#8a9098');x+=13}
+    else if(kind===1){R(c,x,b-8,5,8,'rgba(220,235,240,.35)');R(c,x+1,b-6,3,6,col);R(c,x+3,b-11,1,5,'#f4efe2');x+=8}
+    else if(kind===2){disc(c,x+3,b-3,3,3,['#f39a2e','#f2d23c','#8fc93a','#e0563a'][Math.floor(h*40)%4]);disc(c,x+8,b-3,3,3,['#f2d23c','#f39a2e','#e0563a','#8fc93a'][Math.floor(h*40)%4]);disc(c,x+5,b-7,3,3,'#f39a2e');R(c,x+5,b-11,1,2,'#3e7048');x+=14}
+    else{R(c,x,b-10,6,10,'#e9e1cf');R(c,x,b-10,6,2,col);R(c,x+1,b-6,4,3,col);x+=9}}});
   R(c,684,36,160,3,'#8a6a2a');R(c,852,50,36,110,'#c8ccd2');R(c,854,52,32,108,'#aeb4bc');disc(c,870,84,8,8,'#2a3440');disc(c,870,84,6,6,'#5a7088');R(c,856,120,28,3,'#8a9098');R(c,850,48,40,3,'#6a7078');
   for(const x of [110,250,420,520,600,700,780]){R(c,x,24,1,10,'#1a120c');disc(c,x,38,4,4,'#fff1c9');disc(c,x-1,37,2,2,'#ffffff')}
 };
@@ -2530,7 +2537,7 @@ function houseStop(){LOUNGE.house=null;const e=document.getElementById('nowPlayi
 function enterRoom(id,x,dir){fadeThen(()=>{const was=scene;scene=id;setScale();player.x=x;player.dir=dir||'right';player.moving=false;updateHUD();if(music)music.volume=id==='lounge'?.05:.2;if(was==='lounge'&&id!=='lounge')houseStop();
   if(id==='lounge'&&!G.stats.lounge){G.stats.lounge=1;gMark();setTimeout(()=>say2(LOUNGE.crew.celeste,'Welcome to the Encore Room!',3.4),700)}})}
 function leaveRooms(x){fadeThen(()=>{houseStop();scene=0;setScale();player.x=x;player.dir='down';updateHUD();if(music)music.volume=.35})}
-function stageOn(){player.stage=true;houseStop();LOUNGE.crew.elio.x=78}
+function stageOn(){player.stage=true;player.x=150;player.dir='right';houseStop();LOUNGE.crew.elio.x=84}
 function stageOff(){player.stage=false;player.x=300;player.dir='right';LOUNGE.crew.elio.x=123}
 function ovation(big){LOUNGE.ovation=time+(big?6:4.2);clapSfx(big?5:3.6);if(big)cheerSfx(4);LOUNGE.guests.forEach((g,i)=>setTimeout(()=>say2(g,pick(big?['BRAVO!','Encore! Encore!','Incredible!','*standing ovation*','WOOO!']:['Bravo!','*claps*','Lovely!','More!']),2.6),i*220));
   say2(LOUNGE.crew.nathan,big?'Now THAT is a set!':'*claps*',2.8);say2(LOUNGE.crew.elio,big?'Magnifico!':'Bravo.',2.8)}
@@ -2563,7 +2570,7 @@ VENUES.lounge={name:'The Encore Room',hud:()=>tierOf(G.duel.rp)[1]+' rank  ·  '
   items(){const C=LOUNGE.crew,L=[{kind:'fn',x:26,half:20,label:'Back to the lobby',fn:()=>leaveRooms(630)},{kind:'fn',x:336,half:16,label:'Talk to Celeste, the host',pr:3,fn:hostTalk},{kind:'fn',x:650,half:18,label:'Read the leaderboard',fn:showBoard},
       {kind:'fn',x:760,half:26,label:'Talk to Nathan',fn:()=>crewTalk(C.nathan)},{kind:'fn',x:870,half:18,label:'Enter the kitchen',fn:()=>enterRoom('kitchen',34,'right')},{kind:'fn',x:150,half:34,label:'Talk to Elio',fn:()=>crewTalk(C.elio)}];
     [C.ronak,C.nick].forEach(n=>L.push({kind:'fn',x:n.x,half:13,label:'Talk to '+CREW[n.key].name,pr:2,fn:()=>crewTalk(n)}));
-    LOUNGE.guests.forEach(g=>L.push({kind:'fn',x:g.x,half:9,label:'Chat with '+g.gname,fn:()=>{talk(g.gname.toUpperCase()+' · GUEST',g.pal,pick(["We come every Friday for Elio. Don't tell him, he'll get a big head.","Have you tried the roulette? I lost to the bartender. Twice.","The cherry tart here is criminal. Order two.","Shh. This part is my favorite.","They say whoever tops the board becomes a legend. A High Do."]),[['Enjoy your night',endTalk]]);talkingNPC=g}}));return L},
+    LOUNGE.guests.forEach(g=>L.push({kind:'fn',x:g.x,half:9,label:'Chat with '+g.gname,fn:()=>{talk(g.gname.toUpperCase()+' · GUEST',g.pal,pick(["We come every Friday for Elio. Don't tell him, he'll get a big head.","Have you tried the roulette? I lost to the juice bar guy. Twice.","The cherry tart here is criminal. Order two.","Shh. This part is my favorite.","They say whoever tops the board becomes a legend. A High Do."]),[['Enjoy your night',endTalk]]);talkingNPC=g}}));return L},
   update(dt){const C=LOUNGE.crew,busy=perfOn()||player.stage||time<LOUNGE.ovation;houseTick();
     [C.ronak,C.nick].forEach(n=>runnerTick(n,dt,L_TABLES,SERVE_LINES,busy));
     if(!busy){LOUNGE.cheerT-=dt;if(LOUNGE.cheerT<=0){LOUNGE.cheerT=rnd(5,10);if(LOUNGE.house&&Math.random()<.6)say2(pick(LOUNGE.guests),pick(['Beautiful.','*hums along*','I love this one.','He never misses.','*sips*']),2.6)}}
@@ -2572,11 +2579,15 @@ VENUES.lounge={name:'The Encore Room',hud:()=>tierOf(G.duel.rp)[1]+' rank  ·  '
     /* leaderboard, live */
     c.font='4px MCPixel';c.textAlign='left';lbSolo().slice(0,7).forEach((e,i)=>{c.fillStyle=e.me?'#ffe36b':i?'#d8ccb4':'#fff';c.fillText((i+1)+' '+e.n.toUpperCase().slice(0,6),634,68+i*7.2);c.textAlign='right';c.fillText(Math.round(e.s/1000)+'K',667,68+i*7.2);c.textAlign='left'});
     /* at the piano */
-    if(player.stage){drawSeated(c,123,152,'right',PAL.player);drawSprite(c,C.elio.x,166,'right',0,false,C.elio.pal)}else{const pl=!!LOUNGE.house;drawSeated(c,123,152+(pl&&!reduce?Math.round(Math.sin(time*5)*.6):0),'right',C.elio.pal)}
+    if(player.stage){const P=PAL.player,pr=perfOn()&&PERF.press?PERF.press:[0,0,0,0],playing=perfOn()&&PERF.state==='play',lh=Math.max(pr[0],pr[1]),rh=Math.max(pr[2],pr[3]),lean=playing&&!reduce?Math.round(Math.sin(time*3.1)*1+(lh+rh)*.8):0;
+      drawSeated(c,123+lean,152,'right',P);drawSprite(c,C.elio.x,166,'right',0,false,C.elio.pal);
+      const hx1=139+(playing&&!reduce?Math.round(Math.sin(time*2.3)*2):0),hx2=145+(playing&&!reduce?Math.round(Math.sin(time*1.7+1)*2):0),sl=P.sleeve||P.coat||'#1b1b22';
+      R(c,128+lean,125,hx1-128-lean,2,sl);R(c,hx1,125+Math.round(lh*2),3,3,P.skin);R(c,130+lean,127,hx2-130-lean,2,P.coatLo||sl);R(c,hx2,126+Math.round(rh*2),3,3,P.skin);
+      if(playing){if(lh>.3)R(c,139,130,5,2,'#ffe9a8');if(rh>.3)R(c,145,130,5,2,'#ffe9a8')}}else{const pl=!!LOUNGE.house;drawSeated(c,123,152+(pl&&!reduce?Math.round(Math.sin(time*5)*.6):0),'right',C.elio.pal)}
     if((LOUNGE.house||(perfOn()&&PERF.state==='play'))&&!reduce){c.font='8px VT323';for(let i=0;i<3;i++){const ph=(time*.45+i/3)%1;c.globalAlpha=1-ph;c.fillStyle='#ffe2a8';c.fillText(i%2?'♪':'♫',176+i*14+Math.sin(time*2+i)*4,118-ph*30)}c.globalAlpha=1}
     drawSprite(c,C.celeste.x,FEET,talkingNPC===C.celeste?(player.x<C.celeste.x?'left':'right'):'left',0,false,C.celeste.pal);
-    drawSprite(c,C.nathan.x+(reduce?0:Math.round(Math.sin(time*.4)*14)),BEHIND,'down',0,false,C.nathan.pal);
-    R(c,676,136,172,4,'#8d5c3c');R(c,676,140,172,32,'#2a1810');for(let x=684;x<844;x+=27)R(c,x,143,22,22,'#3a2012');R(c,676,164,172,2,'#c9a24e');R(c,676,170,172,2,'#140a06');R(c,700,128,6,8,'#e9e1cf');R(c,790,126,4,10,'#2f5a3a');R(c,812,130,8,6,'#c8ccd2');
+    drawSprite(c,C.nathan.x,BEHIND,'down',0,false,C.nathan.pal);if(!reduce&&(time%9)<2.2){const sy=Math.round(Math.sin(time*22)*2);R(c,C.nathan.x+7,BEHIND-27+sy,4,8,'#c8ccd2');R(c,C.nathan.x+7,BEHIND-28+sy,4,2,'#8a9098')}
+    R(c,676,136,172,4,'#8d5c3c');R(c,676,140,172,32,'#2a1810');for(let x=684;x<844;x+=27)R(c,x,143,22,22,'#3a2012');R(c,676,164,172,2,'#c9a24e');R(c,676,170,172,2,'#140a06');R(c,700,128,6,8,'#e9e1cf');R(c,788,125,8,11,'rgba(220,235,240,.4)');R(c,789,128,6,8,'#f39a2e');R(c,796,128,2,4,'rgba(220,235,240,.5)');R(c,812,130,8,6,'#c8ccd2');disc(c,726,133,3,3,'#f2d23c');disc(c,732,133,3,3,'#8fc93a');
     LOUNGE.guests.forEach((g,i)=>{const s=g.seat,hop=ov&&!reduce?Math.round(Math.abs(Math.sin(time*9+i))*3):0;R(c,s.x-9,134,18,26,'#5a1422');R(c,s.x-8,135,16,3,'#7e2434');
       if(ov)drawSprite(c,s.x,FEET-10-hop,'up',0,false,g.pal);else drawSeated(c,s.x,151,s.dir,g.pal);R(c,s.x-10,154,20,12,'#6e1a2a');R(c,s.x-10,154,20,2,'#8a2c3c');R(c,s.x-8,166,3,6,'#1a0a0c');R(c,s.x+5,166,3,6,'#1a0a0c')});
     L_TABLES.forEach((t,i)=>{R(c,t-8,147,16,3,'#c9a24e');R(c,t-8,147,16,1,'#f0d890');R(c,t-1,150,2,18,'#a8843a');R(c,t-6,168,12,3,'#8a6a2a');R(c,t-1,142,2,5,'#f4efe2');R(c,t-1,140+(reduce?0:Math.round(hash(i,Math.floor(time*8)))),2,2,'#ffb84a');R(c,t+3,143,3,4,'rgba(200,220,255,.6)')});
@@ -2607,24 +2618,24 @@ ROOM_BUILD.kitchen=function(c,sc){const w=sc.w;
 };
 const KITCH={cooks:[],shoutT:2,amara:null};
 (function(){KITCH.amara=mk({key:'amara',named:1,x:470,dir:'left',pal:CREW.amara.ap});const st=[[100,'chop'],[212,'pan'],[262,'pan'],[310,'stir'],[420,'plate'],[540,'plate']];
-  st.forEach(([x,job],i)=>KITCH.cooks.push(mk({x,y:BEHIND+ (i<1?0:0),home:x,job,dir:'up',timer:rnd(3,9),speed:54,pal:chefPal({skin:pick(SKINS),hair:pick(HAIRC),hs:pick(HSTY)})})))})();
+  st.forEach(([x,job],i)=>KITCH.cooks.push(mk({x,y:BEHIND+ (i<1?0:0),home:x,job,dir:'down',timer:rnd(3,9),speed:54,pal:chefPal({skin:pick(SKINS),hair:pick(HAIRC),hs:pick(HSTY)})})))})();
 const K_SHOUTS=['Yes, chef!','Behind!','Order up!','Hot pan, hot pan!','Two burgers, one pasta!','Corner!','Hands!','Table four, fire!','Heard!','Sixty seconds on the salad!'];
 function toque(c,x,y){R(c,x-4,y-58,8,6,'#f4f4f4');R(c,x-5,y-62,10,5,'#ffffff');R(c,x-4,y-53,8,2,'#d8d8d8')}
 VENUES.kitchen={name:'The Kitchen',hud:()=>'Best dinner rush: '+(G.cook?G.cook.toLocaleString():'none yet'),
   items(){return[{kind:'fn',x:26,half:20,label:'Back to the Encore Room',fn:()=>enterRoom('lounge',850,'left')},{kind:'fn',x:KITCH.amara.x,half:18,label:'Talk to Chef Amara',pr:3,fn:()=>crewTalk(KITCH.amara,[['Put me on the line (Dinner Rush)',()=>{endTalk();cookOpen()}],['Show me the kitchen board',()=>{endTalk();showBoard()}]])},
     {kind:'fn',x:590,half:20,label:'Open the fridge',fn:()=>sys('THE WALK-IN',"Forty burger patties, a wall of lettuce, and one cake with a note taped to it: 'NICK, NO.'",[['Close it',endTalk]])}]},
   update(dt){KITCH.shoutT-=dt;if(KITCH.shoutT<=0&&dlg.hidden){KITCH.shoutT=rnd(1.2,2.8);say2(pick(KITCH.cooks),pick(K_SHOUTS),1.8)}
-    KITCH.cooks.forEach(n=>{n.timer-=dt;if(n.go){if(walkTo(n,n.tx,dt)){if(n.tx===n.home){n.go=0;n.dir='up';n.timer=rnd(4,10)}else{n.tx=n.home}}}else if(n.timer<=0){n.go=1;n.tx=pick([100,212,262,310,420,540,596].filter(x=>Math.abs(x-n.home)>30))}});
+    KITCH.cooks.forEach(n=>{n.timer-=dt;if(n.go){if(walkTo(n,n.tx,dt)){if(n.tx===n.home){n.go=0;n.dir='down';n.timer=rnd(4,10)}else{n.tx=n.home}}}else if(n.timer<=0){n.go=1;n.tx=pick([100,212,262,310,420,540,596].filter(x=>Math.abs(x-n.home)>30))}});
     const a=KITCH.amara;if(a!==talkingNPC){a.timer-=dt;if(a.timer<=0){a.timer=rnd(3,6);a.tx=rnd(400,540)}if(a.tx!==undefined&&walkTo(a,a.tx,dt)){a.tx=undefined;a.dir='left';if(Math.random()<.5)say2(a,pick(['Where is my salad?!','Plate it like you mean it!','Beautiful. Send it.','Who salted this? Twice?!']),2.2)}}else a.moving=false},
   props(c){
     /* flames, pans and steam */
     [213,261,309].forEach((x,i)=>{const fl=reduce?0:Math.floor(time*10+i)%3;R(c,x-6,126-fl,12,2+fl,'#ff9a3a');R(c,x-4,124-fl,8,2,'#ffe36b');R(c,x-9,119,18,4,'#2a2c32');R(c,x+9,120,9,2,'#1a1a1e');
       if(!reduce)for(let k=0;k<3;k++){const ph=(time*.6+k/3+i*.2)%1;c.globalAlpha=(1-ph)*.4;disc(c,x+Math.sin(time*2+k+i)*3,116-ph*34,2+ph*4,2+ph*3,'#ffffff')}c.globalAlpha=1});
-    KITCH.cooks.forEach((n,i)=>{const work=!n.go,bob=work&&!reduce?Math.round(Math.abs(Math.sin(time*(n.job==='chop'?14:6)+i))*1.5):0;drawSprite(c,n.x,BEHIND-bob,n.go?n.dir:'up',n.frame,!!n.go&&n.moving,n.pal);toque(c,n.x,BEHIND-bob);
+    KITCH.cooks.forEach((n,i)=>{const work=!n.go,bob=work&&!reduce?Math.round(Math.abs(Math.sin(time*(n.job==='chop'?14:6)+i))*1.5):0;drawSprite(c,n.x,BEHIND-bob,n.go?n.dir:'down',n.frame,!!n.go&&n.moving,n.pal);
       if(work&&n.job==='pan'&&!reduce){const t=(time*1.3+i)%1;if(t<.5)R(c,n.x+Math.sin(t*6.28)*4,112-Math.sin(t*6.28)*10,2,2,'#c98a4a')}});
     R(c,60,132,104,5,'#c8ccd2');R(c,180,128,168,6,'#2a2c32');R(c,180,134,168,26,'#6a7078');R(c,180,134,168,1,'#aeb4bc');[196,244,292].forEach(x=>{R(c,x,138,34,18,'#2a2c32');R(c,x+2,140,30,14,'#15161a')});R(c,60,137,104,23,'#8a9098');R(c,372,132,196,5,'#c8ccd2');R(c,372,137,196,23,'#8a9098');for(let x=380;x<560;x+=46)R(c,x,141,40,16,'#7a8088');
     for(let i=0;i<4;i++){const x=392+i*44;R(c,x,128,12,3,'#f4efe2');R(c,x+3,125,6,3,['#c98a4a','#5a9a3a','#c0392b','#e9c27a'][i])}
-    const a=KITCH.amara;drawSprite(c,a.x,FEET,a===talkingNPC?(player.x<a.x?'left':'right'):a.dir,a.frame,a.moving,a.pal);toque(c,a.x,FEET)},
+    const a=KITCH.amara;drawSprite(c,a.x,FEET,a===talkingNPC?(player.x<a.x?'left':'right'):a.dir,a.frame,a.moving,a.pal)},
   front(c){drawBubbles(c,KITCH.cooks.concat([KITCH.amara]))}};
 
 /* café crew: the same people in aprons, helping Mason */
